@@ -6,7 +6,7 @@ services:
     buildCommand: |
       pip install --upgrade pip
       pip install -r requirements.txt
-    startCommand: gunicorn --worker-class eventlet -w 1 --bind 0.0.0.0:$PORT server:app
+    startCommand: gunicorn --worker-class gthread --threads 2 --bind 0.0.0.0:$PORT server:app
     envVars:
       - key: PORT
         value: 5000
