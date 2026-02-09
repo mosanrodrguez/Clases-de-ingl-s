@@ -12,18 +12,16 @@ import hashlib
 import secrets
 import jwt
 import datetime
-from psycopg2.extras import RealDictCursor, DictCursor
-from typing import Dict, List, Optional
+from psycopg2.extras import RealDictCursor
+from typing import Dict, Optional
 from functools import wraps
-from urllib.parse import urlparse
 
 from flask import Flask, request, jsonify, send_file, send_from_directory
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
-from flask_socketio import SocketIO, emit, join_room, leave_room
+from flask_socketio import SocketIO, emit
 import cloudinary
 import cloudinary.uploader
-import cloudinary.api
 
 # ============ CONFIGURACIÓN ============
 app = Flask(__name__, static_folder='.', static_url_path='')
@@ -48,13 +46,14 @@ cloudinary.config(
 STUDENT_CODE = "QwErTy89"
 TEACHER_CODE = "MOISÉS5M"
 
-# Extensiónes permitidas
+# Extensiones permitidas
 ALLOWED_EXTENSIONS = {
     'pdf', 'doc', 'docx', 'ppt', 'pptx', 
     'txt', 'jpg', 'jpeg', 'png', 'mp3', 'mp4'
 }
 
-socketio = SocketIO(app, cors_allowed_origins="*", async_mode='eventlet')
+# SocketIO SIN async_mode especificado (usa automático)
+socketio = SocketIO(app, cors_allowed_origins="*")
 
 # ============ FUNCIONES AUXILIARES ============
 def allowed_file(filename: str) -> bool:
@@ -196,7 +195,7 @@ def index():
 
 @app.route('/api/register', methods=['POST'])
 def register():
-    """Registrar un nuevo usuario - CORREGIDO Y FUNCIONAL"""
+    """Registrar un nuevo usuario"""
     try:
         data = request.get_json()
         
@@ -410,7 +409,7 @@ def upload_class():
         conn.close()
         
         # Notificar por WebSocket
-        socketio.emit('new_class', dict(new_class), namespace='/classes')
+        socketio.emit('new_class', dict(new_class))
         
         return jsonify({
             'message': 'Clase subida exitosamente',
@@ -505,11 +504,11 @@ def serve_static(path):
         return jsonify({'error': 'Archivo no encontrado'}), 404
 
 # ============ MANEJADORES WEBSOCKET ============
-@socketio.on('connect', namespace='/classes')
+@socketio.on('connect')
 def handle_connect():
     emit('connection_response', {'message': 'Conectado'})
 
-@socketio.on('disconnect', namespace='/classes')
+@socketio.on('disconnect')
 def handle_disconnect():
     pass
 
@@ -533,9 +532,11 @@ if __name__ == '__main__':
     
     port = int(os.environ.get('PORT', 5000))
     
+    # Para producción en Render
     socketio.run(
         app, 
         host='0.0.0.0', 
         port=port, 
-        debug=False
+        debug=False,
+        allow_unsafe_werkzeug=True
     )
