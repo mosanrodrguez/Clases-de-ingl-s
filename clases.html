@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plataforma de Clases de Inglés</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+
+        /* HEADER REDUCIDO */
+        .header {
+            background: linear-gradient(135deg, #1d3c6e 0%, #2a5298 100%);
+            color: white;
+            padding: 15px 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo h1 {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: white;
+        }
+
+        .logo span {
+            color: #ff6b6b;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            background-color: #c41e1e;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        .user-details {
+            text-align: right;
+        }
+
+        .user-name {
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .user-role {
+            font-size: 0.7rem;
+            opacity: 0.9;
+            background-color: rgba(255,255,255,0.2);
+            padding: 2px 6px;
+            border-radius: 8px;
+            margin-top: 2px;
+            display: inline-block;
+        }
+
+        .logout-btn {
+            background-color: #c41e1e;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 6px 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.8rem;
+            transition: background-color 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .logout-btn:hover {
+            background-color: #a01818;
+        }
+
+        /* MAIN CONTENT */
+        .main-content {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        /* BOTÓN SUBIR CLASE */
+        .upload-class-container {
+            margin-bottom: 20px;
+            text-align: right;
+        }
+
+        .upload-class-btn {
+            background-color: #25D366;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 10px 20px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+
+        .upload-class-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0,0,0,0.15);
+        }
+
+        /* FILTROS REDUCIDOS (SIN TODOS) */
+        .filters-container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .filters-title {
+            color: #1d3c6e;
+            font-weight: 700;
+            margin-bottom: 12px;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .filter-btn {
+            padding: 6px 16px;
+            background-color: #f0f2f5;
+            border: 2px solid #e0e0e0;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #1d3c6e;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .filter-btn:hover {
+            background-color: #e3e8f0;
+        }
+
+        .filter-btn.active {
+            background-color: #1d3c6e;
+            color: white;
+            border-color: #1d3c6e;
+        }
+
+        /* LISTA DE CLASES */
+        .classes-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .class-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid #e0e0e0;
+        }
+
+        .class-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        }
+
+        .class-header {
+            background: linear-gradient(135deg, #1d3c6e 0%, #2a5298 100%);
+            color: white;
+            padding: 12px;
+        }
+
+        .class-level {
+            background-color: #c41e1e;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            display: inline-block;
+            margin-bottom: 6px;
+        }
+
+        .class-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .class-body {
+            padding: 15px;
+        }
+
+        .class-description {
+            color: #666;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            margin-bottom: 12px;
+            min-height: 50px;
+        }
+
+        .class-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            color: #888;
+            margin-bottom: 12px;
+        }
+
+        .class-date {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .class-file {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .download-btn {
+            background-color: #25D366;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 12px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            width: 100%;
+            justify-content: center;
+            font-size: 0.85rem;
+            transition: background-color 0.3s;
+        }
+
+        .download-btn:hover {
+            background-color: #1da851;
+        }
+
+        /* MODAL SUBIR CLASE */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .upload-modal {
+            background-color: white;
+            width: 100%;
+            max-width: 500px;
+            border-radius: 12px;
+            overflow: hidden;
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #1d3c6e 0%, #2a5298 100%);
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #1d3c6e;
+            font-weight: 600;
+            margin-bottom: 6px;
+            font-size: 0.85rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.85rem;
+            transition: border-color 0.3s;
+            background-color: #f9f9f9;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #1d3c6e;
+            background-color: white;
+        }
+
+        .form-group textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .file-upload {
+            border: 2px dashed #e0e0e0;
+            padding: 15px;
+            text-align: center;
+            border-radius: 6px;
+            background-color: #f9f9f9;
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+
+        .file-upload:hover {
+            border-color: #1d3c6e;
+        }
+
+        .file-upload input {
+            display: none;
+        }
+
+        .file-info {
+            margin-top: 8px;
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .submit-btn {
+            flex: 1;
+            background-color: #25D366;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 10px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .submit-btn:hover {
+            background-color: #1da851;
+        }
+
+        .cancel-btn {
+            flex: 1;
+            background-color: #c41e1e;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 10px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .cancel-btn:hover {
+            background-color: #a01818;
+        }
+
+        /* MENSAJES */
+        .message {
+            padding: 10px 12px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-align: center;
+            display: none;
+        }
+
+        .message.success {
+            background-color: rgba(37, 211, 102, 0.1);
+            color: #25D366;
+            border: 1px solid #25D366;
+            display: block;
+        }
+
+        .message.error {
+            background-color: rgba(196, 30, 30, 0.1);
+            color: #c41e1e;
+            border: 1px solid #c41e1e;
+            display: block;
+        }
+
+        /* SIN CLASES */
+        .no-classes {
+            text-align: center;
+            padding: 40px 20px;
+            color: #666;
+        }
+
+        .no-classes i {
+            font-size: 2.5rem;
+            color: #e0e0e0;
+            margin-bottom: 15px;
+        }
+
+        .no-classes h3 {
+            color: #1d3c6e;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        /* ANIMACIONES */
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+
+            .user-info {
+                flex-direction: column;
+            }
+
+            .user-details {
+                text-align: center;
+            }
+
+            .filters {
+                justify-content: center;
+            }
+
+            .classes-container {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-body {
+                padding: 15px;
+            }
+
+            .modal-actions {
+                flex-direction: column;
+            }
+            
+            .header {
+                padding: 12px 15px;
+            }
+            
+            .logo h1 {
+                font-size: 1.3rem;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <h1>Clases de <span>Inglés</span></h1>
+            </div>
+            
+            <div class="user-info">
+                <div class="user-avatar" id="userAvatar">
+                    <!-- JS will fill this -->
+                </div>
+                <div class="user-details">
+                    <div class="user-name" id="userName"></div>
+                    <div class="user-role" id="userRole"></div>
+                </div>
+                <button class="logout-btn" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i> Salir
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-content">
+        <div id="message" class="message"></div>
+
+        <div class="upload-class-container" id="uploadClassContainer" style="display: none;">
+            <button class="upload-class-btn" id="openUploadModal">
+                <i class="fas fa-upload"></i> SUBIR NUEVA CLASE
+            </button>
+        </div>
+
+        <div class="filters-container">
+            <div class="filters-title">
+                <i class="fas fa-filter"></i> FILTRAR POR NIVEL
+            </div>
+            <div class="filters">
+                <button class="filter-btn active" data-level="A1">A1 - BÁSICO INICIAL</button>
+                <button class="filter-btn" data-level="A2">A2 - BÁSICO FUNCIONAL</button>
+                <button class="filter-btn" data-level="B1">B1 - INTERMEDIO</button>
+            </div>
+        </div>
+
+        <div class="classes-container" id="classesContainer">
+            <!-- Las clases se cargarán aquí con JavaScript -->
+        </div>
+
+        <div class="no-classes" id="noClasses" style="display: none;">
+            <i class="fas fa-folder-open"></i>
+            <h3>No hay clases disponibles</h3>
+            <p>El profesor aún no ha subido material de clase.</p>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="uploadModal">
+        <div class="upload-modal">
+            <div class="modal-header">
+                <div class="modal-title">SUBIR NUEVA CLASE</div>
+                <button class="close-modal" id="closeModal">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <form id="uploadForm">
+                    <div class="form-group">
+                        <label for="classTitle"><i class="fas fa-heading"></i> Título de la Clase</label>
+                        <input type="text" id="classTitle" placeholder="Ej: Present Simple Tense" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="classDescription"><i class="fas fa-align-left"></i> Descripción</label>
+                        <textarea id="classDescription" placeholder="Describe el contenido de esta clase..." required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="classCategory"><i class="fas fa-tag"></i> Categoría / Nivel</label>
+                        <select id="classCategory" required>
+                            <option value="">Selecciona un nivel</option>
+                            <option value="A1">A1 - Básico Inicial</option>
+                            <option value="A2">A2 - Básico Funcional</option>
+                            <option value="B1">B1 - Intermedio</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-file-upload"></i> Seleccionar Archivo</label>
+                        <div class="file-upload" id="fileUploadArea">
+                            <i class="fas fa-cloud-upload-alt" style="font-size: 1.8rem; color: #1d3c6e; margin-bottom: 8px;"></i>
+                            <div>Haz clic para seleccionar un archivo</div>
+                            <input type="file" id="classFile" accept=".pdf,.doc,.docx,.ppt,.pptx,.txt,.jpg,.png" required>
+                            <div class="file-info" id="fileInfo">Formatos aceptados: PDF, DOC, PPT, TXT, JPG, PNG</div>
+                        </div>
+                    </div>
+
+                    <div class="modal-actions">
+                        <button type="submit" class="submit-btn">
+                            <i class="fas fa-upload"></i> SUBIR CLASE
+                        </button>
+                        <button type="button" class="cancel-btn" id="cancelUpload">
+                            CANCELAR
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentUser = null;
+        let currentFilter = 'A1';
+
+        const userNameEl = document.getElementById('userName');
+        const userRoleEl = document.getElementById('userRole');
+        const userAvatarEl = document.getElementById('userAvatar');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const uploadClassContainer = document.getElementById('uploadClassContainer');
+        const openUploadModalBtn = document.getElementById('openUploadModal');
+        const uploadModal = document.getElementById('uploadModal');
+        const closeModalBtn = document.getElementById('closeModal');
+        const cancelUploadBtn = document.getElementById('cancelUpload');
+        const uploadForm = document.getElementById('uploadForm');
+        const classesContainer = document.getElementById('classesContainer');
+        const noClassesEl = document.getElementById('noClasses');
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const fileUploadArea = document.getElementById('fileUploadArea');
+        const classFileInput = document.getElementById('classFile');
+        const fileInfoEl = document.getElementById('fileInfo');
+        const messageEl = document.getElementById('message');
+
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAuth();
+            loadClasses();
+            setupEventListeners();
+        });
+
+        function checkAuth() {
+            const userData = localStorage.getItem('current_user');
+            const authToken = localStorage.getItem('auth_token');
+            
+            if (!userData || !authToken) {
+                window.location.href = 'auth.html';
+                return;
+            }
+
+            currentUser = JSON.parse(userData);
+            displayUserInfo();
+            
+            if (currentUser.role === 'teacher') {
+                uploadClassContainer.style.display = 'block';
+            }
+        }
+
+        function displayUserInfo() {
+            userNameEl.textContent = currentUser.name;
+            userRoleEl.textContent = currentUser.role === 'teacher' ? 'PROFESOR' : 'ESTUDIANTE';
+            
+            const initials = currentUser.name.split(' ').map(n => n[0]).join('').toUpperCase();
+            userAvatarEl.textContent = initials.substring(0, 2);
+        }
+
+        function setupEventListeners() {
+            logoutBtn.addEventListener('click', () => {
+                localStorage.removeItem('current_user');
+                localStorage.removeItem('auth_token');
+                window.location.href = 'auth.html';
+            });
+
+            openUploadModalBtn?.addEventListener('click', () => {
+                uploadModal.classList.add('active');
+            });
+
+            closeModalBtn.addEventListener('click', () => {
+                uploadModal.classList.remove('active');
+                resetUploadForm();
+            });
+
+            cancelUploadBtn.addEventListener('click', () => {
+                uploadModal.classList.remove('active');
+                resetUploadForm();
+            });
+
+            uploadModal.addEventListener('click', (e) => {
+                if (e.target === uploadModal) {
+                    uploadModal.classList.remove('active');
+                    resetUploadForm();
+                }
+            });
+
+            fileUploadArea.addEventListener('click', () => {
+                classFileInput.click();
+            });
+
+            classFileInput.addEventListener('change', (e) => {
+                if (e.target.files.length > 0) {
+                    const file = e.target.files[0];
+                    fileInfoEl.innerHTML = `
+                        <strong>Archivo seleccionado:</strong> ${file.name}<br>
+                        <small>Tamaño: ${(file.size / 1024).toFixed(2)} KB</small>
+                    `;
+                    fileUploadArea.style.borderColor = '#25D366';
+                    fileUploadArea.style.backgroundColor = 'rgba(37, 211, 102, 0.05)';
+                }
+            });
+
+            uploadForm.addEventListener('submit', handleUpload);
+
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentFilter = btn.dataset.level;
+                    loadClasses();
+                });
+            });
+        }
+
+        async function loadClasses() {
+            try {
+                const authToken = localStorage.getItem('auth_token');
+                const response = await fetch(`/api/classes?level=${currentFilter}`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+
+                if (response.status === 401) {
+                    window.location.href = 'auth.html';
+                    return;
+                }
+
+                const classes = await response.json();
+                displayClasses(classes);
+            } catch (error) {
+                showMessage('Error al cargar las clases', 'error');
+            }
+        }
+
+        function displayClasses(classes) {
+            classesContainer.innerHTML = '';
+            
+            if (classes.length === 0) {
+                classesContainer.style.display = 'none';
+                noClassesEl.style.display = 'block';
+                return;
+            }
+
+            classesContainer.style.display = 'grid';
+            noClassesEl.style.display = 'none';
+            
+            classes.forEach((classItem, index) => {
+                const classCard = createClassCard(classItem, index);
+                classesContainer.appendChild(classCard);
+            });
+        }
+
+        function createClassCard(classItem, index) {
+            const card = document.createElement('div');
+            card.className = 'class-card';
+            card.style.animation = `fadeIn 0.5s ease ${index * 0.1}s both`;
+
+            const levelText = getLevelText(classItem.level);
+            const formattedDate = new Date(classItem.created_at).toLocaleDateString('es-ES', {
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric'
+            });
+
+            card.innerHTML = `
+                <div class="class-header">
+                    <div class="class-level">${levelText}</div>
+                    <div class="class-title">${classItem.title}</div>
+                </div>
+                <div class="class-body">
+                    <div class="class-description">${classItem.description}</div>
+                    <div class="class-meta">
+                        <div class="class-date">
+                            <i class="far fa-calendar-alt"></i> ${formattedDate}
+                        </div>
+                        <div class="class-file">
+                            <i class="fas fa-file"></i> ${classItem.file_type}
+                        </div>
+                    </div>
+                    <button class="download-btn" data-id="${classItem.id}">
+                        <i class="fas fa-download"></i> DESCARGAR MATERIAL
+                    </button>
+                </div>
+            `;
+
+            const downloadBtn = card.querySelector('.download-btn');
+            downloadBtn.addEventListener('click', () => downloadClass(classItem));
+
+            return card;
+        }
+
+        function getLevelText(category) {
+            switch(category) {
+                case 'A1': return 'A1 - BÁSICO INICIAL';
+                case 'A2': return 'A2 - BÁSICO FUNCIONAL';
+                case 'B1': return 'B1 - INTERMEDIO';
+                default: return category;
+            }
+        }
+
+        async function handleUpload(e) {
+            e.preventDefault();
+
+            const title = document.getElementById('classTitle').value.trim();
+            const description = document.getElementById('classDescription').value.trim();
+            const category = document.getElementById('classCategory').value;
+            const file = classFileInput.files[0];
+
+            if (!title || !description || !category || !file) {
+                showMessage('Por favor, completa todos los campos', 'error');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('title', title);
+            formData.append('description', description);
+            formData.append('level', category);
+            formData.append('file', file);
+
+            try {
+                const authToken = localStorage.getItem('auth_token');
+                const response = await fetch('/api/classes', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: formData
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showMessage('¡Clase subida exitosamente!', 'success');
+                    uploadModal.classList.remove('active');
+                    resetUploadForm();
+                    loadClasses();
+                } else {
+                    showMessage(data.error || 'Error al subir la clase', 'error');
+                }
+            } catch (error) {
+                showMessage('Error de conexión con el servidor', 'error');
+            }
+        }
+
+        async function downloadClass(classItem) {
+            try {
+                const authToken = localStorage.getItem('auth_token');
+                const response = await fetch(`/api/classes/${classItem.id}/download`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = classItem.file_name || 'material.pdf';
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+                    showMessage('Descargando material...', 'success');
+                }
+            } catch (error) {
+                showMessage('Error al descargar el archivo', 'error');
+            }
+        }
+
+        function resetUploadForm() {
+            uploadForm.reset();
+            fileInfoEl.innerHTML = 'Formatos aceptados: PDF, DOC, PPT, TXT, JPG, PNG';
+            fileUploadArea.style.borderColor = '#e0e0e0';
+            fileUploadArea.style.backgroundColor = '#f9f9f9';
+        }
+
+        function showMessage(text, type) {
+            messageEl.textContent = text;
+            messageEl.className = `message ${type}`;
+            
+            setTimeout(() => {
+                messageEl.className = 'message';
+                messageEl.textContent = '';
+            }, 3000);
+        }
+
+    </script>
+
+</body>
+</html>
