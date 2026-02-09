@@ -1,45 +1,48 @@
 #!/usr/bin/env python3
 """
-Servidor para la plataforma de Clases de Inglés
-Con SQLite, WebSocket y autenticación JWT
-Versión compatible con Render.com
+SERVIDOR DE CLASES DE INGLÉS
+Versión profesional para Render.com
+Con PostgreSQL y Cloudinary
 """
 
 import os
-import sqlite3
+import psycopg2
 import json
 import hashlib
 import secrets
 import jwt
 import datetime
-from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from psycopg2.extras import RealDictCursor, DictCursor
+from typing import Dict, List, Optional
 from functools import wraps
+from urllib.parse import urlparse
 
 from flask import Flask, request, jsonify, send_file, send_from_directory
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
 from flask_socketio import SocketIO, emit, join_room, leave_room
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 
-# Configuración
+# ============ CONFIGURACIÓN ============
 app = Flask(__name__, static_folder='.', static_url_path='')
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*"}})
+
+# Configuración de Render
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', secrets.token_hex(32))
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
-app.config['UPLOAD_FOLDER'] = 'uploads'
-app.config['DATABASE'] = os.environ.get('DATABASE_URL', 'english_classes.db').replace('postgresql://', 'sqlite:///')
-app.config['JWT_SECRET'] = os.environ.get('JWT_SECRET', secrets.token_hex(32))
-app.config['JWT_ALGORITHM'] = 'HS256'
-app.config['JWT_EXPIRATION'] = 86400  # 24 horas
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB
 
-# Si la URL de la base de datos es de PostgreSQL, usa SQLite localmente
-if 'postgresql' in app.config['DATABASE']:
-    app.config['DATABASE'] = 'english_classes.db'
+# PostgreSQL de Render (tu base de datos real)
+DATABASE_URL = "postgresql://englishcourse_user:VI8pYTtX2bbv2YftidVHOUKXtK6J7ehd@dpg-d64mmungi27c73b53hr0-a/englishcourse"
 
-socketio = SocketIO(app, cors_allowed_origins="*", async_mode='threading')
-
-# Crear directorios necesarios
-Path(app.config['UPLOAD_FOLDER']).mkdir(exist_ok=True)
+# Configuración de Cloudinary (tus credenciales)
+cloudinary.config(
+    cloud_name="dj72b0ykc",
+    api_key="215156196366932",
+    api_secret="Ivdpe_mkT3rSx5asFTo6qJdWaLQ",
+    secure=True
+)
 
 # Códigos de acceso
 STUDENT_CODE = "QwErTy89"
@@ -51,145 +54,126 @@ ALLOWED_EXTENSIONS = {
     'txt', 'jpg', 'jpeg', 'png', 'mp3', 'mp4'
 }
 
+socketio = SocketIO(app, cors_allowed_origins="*", async_mode='eventlet')
+
+# ============ FUNCIONES AUXILIARES ============
 def allowed_file(filename: str) -> bool:
-    """Verificar si la extensión del archivo está permitida"""
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def get_file_type(filename: str) -> str:
-    """Obtener el tipo de archivo para mostrar"""
     ext = filename.rsplit('.', 1)[1].lower() if '.' in filename else ''
     file_types = {
-        'pdf': 'PDF',
-        'doc': 'Word',
-        'docx': 'Word',
-        'ppt': 'PowerPoint',
-        'pptx': 'PowerPoint',
-        'txt': 'Texto',
-        'jpg': 'Imagen',
-        'jpeg': 'Imagen',
-        'png': 'Imagen',
-        'mp3': 'Audio',
-        'mp4': 'Video'
+        'pdf': 'PDF', 'doc': 'Word', 'docx': 'Word',
+        'ppt': 'PowerPoint', 'pptx': 'PowerPoint',
+        'txt': 'Texto', 'jpg': 'Imagen', 'jpeg': 'Imagen',
+        'png': 'Imagen', 'mp3': 'Audio', 'mp4': 'Video'
     }
     return file_types.get(ext, 'Archivo')
 
 def get_db_connection():
-    """Obtener conexión a la base de datos"""
-    conn = sqlite3.connect(app.config['DATABASE'])
-    conn.row_factory = sqlite3.Row
-    # Habilitar foreign keys
-    conn.execute('PRAGMA foreign_keys = ON')
+    """Obtener conexión a PostgreSQL"""
+    conn = psycopg2.connect(DATABASE_URL, cursor_factory=RealDictCursor)
     return conn
 
 def init_db():
-    """Inicializar la base de datos con tablas necesarias"""
+    """Inicializar la base de datos con PostgreSQL"""
     conn = get_db_connection()
+    cursor = conn.cursor()
     
-    # Tabla de usuarios
-    conn.execute('''
-        CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            username TEXT UNIQUE NOT NULL,
-            password_hash TEXT NOT NULL,
-            name TEXT NOT NULL,
-            role TEXT NOT NULL CHECK(role IN ('student', 'teacher')),
-            level TEXT,
-            registration_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            last_login TIMESTAMP
-        )
-    ''')
-    
-    # Tabla de clases
-    conn.execute('''
-        CREATE TABLE IF NOT EXISTS classes (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            title TEXT NOT NULL,
-            description TEXT NOT NULL,
-            level TEXT NOT NULL CHECK(level IN ('A1', 'A2', 'B1')),
-            file_name TEXT NOT NULL,
-            file_path TEXT NOT NULL,
-            file_type TEXT NOT NULL,
-            file_size INTEGER NOT NULL,
-            uploaded_by INTEGER NOT NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (uploaded_by) REFERENCES users (id) ON DELETE CASCADE
-        )
-    ''')
-    
-    # Tabla de descargas
-    conn.execute('''
-        CREATE TABLE IF NOT EXISTS downloads (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER NOT NULL,
-            class_id INTEGER NOT NULL,
-            downloaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
-            FOREIGN KEY (class_id) REFERENCES classes (id) ON DELETE CASCADE
-        )
-    ''')
-    
-    # Crear usuario profesor si no existe
-    cursor = conn.execute('SELECT * FROM users WHERE role = ?', ('teacher',))
-    if not cursor.fetchone():
-        password_hash = hashlib.sha256('admin123'.encode()).hexdigest()
-        cursor = conn.execute('''
-            INSERT INTO users (username, password_hash, name, role)
-            VALUES (?, ?, ?, ?)
-        ''', ('profesor', password_hash, 'Profesor Moisés', 'teacher'))
-        print("✓ Usuario profesor creado: profesor / admin123")
-    
-    conn.commit()
-    conn.close()
+    try:
+        # Tabla de usuarios
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS users (
+                id SERIAL PRIMARY KEY,
+                username VARCHAR(100) UNIQUE NOT NULL,
+                password_hash VARCHAR(255) NOT NULL,
+                name VARCHAR(200) NOT NULL,
+                role VARCHAR(20) NOT NULL CHECK(role IN ('student', 'teacher')),
+                level VARCHAR(50),
+                registration_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                last_login TIMESTAMP
+            )
+        ''')
+        
+        # Tabla de clases
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS classes (
+                id SERIAL PRIMARY KEY,
+                title VARCHAR(255) NOT NULL,
+                description TEXT NOT NULL,
+                level VARCHAR(10) NOT NULL CHECK(level IN ('A1', 'A2', 'B1')),
+                file_name VARCHAR(255) NOT NULL,
+                file_url TEXT NOT NULL,
+                file_type VARCHAR(50) NOT NULL,
+                file_size INTEGER NOT NULL,
+                uploaded_by INTEGER NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (uploaded_by) REFERENCES users (id) ON DELETE CASCADE
+            )
+        ''')
+        
+        # Tabla de descargas
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS downloads (
+                id SERIAL PRIMARY KEY,
+                user_id INTEGER NOT NULL,
+                class_id INTEGER NOT NULL,
+                downloaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
+                FOREIGN KEY (class_id) REFERENCES classes (id) ON DELETE CASCADE
+            )
+        ''')
+        
+        conn.commit()
+        print("✅ Tablas creadas exitosamente")
+        
+    except Exception as e:
+        print(f"⚠️  Error al crear tablas: {str(e)}")
+        conn.rollback()
+    finally:
+        cursor.close()
+        conn.close()
 
 def hash_password(password: str) -> str:
-    """Hashear una contraseña"""
     return hashlib.sha256(password.encode()).hexdigest()
 
 def verify_password(password: str, password_hash: str) -> bool:
-    """Verificar una contraseña"""
     return hash_password(password) == password_hash
 
 def generate_token(user_id: int, username: str, role: str) -> str:
-    """Generar token JWT"""
     payload = {
         'user_id': user_id,
         'username': username,
         'role': role,
-        'exp': datetime.datetime.utcnow() + datetime.timedelta(seconds=app.config['JWT_EXPIRATION'])
+        'exp': datetime.datetime.utcnow() + datetime.timedelta(days=7)
     }
-    return jwt.encode(payload, app.config['JWT_SECRET'], algorithm=app.config['JWT_ALGORITHM'])
+    return jwt.encode(payload, app.config['SECRET_KEY'], algorithm='HS256')
 
 def verify_token(token: str) -> Optional[Dict]:
-    """Verificar y decodificar token JWT"""
     try:
-        payload = jwt.decode(token, app.config['JWT_SECRET'], algorithms=[app.config['JWT_ALGORITHM']])
+        payload = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
         return payload
-    except jwt.ExpiredSignatureError:
-        return None
-    except jwt.InvalidTokenError:
+    except:
         return None
 
+# ============ DECORADORES ============
 def token_required(f):
-    """Decorador para requerir token JWT"""
     @wraps(f)
     def decorated(*args, **kwargs):
         token = None
-        
-        # Obtener token del header Authorization
         auth_header = request.headers.get('Authorization')
+        
         if auth_header and auth_header.startswith('Bearer '):
             token = auth_header.split(' ')[1]
         
         if not token:
             return jsonify({'error': 'Token de autenticación requerido'}), 401
         
-        # Verificar token
         payload = verify_token(token)
         if not payload:
             return jsonify({'error': 'Token inválido o expirado'}), 401
         
-        # Agregar información del usuario al request
         request.user_id = payload['user_id']
         request.username = payload['username']
         request.user_role = payload['role']
@@ -198,7 +182,6 @@ def token_required(f):
     return decorated
 
 def teacher_required(f):
-    """Decorador para requerir rol de profesor"""
     @wraps(f)
     def decorated(*args, **kwargs):
         if not hasattr(request, 'user_role') or request.user_role != 'teacher':
@@ -206,47 +189,47 @@ def teacher_required(f):
         return f(*args, **kwargs)
     return decorated
 
-# Rutas de la API
+# ============ RUTAS API ============
 @app.route('/')
 def index():
-    """Página principal - redirige a auth.html"""
     return send_file('auth.html')
 
 @app.route('/api/register', methods=['POST'])
 def register():
-    """Registrar un nuevo usuario"""
-    data = request.get_json()
-    
-    # Validar campos requeridos
-    required_fields = ['name', 'username', 'password', 'code']
-    for field in required_fields:
-        if not data.get(field):
-            return jsonify({'error': f'Campo {field} es requerido'}), 400
-    
-    # Validar código
-    code = data['code']
-    if code not in [STUDENT_CODE, TEACHER_CODE]:
-        return jsonify({'error': 'Código de acceso incorrecto'}), 400
-    
-    # Determinar rol basado en el código
-    role = 'teacher' if code == TEACHER_CODE else 'student'
-    
-    conn = None
+    """Registrar un nuevo usuario - CORREGIDO Y FUNCIONAL"""
     try:
+        data = request.get_json()
+        
+        if not data:
+            return jsonify({'error': 'Datos JSON inválidos'}), 400
+        
+        required_fields = ['name', 'username', 'password', 'code']
+        for field in required_fields:
+            if not data.get(field):
+                return jsonify({'error': f'Campo {field} es requerido'}), 400
+        
+        code = data['code']
+        if code not in [STUDENT_CODE, TEACHER_CODE]:
+            return jsonify({'error': 'Código de acceso incorrecto'}), 400
+        
+        role = 'teacher' if code == TEACHER_CODE else 'student'
+        
         conn = get_db_connection()
         cursor = conn.cursor()
         
-        # Verificar si el usuario ya existe
-        cursor.execute('SELECT id FROM users WHERE username = ?', (data['username'],))
+        # Verificar si usuario existe
+        cursor.execute('SELECT id FROM users WHERE username = %s', (data['username'],))
         if cursor.fetchone():
-            return jsonify({'error': 'El nombre de usuario ya existe', 'field': 'registerUsername'}), 400
+            cursor.close()
+            conn.close()
+            return jsonify({'error': 'El nombre de usuario ya existe'}), 400
         
         # Crear usuario
         password_hash = hash_password(data['password'])
         
         cursor.execute('''
             INSERT INTO users (username, password_hash, name, role, level)
-            VALUES (?, ?, ?, ?, ?)
+            VALUES (%s, %s, %s, %s, %s) RETURNING id, username, name, role, level, registration_date
         ''', (
             data['username'],
             password_hash,
@@ -255,62 +238,54 @@ def register():
             'Sin asignar' if role == 'student' else None
         ))
         
-        user_id = cursor.lastrowid
+        user = cursor.fetchone()
         conn.commit()
-        
-        # Obtener información del usuario creado
-        cursor.execute('SELECT * FROM users WHERE id = ?', (user_id,))
-        user = dict(cursor.fetchone())
-        
-        # Eliminar información sensible
-        del user['password_hash']
         
         # Generar token
         token = generate_token(user['id'], user['username'], user['role'])
         
+        cursor.close()
+        conn.close()
+        
         return jsonify({
             'message': 'Usuario registrado exitosamente',
-            'user': user,
+            'user': dict(user),
             'token': token
         }), 201
         
     except Exception as e:
-        if conn:
-            conn.rollback()
-        print(f"Error en registro: {str(e)}")
-        return jsonify({'error': 'Error en el servidor'}), 500
-    finally:
-        if conn:
-            conn.close()
+        print(f"❌ Error en registro: {str(e)}")
+        return jsonify({'error': 'Error interno del servidor'}), 500
 
 @app.route('/api/login', methods=['POST'])
 def login():
     """Iniciar sesión"""
-    data = request.get_json()
-    
-    if not data.get('username') or not data.get('password'):
-        return jsonify({'error': 'Usuario y contraseña son requeridos'}), 400
-    
-    conn = None
     try:
+        data = request.get_json()
+        
+        if not data or not data.get('username') or not data.get('password'):
+            return jsonify({'error': 'Usuario y contraseña son requeridos'}), 400
+        
         conn = get_db_connection()
         cursor = conn.cursor()
         
-        # Buscar usuario
-        cursor.execute('SELECT * FROM users WHERE username = ?', (data['username'],))
+        cursor.execute('SELECT * FROM users WHERE username = %s', (data['username'],))
         user_row = cursor.fetchone()
         
         if not user_row:
+            cursor.close()
+            conn.close()
             return jsonify({'error': 'Usuario o contraseña incorrectos'}), 401
         
         user = dict(user_row)
         
-        # Verificar contraseña
         if not verify_password(data['password'], user['password_hash']):
+            cursor.close()
+            conn.close()
             return jsonify({'error': 'Usuario o contraseña incorrectos'}), 401
         
         # Actualizar último login
-        cursor.execute('UPDATE users SET last_login = CURRENT_TIMESTAMP WHERE id = ?', (user['id'],))
+        cursor.execute('UPDATE users SET last_login = CURRENT_TIMESTAMP WHERE id = %s', (user['id'],))
         conn.commit()
         
         # Eliminar información sensible
@@ -318,6 +293,9 @@ def login():
         
         # Generar token
         token = generate_token(user['id'], user['username'], user['role'])
+        
+        cursor.close()
+        conn.close()
         
         return jsonify({
             'message': 'Login exitoso',
@@ -326,20 +304,16 @@ def login():
         }), 200
         
     except Exception as e:
-        print(f"Error en login: {str(e)}")
-        return jsonify({'error': 'Error en el servidor'}), 500
-    finally:
-        if conn:
-            conn.close()
+        print(f"❌ Error en login: {str(e)}")
+        return jsonify({'error': 'Error interno del servidor'}), 500
 
 @app.route('/api/classes', methods=['GET'])
 @token_required
 def get_classes():
-    """Obtener lista de clases (con filtro por nivel)"""
-    level = request.args.get('level', 'A1')
-    
-    conn = None
+    """Obtener clases con filtro"""
     try:
+        level = request.args.get('level', 'A1')
+        
         conn = get_db_connection()
         cursor = conn.cursor()
         
@@ -348,7 +322,7 @@ def get_classes():
                 SELECT c.*, u.name as uploaded_by_name 
                 FROM classes c 
                 JOIN users u ON c.uploaded_by = u.id 
-                WHERE c.level = ? 
+                WHERE c.level = %s 
                 ORDER BY c.created_at DESC
             ''', (level,))
         else:
@@ -362,369 +336,206 @@ def get_classes():
         classes = []
         for row in cursor.fetchall():
             class_dict = dict(row)
-            
-            # Convertir fecha a string ISO
-            if class_dict['created_at']:
-                try:
-                    class_dict['created_at'] = datetime.datetime.strptime(
-                        class_dict['created_at'], '%Y-%m-%d %H:%M:%S'
-                    ).isoformat()
-                except:
-                    class_dict['created_at'] = class_dict['created_at']
-            
             classes.append(class_dict)
+        
+        cursor.close()
+        conn.close()
         
         return jsonify(classes), 200
         
     except Exception as e:
-        print(f"Error obteniendo clases: {str(e)}")
-        return jsonify({'error': 'Error en el servidor'}), 500
-    finally:
-        if conn:
-            conn.close()
+        print(f"❌ Error obteniendo clases: {str(e)}")
+        return jsonify({'error': 'Error obteniendo clases'}), 500
 
 @app.route('/api/classes', methods=['POST'])
 @token_required
 @teacher_required
 def upload_class():
-    """Subir una nueva clase (solo profesor)"""
-    # Verificar si hay archivo
-    if 'file' not in request.files:
-        return jsonify({'error': 'No se seleccionó ningún archivo'}), 400
-    
-    file = request.files['file']
-    
-    if file.filename == '':
-        return jsonify({'error': 'No se seleccionó ningún archivo'}), 400
-    
-    if not allowed_file(file.filename):
-        return jsonify({'error': 'Tipo de archivo no permitido'}), 400
-    
-    # Obtener datos del formulario
-    title = request.form.get('title', '').strip()
-    description = request.form.get('description', '').strip()
-    level = request.form.get('level', '').strip()
-    
-    if not title or not description or not level:
-        return jsonify({'error': 'Todos los campos son requeridos'}), 400
-    
-    if level not in ['A1', 'A2', 'B1']:
-        return jsonify({'error': 'Nivel no válido'}), 400
-    
-    conn = None
+    """Subir nueva clase a Cloudinary"""
     try:
-        # Guardar archivo
-        filename = secure_filename(file.filename)
-        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        if 'file' not in request.files:
+            return jsonify({'error': 'No se seleccionó ningún archivo'}), 400
         
-        # Asegurar nombre único
-        counter = 1
-        while os.path.exists(file_path):
-            name, ext = os.path.splitext(filename)
-            filename = f"{name}_{counter}{ext}"
-            file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            counter += 1
+        file = request.files['file']
         
-        file.save(file_path)
-        file_size = os.path.getsize(file_path)
+        if file.filename == '':
+            return jsonify({'error': 'No se seleccionó ningún archivo'}), 400
         
-        # Guardar en base de datos
+        if not allowed_file(file.filename):
+            return jsonify({'error': 'Tipo de archivo no permitido'}), 400
+        
+        title = request.form.get('title', '').strip()
+        description = request.form.get('description', '').strip()
+        level = request.form.get('level', '').strip()
+        
+        if not title or not description or not level:
+            return jsonify({'error': 'Todos los campos son requeridos'}), 400
+        
+        if level not in ['A1', 'A2', 'B1']:
+            return jsonify({'error': 'Nivel no válido'}), 400
+        
+        # Subir a Cloudinary
+        upload_result = cloudinary.uploader.upload(
+            file,
+            folder="clases_ingles",
+            resource_type="auto",
+            use_filename=True,
+            unique_filename=True
+        )
+        
+        # Guardar en PostgreSQL
         conn = get_db_connection()
         cursor = conn.cursor()
         
         cursor.execute('''
             INSERT INTO classes 
-            (title, description, level, file_name, file_path, file_type, file_size, uploaded_by)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            (title, description, level, file_name, file_url, file_type, file_size, uploaded_by)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+            RETURNING id, title, description, level, file_name, file_url, file_type, created_at
         ''', (
             title,
             description,
             level,
-            filename,
-            file_path,
-            get_file_type(filename),
-            file_size,
+            secure_filename(file.filename),
+            upload_result['secure_url'],
+            get_file_type(file.filename),
+            upload_result.get('bytes', 0),
             request.user_id
         ))
         
-        class_id = cursor.lastrowid
-        
-        # Obtener información de la clase creada
-        cursor.execute('''
-            SELECT c.*, u.name as uploaded_by_name 
-            FROM classes c 
-            JOIN users u ON c.uploaded_by = u.id 
-            WHERE c.id = ?
-        ''', (class_id,))
-        
-        new_class = dict(cursor.fetchone())
-        
-        # Convertir fecha a string ISO
-        if new_class['created_at']:
-            try:
-                new_class['created_at'] = datetime.datetime.strptime(
-                    new_class['created_at'], '%Y-%m-%d %H:%M:%S'
-                ).isoformat()
-            except:
-                new_class['created_at'] = new_class['created_at']
-        
+        new_class = cursor.fetchone()
         conn.commit()
         
-        # Notificar a través de WebSocket
-        socketio.emit('new_class', new_class, namespace='/classes', broadcast=True)
+        cursor.close()
+        conn.close()
+        
+        # Notificar por WebSocket
+        socketio.emit('new_class', dict(new_class), namespace='/classes')
         
         return jsonify({
             'message': 'Clase subida exitosamente',
-            'class': new_class
+            'class': dict(new_class)
         }), 201
         
     except Exception as e:
-        if conn:
-            conn.rollback()
-        print(f"Error subiendo clase: {str(e)}")
-        return jsonify({'error': 'Error en el servidor'}), 500
-    finally:
-        if conn:
-            conn.close()
+        print(f"❌ Error subiendo clase: {str(e)}")
+        return jsonify({'error': 'Error subiendo la clase'}), 500
 
 @app.route('/api/classes/<int:class_id>/download', methods=['GET'])
 @token_required
 def download_class(class_id: int):
-    """Descargar una clase"""
-    conn = None
+    """Registrar descarga (redirige a Cloudinary)"""
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
         
-        # Verificar si la clase existe
-        cursor.execute('SELECT * FROM classes WHERE id = ?', (class_id,))
-        class_row = cursor.fetchone()
+        cursor.execute('SELECT * FROM classes WHERE id = %s', (class_id,))
+        class_data = cursor.fetchone()
         
-        if not class_row:
+        if not class_data:
+            cursor.close()
+            conn.close()
             return jsonify({'error': 'Clase no encontrada'}), 404
-        
-        class_data = dict(class_row)
-        
-        # Verificar que el archivo exista
-        if not os.path.exists(class_data['file_path']):
-            return jsonify({'error': 'Archivo no encontrado'}), 404
         
         # Registrar descarga
         cursor.execute('''
             INSERT INTO downloads (user_id, class_id) 
-            VALUES (?, ?)
+            VALUES (%s, %s)
         ''', (request.user_id, class_id))
         conn.commit()
         
-        # Enviar archivo
-        return send_file(
-            class_data['file_path'],
-            as_attachment=True,
-            download_name=class_data['file_name']
-        )
-        
-    except Exception as e:
-        print(f"Error descargando clase: {str(e)}")
-        return jsonify({'error': 'Error en el servidor'}), 500
-    finally:
-        if conn:
-            conn.close()
-
-@app.route('/api/stats', methods=['GET'])
-@token_required
-@teacher_required
-def get_stats():
-    """Obtener estadísticas (solo profesor)"""
-    conn = None
-    try:
-        conn = get_db_connection()
-        cursor = conn.cursor()
-        
-        # Estadísticas básicas
-        cursor.execute('SELECT COUNT(*) as total FROM users WHERE role = ?', ('student',))
-        total_students = cursor.fetchone()['total']
-        
-        cursor.execute('SELECT COUNT(*) as total FROM classes')
-        total_classes = cursor.fetchone()['total']
-        
-        cursor.execute('SELECT COUNT(*) as total FROM downloads')
-        total_downloads = cursor.fetchone()['total']
-        
-        # Clases por nivel
-        cursor.execute('''
-            SELECT level, COUNT(*) as count 
-            FROM classes 
-            GROUP BY level 
-            ORDER BY level
-        ''')
-        classes_by_level = {row['level']: row['count'] for row in cursor.fetchall()}
-        
-        # Últimas clases
-        cursor.execute('''
-            SELECT c.title, c.created_at, u.name as uploaded_by, c.level
-            FROM classes c
-            JOIN users u ON c.uploaded_by = u.id
-            ORDER BY c.created_at DESC
-            LIMIT 5
-        ''')
-        recent_classes = [
-            {
-                'title': row['title'],
-                'created_at': row['created_at'],
-                'uploaded_by': row['uploaded_by'],
-                'level': row['level']
-            }
-            for row in cursor.fetchall()
-        ]
-        
-        # Top clases descargadas
-        cursor.execute('''
-            SELECT c.title, COUNT(d.id) as download_count
-            FROM downloads d
-            JOIN classes c ON d.class_id = c.id
-            GROUP BY c.id, c.title
-            ORDER BY download_count DESC
-            LIMIT 5
-        ''')
-        top_classes = [
-            {
-                'title': row['title'],
-                'download_count': row['download_count']
-            }
-            for row in cursor.fetchall()
-        ]
+        cursor.close()
+        conn.close()
         
         return jsonify({
-            'total_students': total_students,
-            'total_classes': total_classes,
-            'total_downloads': total_downloads,
-            'classes_by_level': classes_by_level,
-            'recent_classes': recent_classes,
-            'top_classes': top_classes
+            'message': 'Redirigiendo a descarga',
+            'download_url': class_data['file_url']
         }), 200
         
     except Exception as e:
-        print(f"Error obteniendo stats: {str(e)}")
-        return jsonify({'error': 'Error en el servidor'}), 500
-    finally:
-        if conn:
-            conn.close()
+        print(f"❌ Error en descarga: {str(e)}")
+        return jsonify({'error': 'Error en la descarga'}), 500
 
 @app.route('/api/profile', methods=['GET'])
 @token_required
 def get_profile():
-    """Obtener perfil del usuario actual"""
-    conn = None
+    """Obtener perfil del usuario"""
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
         
         cursor.execute('''
             SELECT id, username, name, role, level, registration_date, last_login
-            FROM users 
-            WHERE id = ?
+            FROM users WHERE id = %s
         ''', (request.user_id,))
         
-        user = dict(cursor.fetchone())
+        user = cursor.fetchone()
         
-        # Obtener estadísticas del usuario
+        if not user:
+            cursor.close()
+            conn.close()
+            return jsonify({'error': 'Usuario no encontrado'}), 404
+        
+        # Estadísticas
         if request.user_role == 'student':
-            cursor.execute('''
-                SELECT COUNT(*) as classes_downloaded
-                FROM downloads 
-                WHERE user_id = ?
-            ''', (request.user_id,))
-            stats = dict(cursor.fetchone())
+            cursor.execute('SELECT COUNT(*) FROM downloads WHERE user_id = %s', (request.user_id,))
         else:
-            cursor.execute('''
-                SELECT COUNT(*) as classes_uploaded
-                FROM classes 
-                WHERE uploaded_by = ?
-            ''', (request.user_id,))
-            stats = dict(cursor.fetchone())
+            cursor.execute('SELECT COUNT(*) FROM classes WHERE uploaded_by = %s', (request.user_id,))
         
-        user['stats'] = stats
-        return jsonify(user), 200
+        stats = {'count': cursor.fetchone()['count']}
+        
+        cursor.close()
+        conn.close()
+        
+        profile = dict(user)
+        profile['stats'] = stats
+        
+        return jsonify(profile), 200
         
     except Exception as e:
-        print(f"Error obteniendo perfil: {str(e)}")
-        return jsonify({'error': 'Error en el servidor'}), 500
-    finally:
-        if conn:
-            conn.close()
+        print(f"❌ Error obteniendo perfil: {str(e)}")
+        return jsonify({'error': 'Error obteniendo perfil'}), 500
 
-# Handlers de WebSocket
-@socketio.on('connect', namespace='/classes')
-def handle_connect():
-    """Manejar conexión WebSocket"""
-    print(f'✓ Cliente conectado: {request.sid}')
-    emit('connection_response', {'message': 'Conectado al servidor de clases'})
-
-@socketio.on('disconnect', namespace='/classes')
-def handle_disconnect():
-    """Manejar desconexión WebSocket"""
-    print(f'✗ Cliente desconectado: {request.sid}')
-
-@socketio.on('join', namespace='/classes')
-def handle_join(data):
-    """Unirse a una sala (para notificaciones específicas)"""
-    room = data.get('room')
-    if room:
-        join_room(room)
-        print(f'→ Cliente {request.sid} se unió a la sala {room}')
-        emit('join_response', {'message': f'Unido a la sala {room}'}, room=room)
-
-@socketio.on('leave', namespace='/classes')
-def handle_leave(data):
-    """Salir de una sala"""
-    room = data.get('room')
-    if room:
-        leave_room(room)
-        print(f'← Cliente {request.sid} salió de la sala {room}')
-
-# Servir archivos estáticos
+# ============ SERVIR ARCHIVOS ESTÁTICOS ============
 @app.route('/<path:path>')
 def serve_static(path):
-    """Servir archivos estáticos"""
     try:
         return send_from_directory('.', path)
     except:
         return jsonify({'error': 'Archivo no encontrado'}), 404
 
-@app.errorhandler(404)
-def not_found(error):
-    """Manejador de error 404"""
-    return jsonify({'error': 'Ruta no encontrada'}), 404
+# ============ MANEJADORES WEBSOCKET ============
+@socketio.on('connect', namespace='/classes')
+def handle_connect():
+    emit('connection_response', {'message': 'Conectado'})
 
-@app.errorhandler(500)
-def internal_error(error):
-    """Manejador de error 500"""
-    return jsonify({'error': 'Error interno del servidor'}), 500
+@socketio.on('disconnect', namespace='/classes')
+def handle_disconnect():
+    pass
 
+# ============ INICIALIZACIÓN ============
 if __name__ == '__main__':
     # Inicializar base de datos
-    init_db()
+    print("=" * 60)
+    print("🚀 INICIANDO SERVIDOR DE CLASES DE INGLÉS")
+    print("=" * 60)
+    print("🔧 Configurando base de datos PostgreSQL...")
+    
+    try:
+        init_db()
+        print("✅ Base de datos configurada exitosamente")
+        print(f"🔑 Código estudiante: {STUDENT_CODE}")
+        print(f"👨‍🏫 Código profesor: {TEACHER_CODE}")
+        print("=" * 60)
+    except Exception as e:
+        print(f"⚠️  Error configurando base de datos: {str(e)}")
+        print("ℹ️  Continuando... (las tablas pueden ya existir)")
     
     port = int(os.environ.get('PORT', 5000))
     
-    print("=" * 60)
-    print("🌟 SERVIDOR DE CLASES DE INGLÉS")
-    print("=" * 60)
-    print(f"🌐 URL: https://clases-ingles.onrender.com")
-    print(f"🔑 Código estudiante: {STUDENT_CODE}")
-    print(f"👨‍🏫 Código profesor: {TEACHER_CODE}")
-    print(f"📁 Uploads: {app.config['UPLOAD_FOLDER']}/")
-    print(f"💾 Base de datos: {app.config['DATABASE']}")
-    print(f"🚪 Puerto: {port}")
-    print("=" * 60)
-    print("🚀 Servidor iniciado. Presiona Ctrl+C para detener.")
-    print("=" * 60)
-    
-    # Ejecutar servidor
     socketio.run(
         app, 
         host='0.0.0.0', 
         port=port, 
-        debug=False,  # IMPORTANTE: False para producción
-        allow_unsafe_werkzeug=True
+        debug=False
     )
