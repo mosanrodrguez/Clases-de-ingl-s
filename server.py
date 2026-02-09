@@ -2,6 +2,7 @@
 """
 SERVIDOR DE CLASES DE INGLÉS - VERSIÓN 3.0
 Sistema de publicaciones y acceso controlado
+Con migración automática de base de datos
 """
 
 import os
@@ -67,28 +68,57 @@ def get_db_connection():
     conn = psycopg2.connect(DATABASE_URL, cursor_factory=RealDictCursor)
     return conn
 
-def init_db():
-    """Inicializar la base de datos con nuevas tablas"""
+# ============ MIGRACIÓN AUTOMÁTICA ============
+def auto_migrate_database():
+    """Migrar automáticamente la base de datos al nuevo esquema"""
+    print("🔄 Iniciando migración automática de base de datos...")
     conn = get_db_connection()
     cursor = conn.cursor()
     
     try:
-        # Tabla de usuarios
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS users (
-                id SERIAL PRIMARY KEY,
-                username VARCHAR(100) UNIQUE NOT NULL,
-                password_hash VARCHAR(255) NOT NULL,
-                name VARCHAR(200) NOT NULL,
-                role VARCHAR(20) NOT NULL CHECK(role IN ('student', 'teacher')),
-                level VARCHAR(50) DEFAULT 'Sin asignar',
-                registration_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                last_login TIMESTAMP,
-                is_active BOOLEAN DEFAULT TRUE
-            )
-        ''')
+        # 1. Verificar y migrar tabla users
+        print("📋 Verificando tabla users...")
+        cursor.execute("""
+            SELECT column_name 
+            FROM information_schema.columns 
+            WHERE table_name = 'users'
+        """)
         
-        # Tabla de clases
+        existing_columns = [row['column_name'] for row in cursor.fetchall()]
+        
+        if existing_columns:
+            print(f"🔍 Tabla users encontrada con columnas: {existing_columns}")
+            
+            # Verificar si faltan columnas nuevas
+            required_columns = ['level', 'is_active', 'registration_date', 'last_login']
+            missing_columns = [col for col in required_columns if col not in existing_columns]
+            
+            if missing_columns:
+                print(f"⚠️  Faltan columnas: {missing_columns}")
+                print("🔄 Agregando columnas faltantes...")
+                
+                if 'level' not in existing_columns:
+                    cursor.execute("ALTER TABLE users ADD COLUMN IF NOT EXISTS level VARCHAR(50) DEFAULT 'Sin asignar'")
+                    print("✅ Columna 'level' agregada")
+                
+                if 'is_active' not in existing_columns:
+                    cursor.execute("ALTER TABLE users ADD COLUMN IF NOT EXISTS is_active BOOLEAN DEFAULT TRUE")
+                    print("✅ Columna 'is_active' agregada")
+                
+                if 'registration_date' not in existing_columns:
+                    cursor.execute("ALTER TABLE users ADD COLUMN IF NOT EXISTS registration_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+                    print("✅ Columna 'registration_date' agregada")
+                
+                if 'last_login' not in existing_columns:
+                    cursor.execute("ALTER TABLE users ADD COLUMN IF NOT EXISTS last_login TIMESTAMP")
+                    print("✅ Columna 'last_login' agregada")
+                
+                conn.commit()
+        
+        # 2. Crear tablas nuevas si no existen
+        print("🆕 Creando tablas nuevas...")
+        
+        # Tabla classes
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS classes (
                 id SERIAL PRIMARY KEY,
@@ -101,12 +131,28 @@ def init_db():
                 file_size INTEGER,
                 uploaded_by INTEGER NOT NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                is_active BOOLEAN DEFAULT TRUE,
-                FOREIGN KEY (uploaded_by) REFERENCES users (id) ON DELETE CASCADE
+                is_active BOOLEAN DEFAULT TRUE
             )
         ''')
+        print("✅ Tabla 'classes' verificada/creada")
         
-        # Tabla de acceso estudiante-clase (NUEVA - control por pago)
+        # Verificar constraint de uploaded_by
+        cursor.execute("""
+            DO $$ 
+            BEGIN
+                IF NOT EXISTS (
+                    SELECT 1 FROM information_schema.table_constraints 
+                    WHERE table_name = 'classes' 
+                    AND constraint_name = 'classes_uploaded_by_fkey'
+                ) THEN
+                    ALTER TABLE classes 
+                    ADD CONSTRAINT classes_uploaded_by_fkey 
+                    FOREIGN KEY (uploaded_by) REFERENCES users (id) ON DELETE CASCADE;
+                END IF;
+            END $$;
+        """)
+        
+        # Tabla student_access
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS student_access (
                 id SERIAL PRIMARY KEY,
@@ -124,8 +170,9 @@ def init_db():
                 UNIQUE(student_id, class_id)
             )
         ''')
+        print("✅ Tabla 'student_access' verificada/creada")
         
-        # Tabla de descargas
+        # Tabla downloads
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS downloads (
                 id SERIAL PRIMARY KEY,
@@ -136,8 +183,9 @@ def init_db():
                 FOREIGN KEY (class_id) REFERENCES classes (id) ON DELETE CASCADE
             )
         ''')
+        print("✅ Tabla 'downloads' verificada/creada")
         
-        # Tabla de publicaciones (NUEVA)
+        # Tabla publications
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS publications (
                 id SERIAL PRIMARY KEY,
@@ -153,8 +201,9 @@ def init_db():
                 FOREIGN KEY (created_by) REFERENCES users (id) ON DELETE CASCADE
             )
         ''')
+        print("✅ Tabla 'publications' verificada/creada")
         
-        # Tabla de vistas de publicaciones (NUEVA - para contadores)
+        # Tabla publication_views
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS publication_views (
                 id SERIAL PRIMARY KEY,
@@ -166,16 +215,135 @@ def init_db():
                 UNIQUE(user_id, publication_id)
             )
         ''')
+        print("✅ Tabla 'publication_views' verificada/creada")
         
         conn.commit()
-        print("✅ Base de datos configurada exitosamente")
+        print("✅ Migración automática completada exitosamente")
+        
+        # 3. Intentar migrar datos de tablas antiguas si existen
+        migrate_old_data()
         
     except Exception as e:
-        print(f"⚠️  Error al crear tablas: {str(e)}")
+        print(f"⚠️  Error durante la migración automática: {str(e)}")
+        print("ℹ️  Continuando con la estructura existente...")
         conn.rollback()
     finally:
         cursor.close()
         conn.close()
+
+def migrate_old_data():
+    """Migrar datos de tablas antiguas si existen"""
+    print("📦 Buscando datos antiguos para migrar...")
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    try:
+        # Verificar si existe tabla classes_old o similar
+        cursor.execute("""
+            SELECT table_name 
+            FROM information_schema.tables 
+            WHERE table_name IN ('classes_old', 'old_classes', 'content', 'materials')
+            AND table_schema = 'public'
+        """)
+        
+        old_tables = [row['table_name'] for row in cursor.fetchall()]
+        
+        for table in old_tables:
+            print(f"🔍 Encontrada tabla antigua: {table}")
+            
+            # Verificar si tiene datos
+            cursor.execute(f"SELECT COUNT(*) as count FROM {table}")
+            count = cursor.fetchone()['count']
+            
+            if count > 0:
+                print(f"📊 Migrando {count} registros desde {table}...")
+                
+                # Intentar insertar en nueva tabla classes
+                cursor.execute(f"""
+                    INSERT INTO classes (title, description, level, file_name, file_url, uploaded_by, created_at)
+                    SELECT 
+                        COALESCE(title, 'Sin título'),
+                        COALESCE(description, 'Sin descripción'),
+                        COALESCE(level, 'A1'),
+                        file_name,
+                        file_url,
+                        COALESCE(uploaded_by, 1),
+                        COALESCE(created_at, CURRENT_TIMESTAMP)
+                    FROM {table}
+                    WHERE NOT EXISTS (
+                        SELECT 1 FROM classes c WHERE c.file_url = {table}.file_url
+                    )
+                """)
+                
+                migrated = cursor.rowcount
+                conn.commit()
+                print(f"✅ Migrados {migrated} registros desde {table}")
+    
+    except Exception as e:
+        print(f"⚠️  Error migrando datos antiguos: {str(e)}")
+        conn.rollback()
+    finally:
+        cursor.close()
+        conn.close()
+
+def init_db():
+    """Inicializar la base de datos con migración automática"""
+    print("🔧 Configurando base de datos...")
+    try:
+        # Primero intentar migración automática
+        auto_migrate_database()
+        
+        # Luego verificar estructura básica
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        # Verificar que todas las tablas necesarias existan
+        cursor.execute("""
+            SELECT table_name 
+            FROM information_schema.tables 
+            WHERE table_name IN ('users', 'classes', 'student_access', 'downloads', 'publications', 'publication_views')
+            AND table_schema = 'public'
+        """)
+        
+        existing_tables = [row['table_name'] for row in cursor.fetchall()]
+        required_tables = ['users', 'classes', 'student_access', 'downloads', 'publications', 'publication_views']
+        
+        missing_tables = [table for table in required_tables if table not in existing_tables]
+        
+        if missing_tables:
+            print(f"⚠️  Tablas faltantes: {missing_tables}")
+            print("🔄 Creando tablas faltantes...")
+            
+            # Crear tablas faltantes
+            if 'users' not in existing_tables:
+                cursor.execute('''
+                    CREATE TABLE users (
+                        id SERIAL PRIMARY KEY,
+                        username VARCHAR(100) UNIQUE NOT NULL,
+                        password_hash VARCHAR(255) NOT NULL,
+                        name VARCHAR(200) NOT NULL,
+                        role VARCHAR(20) NOT NULL CHECK(role IN ('student', 'teacher')),
+                        level VARCHAR(50) DEFAULT 'Sin asignar',
+                        registration_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        last_login TIMESTAMP,
+                        is_active BOOLEAN DEFAULT TRUE
+                    )
+                ''')
+                print("✅ Tabla 'users' creada")
+            
+            # Las otras tablas ya se crearon en auto_migrate_database
+            conn.commit()
+        
+        print("✅ Base de datos configurada y verificada")
+        
+    except Exception as e:
+        print(f"⚠️  Error al inicializar base de datos: {str(e)}")
+        print("ℹ️  Continuando con la estructura existente...")
+    finally:
+        if 'cursor' in locals():
+            cursor.close()
+        if 'conn' in locals():
+            conn.close()
 
 def hash_password(password: str) -> str:
     return hashlib.sha256(password.encode()).hexdigest()
@@ -1191,14 +1359,18 @@ if __name__ == '__main__':
     print("🔧 Configurando base de datos PostgreSQL...")
     
     try:
+        # Ejecutar migración automática
         init_db()
+        
         print("✅ Base de datos configurada exitosamente")
         print(f"🔑 Código estudiante: {STUDENT_CODE}")
         print(f"👨‍🏫 Código profesor: {TEACHER_CODE}")
         print("=" * 60)
+        print("🌐 Servidor listo para recibir conexiones...")
+        print("=" * 60)
     except Exception as e:
         print(f"⚠️  Error configurando base de datos: {str(e)}")
-        print("ℹ️  Continuando...")
+        print("ℹ️  Continuando con estructura existente...")
     
     port = int(os.environ.get('PORT', 5000))
     
