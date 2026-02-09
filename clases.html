@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
+        /* RESET Y BASE */
         * {
             margin: 0;
             padding: 0;
@@ -635,8 +636,8 @@
                         <div class="file-upload" id="fileUploadArea">
                             <i class="fas fa-cloud-upload-alt" style="font-size: 1.8rem; color: #1d3c6e; margin-bottom: 8px;"></i>
                             <div>Haz clic para seleccionar un archivo</div>
-                            <input type="file" id="classFile" accept=".pdf,.doc,.docx,.ppt,.pptx,.txt,.jpg,.png" required>
-                            <div class="file-info" id="fileInfo">Formatos aceptados: PDF, DOC, PPT, TXT, JPG, PNG</div>
+                            <input type="file" id="classFile" accept=".pdf,.doc,.docx,.ppt,.pptx,.txt,.jpg,.png,.mp3,.mp4" required>
+                            <div class="file-info" id="fileInfo">Formatos aceptados: PDF, DOC, PPT, TXT, JPG, PNG, MP3, MP4</div>
                         </div>
                     </div>
 
@@ -779,6 +780,7 @@
                 const classes = await response.json();
                 displayClasses(classes);
             } catch (error) {
+                console.error('Error:', error);
                 showMessage('Error al cargar las clases', 'error');
             }
         }
@@ -889,6 +891,7 @@
                     showMessage(data.error || 'Error al subir la clase', 'error');
                 }
             } catch (error) {
+                console.error('Error:', error);
                 showMessage('Error de conexión con el servidor', 'error');
             }
         }
@@ -902,26 +905,24 @@
                     }
                 });
 
+                const data = await response.json();
+                
                 if (response.ok) {
-                    const blob = await response.blob();
-                    const url = window.URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = classItem.file_name || 'material.pdf';
-                    document.body.appendChild(a);
-                    a.click();
-                    window.URL.revokeObjectURL(url);
-                    document.body.removeChild(a);
-                    showMessage('Descargando material...', 'success');
+                    // Abrir la URL de Cloudinary en una nueva pestaña
+                    window.open(data.download_url, '_blank');
+                    showMessage('Redirigiendo a descarga...', 'success');
+                } else {
+                    showMessage(data.error || 'Error al descargar', 'error');
                 }
             } catch (error) {
-                showMessage('Error al descargar el archivo', 'error');
+                console.error('Error:', error);
+                showMessage('Error de conexión con el servidor', 'error');
             }
         }
 
         function resetUploadForm() {
             uploadForm.reset();
-            fileInfoEl.innerHTML = 'Formatos aceptados: PDF, DOC, PPT, TXT, JPG, PNG';
+            fileInfoEl.innerHTML = 'Formatos aceptados: PDF, DOC, PPT, TXT, JPG, PNG, MP3, MP4';
             fileUploadArea.style.borderColor = '#e0e0e0';
             fileUploadArea.style.backgroundColor = '#f9f9f9';
         }
