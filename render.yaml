@@ -2,7 +2,7 @@ services:
   - type: web
     name: clases-ingles
     env: python
-    region: ohio  # Puedes cambiarlo a tu región preferida
+    region: ohio
     buildCommand: |
       pip install --upgrade pip
       pip install -r requirements.txt
@@ -21,7 +21,3 @@ services:
       - key: CLOUDINARY_API_SECRET
         value: Ivdpe_mkT3rSx5asFTo6qJdWaLQ
     autoDeploy: true
-    disk:
-      name: data
-      mountPath: /data
-      sizeGB: 1
