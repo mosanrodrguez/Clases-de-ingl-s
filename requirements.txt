@@ -4,8 +4,7 @@ Flask-SocketIO==5.3.4
 python-socketio==5.9.0
 PyJWT==2.8.0
 Werkzeug==2.3.7
-psycopg2
+psycopg2-binary==2.9.7
 cloudinary==1.36.0
 gunicorn==21.2.0
-eventlet==0.33.3
 python-dotenv==1.0.0
