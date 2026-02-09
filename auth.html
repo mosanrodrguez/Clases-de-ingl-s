@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clases de Inglés - Autenticación</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 500px;
+            background-color: #ffffff;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            border-radius: 10px;
+        }
+
+        .flag-corner {
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            width: 250px;
+            height: 150px;
+            background-image: url('https://img.freepik.com/psd-gratis/ilustracion-decoracion-4-julio_23-2151996180.jpg?semt=ais_hybrid&w=740&q=80'); 
+            background-size: cover;
+            background-repeat: no-repeat;
+            border-bottom-right-radius: 100%;
+            z-index: 1;
+            opacity: 0.7;
+        }
+
+        .auth-header {
+            text-align: center;
+            padding: 40px 20px 20px 20px;
+            position: relative;
+            z-index: 2;
+            background: linear-gradient(180deg, #e3e8f0 0%, #ffffff 100%);
+        }
+
+        .auth-title-blue {
+            color: #1d3c6e;
+            font-size: 2.5rem;
+            font-weight: 900;
+            line-height: 0.9;
+            letter-spacing: -1px;
+        }
+
+        .auth-title-red {
+            color: #c41e1e;
+            font-size: 2.5rem;
+            font-weight: 900;
+            line-height: 0.9;
+            letter-spacing: -1px;
+        }
+
+        .auth-subtitle {
+            color: #1d3c6e;
+            font-weight: 700;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+
+        .auth-tabs {
+            display: flex;
+            border-bottom: 2px solid #e0e0e0;
+            position: relative;
+            z-index: 2;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 15px;
+            background: none;
+            border: none;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .tab-btn.active {
+            color: #1d3c6e;
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: #c41e1e;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 30px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .auth-form {
+            margin-top: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #1d3c6e;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            background-color: #f9f9f9;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #1d3c6e;
+            background-color: #fff;
+            box-shadow: 0 0 0 3px rgba(29, 60, 110, 0.1);
+        }
+
+        .form-group input.error {
+            border-color: #c41e1e;
+            background-color: rgba(196, 30, 30, 0.05);
+        }
+
+        .password-wrapper {
+            position: relative;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .code-instruction {
+            background-color: #f0f7ff;
+            border-left: 4px solid #1d3c6e;
+            padding: 12px 15px;
+            margin-top: 10px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            color: #1d3c6e;
+            text-align: center;
+        }
+
+        .code-instruction i {
+            color: #c41e1e;
+            margin-right: 5px;
+        }
+
+        .auth-submit-btn {
+            background-color: #1d3c6e;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 16px;
+            width: 100%;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .auth-submit-btn:hover {
+            background-color: #c41e1e;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0,0,0,0.15);
+        }
+
+        .auth-submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .auth-links {
+            text-align: center;
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 1px solid #e0e0e0;
+            font-size: 0.85rem;
+        }
+
+        .auth-links a {
+            color: #1d3c6e;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .auth-links a:hover {
+            color: #c41e1e;
+            text-decoration: underline;
+        }
+
+        .message {
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-align: center;
+            display: none;
+        }
+
+        .message.success {
+            background-color: rgba(37, 211, 102, 0.1);
+            color: #25D366;
+            border: 1px solid #25D366;
+            display: block;
+        }
+
+        .message.error {
+            background-color: rgba(196, 30, 30, 0.1);
+            color: #c41e1e;
+            border: 1px solid #c41e1e;
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+
+        .shake {
+            animation: shake 0.5s ease;
+        }
+
+        @media (max-width: 480px) {
+            .auth-header {
+                padding: 30px 15px 15px 15px;
+            }
+
+            .auth-title-blue,
+            .auth-title-red {
+                font-size: 2rem;
+            }
+
+            .tab-content {
+                padding: 20px 15px;
+            }
+
+            .form-group input {
+                padding: 12px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="auth-container">
+        <div class="flag-corner"></div>
+
+        <div class="auth-header">
+            <div class="auth-title-blue">CLASES</div>
+            <div class="auth-title-red">DE INGLÉS</div>
+            <p class="auth-subtitle">Acceso exclusivo para estudiantes y profesor</p>
+        </div>
+
+        <div id="message" class="message"></div>
+
+        <div class="auth-tabs">
+            <button class="tab-btn active" id="loginTab">
+                <i class="fas fa-sign-in-alt"></i> INICIAR SESIÓN
+            </button>
+            <button class="tab-btn" id="registerTab">
+                <i class="fas fa-user-plus"></i> REGISTRARSE
+            </button>
+        </div>
+
+        <div class="tab-content active" id="loginContent">
+            <form class="auth-form" id="loginForm">
+                <div class="form-group">
+                    <label for="loginName">
+                        <i class="fas fa-user"></i> Nombre de Usuario
+                    </label>
+                    <input type="text" id="loginName" name="loginName" placeholder="Ingresa tu nombre de usuario" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="loginPassword">
+                        <i class="fas fa-lock"></i> Contraseña
+                    </label>
+                    <div class="password-wrapper">
+                        <input type="password" id="loginPassword" name="loginPassword" placeholder="Ingresa tu contraseña" required>
+                        <button type="button" class="toggle-password" data-target="loginPassword">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit" class="auth-submit-btn">
+                    <i class="fas fa-sign-in-alt"></i> INGRESAR AL SISTEMA
+                </button>
+            </form>
+
+            <div class="auth-links">
+                ¿Necesitas ayuda? Contacta al profesor
+            </div>
+        </div>
+
+        <div class="tab-content" id="registerContent">
+            <div class="code-instruction">
+                <i class="fas fa-key"></i>
+                Para registrarte necesitas el código que te proporcionó el profesor.
+            </div>
+
+            <form class="auth-form" id="registerForm">
+                <div class="form-group">
+                    <label for="registerName">
+                        <i class="fas fa-user"></i> Nombre Completo
+                    </label>
+                    <input type="text" id="registerName" name="registerName" placeholder="Ingresa tu nombre completo" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="registerUsername">
+                        <i class="fas fa-at"></i> Nombre de Usuario
+                    </label>
+                    <input type="text" id="registerUsername" name="registerUsername" placeholder="Crea un nombre de usuario" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="registerPassword">
+                        <i class="fas fa-lock"></i> Contraseña
+                    </label>
+                    <div class="password-wrapper">
+                        <input type="password" id="registerPassword" name="registerPassword" placeholder="Crea una contraseña segura" required>
+                        <button type="button" class="toggle-password" data-target="registerPassword">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword">
+                        <i class="fas fa-lock"></i> Confirmar Contraseña
+                    </label>
+                    <div class="password-wrapper">
+                        <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Repite tu contraseña" required>
+                        <button type="button" class="toggle-password" data-target="confirmPassword">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="registerCode">
+                        <i class="fas fa-key"></i> Código de Acceso
+                    </label>
+                    <input type="password" id="registerCode" name="registerCode" placeholder="Ingresa el código de acceso" required maxlength="8">
+                </div>
+
+                <button type="submit" class="auth-submit-btn">
+                    <i class="fas fa-user-plus"></i> CREAR MI CUENTA
+                </button>
+            </form>
+
+            <div class="auth-links">
+                ¿Ya tienes cuenta? <a href="#" id="goToLogin">Inicia sesión aquí</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const STUDENT_CODE = "QwErTy89";
+        const TEACHER_CODE = "MOISÉS5M";
+
+        const loginTab = document.getElementById('loginTab');
+        const registerTab = document.getElementById('registerTab');
+        const loginContent = document.getElementById('loginContent');
+        const registerContent = document.getElementById('registerContent');
+        const messageEl = document.getElementById('message');
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+        const goToLoginLink = document.getElementById('goToLogin');
+        const togglePasswordBtns = document.querySelectorAll('.toggle-password');
+        const registerCodeInput = document.getElementById('registerCode');
+
+        loginTab.addEventListener('click', () => switchTab('login'));
+        registerTab.addEventListener('click', () => switchTab('register'));
+        goToLoginLink?.addEventListener('click', (e) => {
+            e.preventDefault();
+            switchTab('login');
+        });
+
+        togglePasswordBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const targetId = this.getAttribute('data-target');
+                const input = document.getElementById(targetId);
+                const icon = this.querySelector('i');
+                
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                } else {
+                    input.type = 'password';
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                }
+            });
+        });
+
+        if (registerCodeInput) {
+            const codeGroup = registerCodeInput.closest('.form-group');
+            const toggleCodeBtn = document.createElement('button');
+            toggleCodeBtn.type = 'button';
+            toggleCodeBtn.className = 'toggle-password';
+            toggleCodeBtn.innerHTML = '<i class="fas fa-eye"></i>';
+            toggleCodeBtn.style.position = 'absolute';
+            toggleCodeBtn.style.right = '15px';
+            toggleCodeBtn.style.top = 'calc(50% + 20px)';
+            toggleCodeBtn.style.transform = 'translateY(-50%)';
+            
+            toggleCodeBtn.addEventListener('click', function() {
+                const icon = this.querySelector('i');
+                if (registerCodeInput.type === 'password') {
+                    registerCodeInput.type = 'text';
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                } else {
+                    registerCodeInput.type = 'password';
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                }
+            });
+            
+            codeGroup.style.position = 'relative';
+            codeGroup.appendChild(toggleCodeBtn);
+        }
+
+        function switchTab(tab) {
+            loginTab.classList.remove('active');
+            registerTab.classList.remove('active');
+            loginContent.classList.remove('active');
+            registerContent.classList.remove('active');
+
+            if (tab === 'login') {
+                loginTab.classList.add('active');
+                loginContent.classList.add('active');
+            } else {
+                registerTab.classList.add('active');
+                registerContent.classList.add('active');
+            }
+
+            clearMessage();
+        }
+
+        function showMessage(text, type) {
+            messageEl.textContent = text;
+            messageEl.className = `message ${type}`;
+            
+            if (type === 'success') {
+                setTimeout(clearMessage, 5000);
+            }
+        }
+
+        function clearMessage() {
+            messageEl.className = 'message';
+            messageEl.textContent = '';
+        }
+
+        function showErrorAnimation(element) {
+            element.classList.add('error');
+            element.classList.add('shake');
+            setTimeout(() => {
+                element.classList.remove('shake');
+            }, 500);
+            setTimeout(() => {
+                element.classList.remove('error');
+            }, 2000);
+        }
+
+        loginForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('loginName').value.trim();
+            const password = document.getElementById('loginPassword').value.trim();
+            
+            if (!username || !password) {
+                showMessage('Por favor, completa todos los campos', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showMessage(`¡Bienvenido/a ${data.user.name}!`, 'success');
+                    localStorage.setItem('current_user', JSON.stringify(data.user));
+                    localStorage.setItem('auth_token', data.token);
+                    
+                    setTimeout(() => {
+                        window.location.href = 'clases.html';
+                    }, 2000);
+                } else {
+                    showMessage(data.error || 'Error en la autenticación', 'error');
+                    showErrorAnimation(document.getElementById('loginName'));
+                    showErrorAnimation(document.getElementById('loginPassword'));
+                }
+            } catch (error) {
+                showMessage('Error de conexión con el servidor', 'error');
+            }
+        });
+
+        registerForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('registerName').value.trim();
+            const username = document.getElementById('registerUsername').value.trim();
+            const password = document.getElementById('registerPassword').value.trim();
+            const confirmPassword = document.getElementById('confirmPassword').value.trim();
+            const code = document.getElementById('registerCode').value.trim();
+
+            if (!name || !username || !password || !confirmPassword || !code) {
+                showMessage('Por favor, completa todos los campos', 'error');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                showMessage('Las contraseñas no coinciden', 'error');
+                showErrorAnimation(document.getElementById('registerPassword'));
+                showErrorAnimation(document.getElementById('confirmPassword'));
+                return;
+            }
+
+            if (code !== STUDENT_CODE && code !== TEACHER_CODE) {
+                showMessage('Código de acceso incorrecto', 'error');
+                showErrorAnimation(document.getElementById('registerCode'));
+                return;
+            }
+
+            const role = code === TEACHER_CODE ? 'teacher' : 'student';
+
+            try {
+                const response = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name,
+                        username,
+                        password,
+                        role,
+                        code
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    const roleMessage = role === 'teacher' ? 'Profesor' : 'Estudiante';
+                    showMessage(`¡Registro exitoso como ${roleMessage}, ${name}!`, 'success');
+                    
+                    registerForm.reset();
+                    
+                    setTimeout(() => {
+                        switchTab('login');
+                        document.getElementById('loginName').value = username;
+                        document.getElementById('loginPassword').focus();
+                    }, 3000);
+                } else {
+                    showMessage(data.error || 'Error en el registro', 'error');
+                    if (data.field) {
+                        showErrorAnimation(document.getElementById(data.field));
+                    }
+                }
+            } catch (error) {
+                showMessage('Error de conexión con el servidor', 'error');
+            }
+        });
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const currentUser = localStorage.getItem('current_user');
+            if (currentUser) {
+                const user = JSON.parse(currentUser);
+                showMessage(`Ya has iniciado sesión como ${user.name}. Redirigiendo...`, 'success');
+                
+                setTimeout(() => {
+                    window.location.href = 'clases.html';
+                }, 2000);
+            }
+        });
+
+    </script>
+
+</body>
+</html>
