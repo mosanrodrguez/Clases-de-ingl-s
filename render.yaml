@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: clases-ingles
+    env: python
+    region: ohio  # Puedes cambiarlo a tu región preferida
+    buildCommand: |
+      pip install --upgrade pip
+      pip install -r requirements.txt
+    startCommand: gunicorn --worker-class eventlet -w 1 --bind 0.0.0.0:$PORT server:app
+    envVars:
+      - key: PORT
+        value: 5000
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        value: postgresql://englishcourse_user:VI8pYTtX2bbv2YftidVHOUKXtK6J7ehd@dpg-d64mmungi27c73b53hr0-a/englishcourse
+      - key: CLOUDINARY_CLOUD_NAME
+        value: dj72b0ykc
+      - key: CLOUDINARY_API_KEY
+        value: 215156196366932
+      - key: CLOUDINARY_API_SECRET
+        value: Ivdpe_mkT3rSx5asFTo6qJdWaLQ
+    autoDeploy: true
+    disk:
+      name: data
+      mountPath: /data
+      sizeGB: 1
