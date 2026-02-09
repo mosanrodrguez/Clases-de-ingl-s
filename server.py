@@ -32,7 +32,7 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', secrets.token_hex(32))
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB
 
 # PostgreSQL de Render (tu base de datos real)
-DATABASE_URL = "postgresql://englishcourse_user:VI8pYTtX2bbv2YftidVHOUKXtK6J7ehd@dpg-d64mmungi27c73b53hr0-a/englishcourse"
+DATABASE_URL = "postgresql://englishcourse_rjcw_user:yQSKzERFthPImoM2v3ENNh3eQi7L5PBI@dpg-d652isur433s73aspbsg-a/englishcourse_rjcw"
 
 # Configuración de Cloudinary (tus credenciales)
 cloudinary.config(
