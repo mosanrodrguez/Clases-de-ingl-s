@@ -89,7 +89,7 @@ def init_db():
                 password_hash VARCHAR(255) NOT NULL,
                 name VARCHAR(200) NOT NULL,
                 role VARCHAR(20) NOT NULL CHECK(role IN ('student', 'teacher')),
-                level VARCHAR(50),
+                level VARCHAR(50) DEFAULT 'Sin asignar',
                 registration_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 last_login TIMESTAMP
             )
@@ -346,6 +346,66 @@ def get_classes():
         print(f"❌ Error obteniendo clases: {str(e)}")
         return jsonify({'error': 'Error obteniendo clases'}), 500
 
+@app.route('/api/classes/all', methods=['GET'])
+@token_required
+@teacher_required
+def get_all_classes():
+    """Obtener todas las clases (solo para profesores)"""
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        cursor.execute('''
+            SELECT c.*, u.name as uploaded_by_name 
+            FROM classes c 
+            JOIN users u ON c.uploaded_by = u.id 
+            ORDER BY c.created_at DESC
+        ''')
+        
+        classes = []
+        for row in cursor.fetchall():
+            classes.append(dict(row))
+        
+        cursor.close()
+        conn.close()
+        
+        return jsonify(classes), 200
+        
+    except Exception as e:
+        print(f"❌ Error obteniendo todas las clases: {str(e)}")
+        return jsonify({'error': 'Error obteniendo clases'}), 500
+
+@app.route('/api/classes/<int:class_id>', methods=['GET'])
+@token_required
+def get_class(class_id: int):
+    """Obtener una clase específica"""
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        cursor.execute('''
+            SELECT c.*, u.name as uploaded_by_name 
+            FROM classes c 
+            JOIN users u ON c.uploaded_by = u.id 
+            WHERE c.id = %s
+        ''', (class_id,))
+        
+        class_data = cursor.fetchone()
+        
+        if not class_data:
+            cursor.close()
+            conn.close()
+            return jsonify({'error': 'Clase no encontrada'}), 404
+        
+        cursor.close()
+        conn.close()
+        
+        return jsonify(dict(class_data)), 200
+        
+    except Exception as e:
+        print(f"❌ Error obteniendo clase: {str(e)}")
+        return jsonify({'error': 'Error obteniendo clase'}), 500
+
 @app.route('/api/classes', methods=['POST'])
 @token_required
 @teacher_required
@@ -420,6 +480,129 @@ def upload_class():
         print(f"❌ Error subiendo clase: {str(e)}")
         return jsonify({'error': 'Error subiendo la clase'}), 500
 
+@app.route('/api/classes/<int:class_id>', methods=['PUT'])
+@token_required
+@teacher_required
+def update_class(class_id: int):
+    """Actualizar una clase existente"""
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        # Verificar que la clase existe y pertenece al profesor
+        cursor.execute('SELECT * FROM classes WHERE id = %s', (class_id,))
+        class_data = cursor.fetchone()
+        
+        if not class_data:
+            cursor.close()
+            conn.close()
+            return jsonify({'error': 'Clase no encontrada'}), 404
+        
+        # Obtener datos del formulario
+        title = request.form.get('title', '').strip()
+        description = request.form.get('description', '').strip()
+        level = request.form.get('level', '').strip()
+        file = request.files.get('file')
+        
+        if not title or not description or not level:
+            return jsonify({'error': 'Todos los campos son requeridos'}), 400
+        
+        if level not in ['A1', 'A2', 'B1']:
+            return jsonify({'error': 'Nivel no válido'}), 400
+        
+        update_fields = {
+            'title': title,
+            'description': description,
+            'level': level
+        }
+        
+        file_url = class_data['file_url']
+        file_name = class_data['file_name']
+        file_type = class_data['file_type']
+        file_size = class_data['file_size']
+        
+        # Si se subió un nuevo archivo
+        if file and file.filename != '':
+            if not allowed_file(file.filename):
+                return jsonify({'error': 'Tipo de archivo no permitido'}), 400
+            
+            # Subir nuevo archivo a Cloudinary
+            upload_result = cloudinary.uploader.upload(
+                file,
+                folder="clases_ingles",
+                resource_type="auto",
+                use_filename=True,
+                unique_filename=True
+            )
+            
+            file_url = upload_result['secure_url']
+            file_name = secure_filename(file.filename)
+            file_type = get_file_type(file.filename)
+            file_size = upload_result.get('bytes', 0)
+            
+            update_fields.update({
+                'file_url': file_url,
+                'file_name': file_name,
+                'file_type': file_type,
+                'file_size': file_size
+            })
+        
+        # Actualizar en la base de datos
+        set_clause = ', '.join([f"{k} = %s" for k in update_fields.keys()])
+        values = list(update_fields.values())
+        values.append(class_id)
+        
+        cursor.execute(f'''
+            UPDATE classes 
+            SET {set_clause}, created_at = created_at
+            WHERE id = %s
+            RETURNING id, title, description, level, file_name, file_url, file_type, created_at
+        ''', values)
+        
+        updated_class = cursor.fetchone()
+        conn.commit()
+        
+        cursor.close()
+        conn.close()
+        
+        return jsonify({
+            'message': 'Clase actualizada exitosamente',
+            'class': dict(updated_class)
+        }), 200
+        
+    except Exception as e:
+        print(f"❌ Error actualizando clase: {str(e)}")
+        return jsonify({'error': 'Error actualizando la clase'}), 500
+
+@app.route('/api/classes/<int:class_id>', methods=['DELETE'])
+@token_required
+@teacher_required
+def delete_class(class_id: int):
+    """Eliminar una clase"""
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        # Verificar que la clase existe
+        cursor.execute('SELECT * FROM classes WHERE id = %s', (class_id,))
+        if not cursor.fetchone():
+            cursor.close()
+            conn.close()
+            return jsonify({'error': 'Clase no encontrada'}), 404
+        
+        # Eliminar la clase
+        cursor.execute('DELETE FROM classes WHERE id = %s', (class_id,))
+        conn.commit()
+        
+        cursor.close()
+        conn.close()
+        
+        return jsonify({'message': 'Clase eliminada exitosamente'}), 200
+        
+    except Exception as e:
+        print(f"❌ Error eliminando clase: {str(e)}")
+        return jsonify({'error': 'Error eliminando la clase'}), 500
+
 @app.route('/api/classes/<int:class_id>/download', methods=['GET'])
 @token_required
 def download_class(class_id: int):
@@ -455,6 +638,112 @@ def download_class(class_id: int):
         print(f"❌ Error en descarga: {str(e)}")
         return jsonify({'error': 'Error en la descarga'}), 500
 
+@app.route('/api/students', methods=['GET'])
+@token_required
+@teacher_required
+def get_students():
+    """Obtener todos los estudiantes (solo para profesores)"""
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        cursor.execute('''
+            SELECT id, username, name, role, level, registration_date, last_login
+            FROM users 
+            WHERE role = 'student'
+            ORDER BY name
+        ''')
+        
+        students = []
+        for row in cursor.fetchall():
+            students.append(dict(row))
+        
+        cursor.close()
+        conn.close()
+        
+        return jsonify(students), 200
+        
+    except Exception as e:
+        print(f"❌ Error obteniendo estudiantes: {str(e)}")
+        return jsonify({'error': 'Error obteniendo estudiantes'}), 500
+
+@app.route('/api/students/<int:student_id>/level', methods=['PUT'])
+@token_required
+@teacher_required
+def update_student_level(student_id: int):
+    """Actualizar el nivel de un estudiante"""
+    try:
+        data = request.get_json()
+        
+        if not data or 'level' not in data:
+            return jsonify({'error': 'Nivel es requerido'}), 400
+        
+        level = data['level'].strip()
+        
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        # Verificar que el estudiante existe
+        cursor.execute('SELECT id FROM users WHERE id = %s AND role = %s', 
+                      (student_id, 'student'))
+        if not cursor.fetchone():
+            cursor.close()
+            conn.close()
+            return jsonify({'error': 'Estudiante no encontrado'}), 404
+        
+        # Actualizar nivel
+        cursor.execute('''
+            UPDATE users 
+            SET level = %s 
+            WHERE id = %s
+            RETURNING id, username, name, role, level
+        ''', (level, student_id))
+        
+        updated_student = cursor.fetchone()
+        conn.commit()
+        
+        cursor.close()
+        conn.close()
+        
+        return jsonify({
+            'message': 'Nivel actualizado exitosamente',
+            'student': dict(updated_student)
+        }), 200
+        
+    except Exception as e:
+        print(f"❌ Error actualizando nivel: {str(e)}")
+        return jsonify({'error': 'Error actualizando el nivel'}), 500
+
+@app.route('/api/students/<int:student_id>', methods=['DELETE'])
+@token_required
+@teacher_required
+def delete_student(student_id: int):
+    """Eliminar un estudiante"""
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        # Verificar que el estudiante existe
+        cursor.execute('SELECT id FROM users WHERE id = %s AND role = %s', 
+                      (student_id, 'student'))
+        if not cursor.fetchone():
+            cursor.close()
+            conn.close()
+            return jsonify({'error': 'Estudiante no encontrado'}), 404
+        
+        # Eliminar el estudiante
+        cursor.execute('DELETE FROM users WHERE id = %s', (student_id,))
+        conn.commit()
+        
+        cursor.close()
+        conn.close()
+        
+        return jsonify({'message': 'Estudiante eliminado exitosamente'}), 200
+        
+    except Exception as e:
+        print(f"❌ Error eliminando estudiante: {str(e)}")
+        return jsonify({'error': 'Error eliminando el estudiante'}), 500
+
 @app.route('/api/profile', methods=['GET'])
 @token_required
 def get_profile():
@@ -480,8 +769,13 @@ def get_profile():
             cursor.execute('SELECT COUNT(*) FROM downloads WHERE user_id = %s', (request.user_id,))
         else:
             cursor.execute('SELECT COUNT(*) FROM classes WHERE uploaded_by = %s', (request.user_id,))
+            cursor.execute('SELECT COUNT(*) FROM users WHERE role = %s', ('student',))
         
-        stats = {'count': cursor.fetchone()['count']}
+        stats = {'classes_count': cursor.fetchone()['count']}
+        
+        if request.user_role == 'teacher':
+            students_count = cursor.fetchone()['count']
+            stats['students_count'] = students_count
         
         cursor.close()
         conn.close()
