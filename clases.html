@@ -350,6 +350,178 @@
             border: 1px solid var(--accent-red);
         }
 
+        /* PÁGINA: PUBLICACIONES */
+        .publications-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .publication-card {
+            background-color: var(--white);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--medium-gray);
+            transition: var(--transition);
+        }
+
+        .publication-card:active {
+            transform: translateY(-2px);
+        }
+
+        .publication-card.new {
+            border-left: 4px solid var(--success-green);
+        }
+
+        .publication-header {
+            background-color: rgba(29, 60, 110, 0.05);
+            padding: 15px;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        .publication-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-bottom: 5px;
+        }
+
+        .publication-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .publication-type {
+            background-color: var(--primary-blue);
+            color: var(--white);
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .publication-author {
+            font-weight: 600;
+        }
+
+        .publication-date {
+            color: #888;
+        }
+
+        .publication-body {
+            padding: 15px;
+        }
+
+        .publication-content {
+            color: #555;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        .publication-file {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+            border: 1px solid var(--medium-gray);
+        }
+
+        .file-icon {
+            width: 40px;
+            height: 40px;
+            background-color: var(--primary-blue);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 1.2rem;
+        }
+
+        .file-info {
+            flex: 1;
+        }
+
+        .file-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 2px;
+        }
+
+        .file-type {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .download-file-btn {
+            background-color: var(--success-green);
+            color: var(--white);
+            border: none;
+            border-radius: 6px;
+            padding: 8px 15px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .download-file-btn:active {
+            background-color: #1da851;
+            transform: scale(0.98);
+        }
+
+        .publication-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--medium-gray);
+        }
+
+        .mark-read-btn {
+            flex: 1;
+            padding: 8px;
+            background-color: var(--primary-blue);
+            color: var(--white);
+            border: none;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .mark-read-btn:active {
+            background-color: #152a50;
+            transform: scale(0.98);
+        }
+
+        .delete-publication-btn {
+            padding: 8px 15px;
+            background-color: var(--accent-red);
+            color: var(--white);
+            border: none;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .delete-publication-btn:active {
+            background-color: #a01818;
+            transform: scale(0.98);
+        }
+
         /* PÁGINA: MIS CLASES (Estudiantes) */
         .no-level-message {
             text-align: center;
@@ -945,6 +1117,21 @@
             }
         }
 
+        /* BADGE DE NOTIFICACIONES */
+        .badge {
+            background-color: var(--accent-red);
+            color: var(--white);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 700;
+            margin-left: auto;
+        }
+
         /* RESPONSIVE */
         @media (min-width: 768px) {
             .side-panel {
@@ -952,6 +1139,10 @@
             }
             
             .classes-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .publications-container {
                 grid-template-columns: repeat(2, 1fr);
             }
             
@@ -963,6 +1154,10 @@
         @media (min-width: 1024px) {
             .classes-grid {
                 grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .publications-container {
+                grid-template-columns: repeat(2, 1fr);
             }
         }
 
@@ -1021,6 +1216,12 @@
             <div class="nav-item active" data-page="home">
                 <i class="fas fa-home"></i>
                 <span>Mis Clases</span>
+            </div>
+            
+            <div class="nav-item" data-page="publications">
+                <i class="fas fa-newspaper"></i>
+                <span>Publicaciones</span>
+                <span class="badge hidden" id="unreadBadge">0</span>
             </div>
             
             <div class="nav-item teacher-only" data-page="manage-classes">
@@ -1088,6 +1289,37 @@
 
             <!-- Loading -->
             <div class="loading hidden" id="loadingClasses">
+                <div class="spinner"></div>
+            </div>
+        </div>
+
+        <!-- PÁGINA: PUBLICACIONES -->
+        <div class="page" id="publicationsPage">
+            <div class="page-header">
+                <button class="back-btn" data-target="home">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <div class="page-title-section">
+                    <h2 class="page-title">Publicaciones</h2>
+                    <p class="page-subtitle" id="publicationsSubtitle">Anuncios y materiales importantes</p>
+                </div>
+            </div>
+
+            <!-- FAB para crear publicación (solo profesor) -->
+            <button class="upload-fab teacher-only" id="createPublicationFab" aria-label="Crear nueva publicación">
+                <i class="fas fa-plus"></i>
+            </button>
+
+            <div class="publications-container" id="publicationsContainer"></div>
+
+            <div class="no-content hidden" id="noPublications">
+                <i class="fas fa-newspaper"></i>
+                <h3>No hay publicaciones</h3>
+                <p id="noPublicationsMessage">Aún no hay publicaciones disponibles.</p>
+            </div>
+
+            <!-- Loading -->
+            <div class="loading hidden" id="loadingPublications">
                 <div class="spinner"></div>
             </div>
         </div>
@@ -1224,6 +1456,75 @@
         </div>
     </div>
 
+    <!-- MODAL: CREAR/EDITAR PUBLICACIÓN -->
+    <div class="modal-overlay" id="publicationModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title" id="publicationModalTitle">Crear Nueva Publicación</div>
+                <button class="close-modal" id="closePublicationModal">&times;</button>
+            </div>
+            
+            <form id="publicationForm">
+                <div class="modal-body">
+                    <input type="hidden" id="publicationId">
+                    
+                    <div class="form-group">
+                        <label for="publicationType" class="form-label">
+                            <i class="fas fa-tag"></i> Tipo de Publicación
+                        </label>
+                        <select id="publicationType" class="form-control" required>
+                            <option value="">Selecciona un tipo</option>
+                            <option value="text">Texto</option>
+                            <option value="photo">Foto</option>
+                            <option value="video">Video</option>
+                            <option value="document">Documento</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="publicationTitle" class="form-label">
+                            <i class="fas fa-heading"></i> Título
+                        </label>
+                        <input type="text" id="publicationTitle" class="form-control" 
+                               placeholder="Ej: Recordatorio importante" required>
+                    </div>
+
+                    <div class="form-group" id="contentFieldGroup">
+                        <label for="publicationContent" class="form-label">
+                            <i class="fas fa-align-left"></i> Contenido
+                        </label>
+                        <textarea id="publicationContent" class="form-control" 
+                                  placeholder="Escribe el contenido de tu publicación..."></textarea>
+                    </div>
+
+                    <div class="form-group hidden" id="fileFieldGroup">
+                        <label class="form-label">
+                            <i class="fas fa-file-upload"></i> Archivo
+                        </label>
+                        <div class="file-upload-area" id="publicationFileUploadArea">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <div>Haz clic para seleccionar un archivo</div>
+                            <input type="file" id="publicationFile" class="file-input" 
+                                   accept=".pdf,.doc,.docx,.ppt,.pptx,.txt,.jpg,.png,.mp3,.mp4">
+                            <div class="file-info" id="publicationFileInfo">
+                                Formatos aceptados: PDF, DOC, PPT, TXT, JPG, PNG, MP3, MP4
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-actions" style="padding: 0 20px 20px;">
+                    <button type="submit" class="modal-btn submit-btn" id="publicationSubmitBtn">
+                        <i class="fas fa-paper-plane"></i> Publicar
+                    </button>
+                    <button type="button" class="modal-btn cancel-btn" id="cancelPublicationModal">
+                        Cancelar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- MODAL: CONFIRMAR ELIMINACIÓN -->
     <div class="modal-overlay confirm-modal" id="confirmModal">
         <div class="modal">
@@ -1270,10 +1571,13 @@
         const userRole = document.getElementById('userRole');
         const userLevel = document.getElementById('userLevel');
         const uploadFab = document.getElementById('uploadFab');
+        const createPublicationFab = document.getElementById('createPublicationFab');
+        const unreadBadge = document.getElementById('unreadBadge');
 
         // Páginas
         const pages = {
             home: document.getElementById('homePage'),
+            publications: document.getElementById('publicationsPage'),
             'manage-classes': document.getElementById('manageClassesPage'),
             students: document.getElementById('studentsPage')
         };
@@ -1289,6 +1593,13 @@
         const loadingClasses = document.getElementById('loadingClasses');
         const filterBtns = document.querySelectorAll('#homePage .filter-btn');
 
+        // Elementos de publicaciones
+        const publicationsContainer = document.getElementById('publicationsContainer');
+        const noPublications = document.getElementById('noPublications');
+        const noPublicationsMessage = document.getElementById('noPublicationsMessage');
+        const loadingPublications = document.getElementById('loadingPublications');
+        const publicationsSubtitle = document.getElementById('publicationsSubtitle');
+
         // Elementos de gestión de clases
         const manageClassesContainer = document.getElementById('manageClassesContainer');
         const noManageClasses = document.getElementById('noManageClasses');
@@ -1300,15 +1611,25 @@
 
         // Modales
         const classModal = document.getElementById('classModal');
+        const publicationModal = document.getElementById('publicationModal');
         const confirmModal = document.getElementById('confirmModal');
+        
         const classForm = document.getElementById('classForm');
+        const publicationForm = document.getElementById('publicationForm');
+        
         const modalTitle = document.getElementById('modalTitle');
         const modalSubmitBtn = document.getElementById('modalSubmitBtn');
-        const fileUploadArea = document.getElementById('fileUploadArea');
-        const classFileInput = document.getElementById('classFile');
-        const fileInfo = document.getElementById('fileInfo');
-        const currentFileInfo = document.getElementById('currentFileInfo');
-        const currentFileName = document.getElementById('currentFileName');
+        
+        const publicationModalTitle = document.getElementById('publicationModalTitle');
+        const publicationSubmitBtn = document.getElementById('publicationSubmitBtn');
+        
+        // Elementos del formulario de publicación
+        const publicationTypeSelect = document.getElementById('publicationType');
+        const contentFieldGroup = document.getElementById('contentFieldGroup');
+        const fileFieldGroup = document.getElementById('fileFieldGroup');
+        const publicationFileUploadArea = document.getElementById('publicationFileUploadArea');
+        const publicationFileInput = document.getElementById('publicationFile');
+        const publicationFileInfo = document.getElementById('publicationFileInfo');
 
         // Botones de navegación
         const backBtns = document.querySelectorAll('.back-btn');
@@ -1340,6 +1661,9 @@
             } else {
                 checkStudentLevel();
             }
+
+            // Cargar publicaciones para todos
+            loadPublications();
         }
 
         function updateUserInfo() {
@@ -1417,22 +1741,37 @@
             // FAB para subir clase
             uploadFab?.addEventListener('click', () => openClassModal());
 
-            // Sistema de archivos
-            fileUploadArea.addEventListener('click', () => classFileInput.click());
-            classFileInput.addEventListener('change', handleFileSelect);
+            // FAB para crear publicación
+            createPublicationFab?.addEventListener('click', () => openPublicationModal());
 
-            // Formulario de clase
+            // Sistema de archivos
+            document.getElementById('fileUploadArea').addEventListener('click', () => document.getElementById('classFile').click());
+            document.getElementById('classFile').addEventListener('change', handleFileSelect);
+
+            publicationFileUploadArea.addEventListener('click', () => publicationFileInput.click());
+            publicationFileInput.addEventListener('change', handlePublicationFileSelect);
+
+            // Formularios
             classForm.addEventListener('submit', handleClassSubmit);
+            publicationForm.addEventListener('submit', handlePublicationSubmit);
+
+            // Cambiar tipo de publicación
+            publicationTypeSelect.addEventListener('change', handlePublicationTypeChange);
 
             // Cerrar modales
             document.getElementById('closeClassModal').addEventListener('click', () => closeModal('classModal'));
             document.getElementById('cancelClassModal').addEventListener('click', () => closeModal('classModal'));
+            
+            document.getElementById('closePublicationModal').addEventListener('click', () => closeModal('publicationModal'));
+            document.getElementById('cancelPublicationModal').addEventListener('click', () => closeModal('publicationModal'));
+            
             document.getElementById('closeConfirmModal').addEventListener('click', () => closeModal('confirmModal'));
             document.getElementById('cancelDeleteBtn').addEventListener('click', () => closeModal('confirmModal'));
+            
             document.getElementById('confirmDeleteBtn').addEventListener('click', executePendingAction);
 
             // Cerrar modales al hacer clic fuera
-            [classModal, confirmModal].forEach(modal => {
+            [classModal, publicationModal, confirmModal].forEach(modal => {
                 modal.addEventListener('click', (e) => {
                     if (e.target === modal) {
                         closeModal(modal.id);
@@ -1455,7 +1794,7 @@
 
         function navigateTo(page) {
             // Verificar permisos
-            if (page !== 'home' && currentUser.role !== 'teacher') {
+            if ((page === 'manage-classes' || page === 'students') && currentUser.role !== 'teacher') {
                 showMessage('Acceso denegado. Solo para profesores.', 'error');
                 return;
             }
@@ -1489,9 +1828,11 @@
                     if (currentUser.role === 'student') {
                         checkStudentLevel();
                     } else {
-                        // Profesor en home ve sus clases generales
                         loadClassesForTeacher();
                     }
+                    break;
+                case 'publications':
+                    loadPublications();
                     break;
                 case 'manage-classes':
                     loadAllClasses();
@@ -1696,6 +2037,284 @@
             `;
 
             return card;
+        }
+
+        // FUNCIONES DE PUBLICACIONES - USANDO LA API DEL SERVIDOR
+        async function loadPublications() {
+            loadingPublications.classList.remove('hidden');
+            publicationsContainer.innerHTML = '';
+            noPublications.classList.add('hidden');
+
+            try {
+                const authToken = localStorage.getItem('auth_token');
+                const response = await fetch('/api/publications', {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+
+                if (response.ok) {
+                    const publications = await response.json();
+                    displayPublications(publications);
+                    
+                    // Actualizar badge de no leídos
+                    checkUnreadPublications();
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showMessage('Error al cargar las publicaciones', 'error');
+            } finally {
+                loadingPublications.classList.add('hidden');
+            }
+        }
+
+        function displayPublications(publications) {
+            publicationsContainer.innerHTML = '';
+
+            if (publications.length === 0) {
+                noPublications.classList.remove('hidden');
+                noPublicationsMessage.textContent = 'Aún no hay publicaciones disponibles.';
+                return;
+            }
+
+            noPublications.classList.add('hidden');
+
+            publications.forEach((pub, index) => {
+                const card = createPublicationCard(pub, index);
+                publicationsContainer.appendChild(card);
+            });
+        }
+
+        function createPublicationCard(pub, index) {
+            const card = document.createElement('div');
+            card.className = `publication-card ${!pub.is_viewed ? 'new' : ''}`;
+            card.style.animationDelay = `${index * 0.05}s`;
+
+            const formattedDate = new Date(pub.created_at).toLocaleDateString('es-ES', {
+                day: '2-digit',
+                month: 'long',
+                year: 'numeric'
+            });
+
+            let contentHTML = '';
+            let fileHTML = '';
+
+            // Usar el campo correcto según la API del servidor
+            if (pub.publication_type === 'text') {
+                contentHTML = `<div class="publication-content">${pub.content || ''}</div>`;
+            } else if (pub.file_url) {
+                const fileIcon = getFileIcon(pub.publication_type);
+                contentHTML = pub.content ? `<div class="publication-content">${pub.content}</div>` : '';
+                fileHTML = `
+                    <div class="publication-file">
+                        <div class="file-icon">
+                            <i class="${fileIcon}"></i>
+                        </div>
+                        <div class="file-info">
+                            <div class="file-name">${pub.file_name || 'Archivo adjunto'}</div>
+                            <div class="file-type">${pub.file_type || 'Archivo'}</div>
+                        </div>
+                        <button class="download-file-btn" onclick="downloadPublicationFile('${pub.file_url}')">
+                            <i class="fas fa-download"></i>
+                        </button>
+                    </div>
+                `;
+            }
+
+            // Determinar el nombre del autor (usar author_name de la API)
+            const authorName = pub.author_name || 'Profesor';
+
+            card.innerHTML = `
+                <div class="publication-header">
+                    <div class="publication-title">${pub.title}</div>
+                    <div class="publication-meta">
+                        <div>
+                            <span class="publication-author">${authorName}</span>
+                            <span class="publication-date"> • ${formattedDate}</span>
+                        </div>
+                        <span class="publication-type">${getPublicationTypeText(pub.publication_type)}</span>
+                    </div>
+                </div>
+                <div class="publication-body">
+                    ${contentHTML}
+                    ${fileHTML}
+                    <div class="publication-actions">
+                        ${!pub.is_viewed ? `
+                            <button class="mark-read-btn" onclick="markPublicationAsViewed(${pub.id})">
+                                <i class="fas fa-check"></i> Marcar como leído
+                            </button>
+                        ` : ''}
+                        ${currentUser.role === 'teacher' ? `
+                            <button class="delete-publication-btn" onclick="deletePublication(${pub.id}, '${pub.title.replace(/'/g, "\\'")}')">
+                                <i class="fas fa-trash"></i> Eliminar
+                            </button>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+
+            return card;
+        }
+
+        async function checkUnreadPublications() {
+            try {
+                const authToken = localStorage.getItem('auth_token');
+                const response = await fetch('/api/publications/unread', {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const unreadCount = data.unread_count || 0;
+                    
+                    if (unreadCount > 0) {
+                        unreadBadge.textContent = unreadCount;
+                        unreadBadge.classList.remove('hidden');
+                    } else {
+                        unreadBadge.classList.add('hidden');
+                    }
+                }
+            } catch (error) {
+                console.error('Error checking unread publications:', error);
+            }
+        }
+
+        window.markPublicationAsViewed = async function(publicationId) {
+            try {
+                const authToken = localStorage.getItem('auth_token');
+                const response = await fetch(`/api/publications/${publicationId}/view`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+
+                if (response.ok) {
+                    // Recargar publicaciones para actualizar el estado
+                    loadPublications();
+                    showMessage('Publicación marcada como leída', 'success');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showMessage('Error al marcar como leída', 'error');
+            }
+        };
+
+        window.downloadPublicationFile = function(fileUrl) {
+            window.open(fileUrl, '_blank');
+        };
+
+        window.deletePublication = function(publicationId, publicationTitle) {
+            pendingAction = 'deletePublication';
+            pendingData = { id: publicationId };
+            
+            document.getElementById('confirmMessage').textContent = 
+                `¿Eliminar la publicación "${publicationTitle}"? Esta acción no se puede deshacer.`;
+            
+            openModal('confirmModal');
+        };
+
+        function openPublicationModal(publicationData = null) {
+            publicationForm.reset();
+            publicationFileUploadArea.classList.remove('active');
+            contentFieldGroup.classList.remove('hidden');
+            fileFieldGroup.classList.add('hidden');
+
+            if (publicationData) {
+                // Modo edición (si se implementa en el futuro)
+                publicationModalTitle.textContent = 'Editar Publicación';
+                publicationSubmitBtn.innerHTML = '<i class="fas fa-save"></i> Guardar Cambios';
+                document.getElementById('publicationId').value = publicationData.id;
+                // ... cargar datos existentes
+            } else {
+                // Modo creación
+                publicationModalTitle.textContent = 'Crear Nueva Publicación';
+                publicationSubmitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Publicar';
+                document.getElementById('publicationId').value = '';
+            }
+            
+            openModal('publicationModal');
+        }
+
+        function handlePublicationTypeChange() {
+            const type = publicationTypeSelect.value;
+            
+            if (type === 'text') {
+                contentFieldGroup.classList.remove('hidden');
+                fileFieldGroup.classList.add('hidden');
+                document.getElementById('publicationContent').required = true;
+            } else {
+                contentFieldGroup.classList.remove('hidden');
+                fileFieldGroup.classList.remove('hidden');
+                document.getElementById('publicationContent').required = false;
+            }
+        }
+
+        function handlePublicationFileSelect(e) {
+            if (e.target.files.length > 0) {
+                const file = e.target.files[0];
+                publicationFileInfo.innerHTML = `
+                    <strong>Archivo seleccionado:</strong> ${file.name}<br>
+                    <small>Tamaño: ${(file.size / 1024).toFixed(2)} KB</small>
+                `;
+                publicationFileUploadArea.classList.add('active');
+            }
+        }
+
+        async function handlePublicationSubmit(e) {
+            e.preventDefault();
+
+            const type = document.getElementById('publicationType').value;
+            const title = document.getElementById('publicationTitle').value.trim();
+            const content = document.getElementById('publicationContent').value.trim();
+            const file = document.getElementById('publicationFile').files[0];
+
+            if (!title) {
+                showMessage('El título es requerido', 'error');
+                return;
+            }
+
+            if (type === 'text' && !content) {
+                showMessage('El contenido es requerido para publicaciones de texto', 'error');
+                return;
+            }
+
+            if (type !== 'text' && !file) {
+                showMessage('Debes seleccionar un archivo para este tipo de publicación', 'error');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('type', type);
+            formData.append('title', title);
+            
+            if (type === 'text') {
+                formData.append('content', content);
+            }
+            
+            if (file) {
+                formData.append('file', file);
+            }
+
+            try {
+                const authToken = localStorage.getItem('auth_token');
+                const response = await fetch('/api/publications', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showMessage('¡Publicación creada exitosamente!', 'success');
+                    closeModal('publicationModal');
+                    loadPublications();
+                } else {
+                    showMessage(data.error || 'Error al crear la publicación', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showMessage('Error de conexión', 'error');
+            }
         }
 
         async function loadStudents() {
@@ -2020,6 +2639,18 @@
                             loadStudents();
                         }
                         break;
+
+                    case 'deletePublication':
+                        const publicationResponse = await fetch(`/api/publications/${pendingData.id}`, {
+                            method: 'DELETE',
+                            headers: { 'Authorization': `Bearer ${authToken}` }
+                        });
+
+                        if (publicationResponse.ok) {
+                            showMessage('Publicación eliminada', 'success');
+                            loadPublications();
+                        }
+                        break;
                 }
             } catch (error) {
                 console.error('Error:', error);
@@ -2029,12 +2660,32 @@
             }
         }
 
+        // Funciones auxiliares
         function getLevelText(category) {
             switch(category) {
                 case 'A1': return 'A1 - BÁSICO';
                 case 'A2': return 'A2 - FUNCIONAL';
                 case 'B1': return 'B1 - INTERMEDIO';
                 default: return category || 'Sin asignar';
+            }
+        }
+
+        function getPublicationTypeText(type) {
+            switch(type) {
+                case 'text': return 'TEXTO';
+                case 'photo': return 'FOTO';
+                case 'video': return 'VIDEO';
+                case 'document': return 'DOCUMENTO';
+                default: return type.toUpperCase();
+            }
+        }
+
+        function getFileIcon(type) {
+            switch(type) {
+                case 'photo': return 'fas fa-image';
+                case 'video': return 'fas fa-video';
+                case 'document': return 'fas fa-file-alt';
+                default: return 'fas fa-file';
             }
         }
 
