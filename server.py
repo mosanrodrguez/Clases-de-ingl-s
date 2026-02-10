@@ -30,7 +30,7 @@ CORS(app, resources={r"/*": {"origins": "*"}})
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', secrets.token_hex(32))
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB
 
-DATABASE_URL = "postgresql://englishcourse_user:VI8pYTtX2bbv2YftidVHOUKXtK6J7ehd@dpg-d64mmungi27c73b53hr0-a/englishcourse"
+DATABASE_URL = "postgresql://englishcourse_m885_user:R1mTk8YrWgaPyDRAV7fVFVAWm24QvjRa@dpg-d65malesb7us73btl8ag-a/englishcourse_m885"
 
 cloudinary.config(
     cloud_name="dj72b0ykc",
