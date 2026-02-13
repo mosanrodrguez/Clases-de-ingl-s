@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>EnglishClasses - Estudiante</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #1d3c6e;
+            --primary-dark: #2a5298;
+            --accent: #c41e1e;
+            --success: #25D366;
+            --gray-100: #f8fafc;
+            --gray-200: #e2e8f0;
+            --gray-600: #64748b;
+            --gray-800: #334155;
+            --white: #ffffff;
+            --shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: var(--gray-100);
+            color: var(--gray-800);
+            padding-bottom: 70px;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: var(--white);
+            padding: 16px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header h1 {
+            font-size: 1.2rem;
+            font-weight: 800;
+        }
+
+        .header h1 span {
+            color: #ff6b6b;
+        }
+
+        .header-btn {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            border-radius: 50%;
+            color: var(--white);
+            font-size: 1.2rem;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--white);
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 4px;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+
+        .nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px;
+            color: var(--gray-600);
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item i {
+            font-size: 1.3rem;
+            margin-bottom: 4px;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+            background: rgba(29,60,110,0.05);
+        }
+
+        /* Pages */
+        .page {
+            display: none;
+            padding: 16px;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* Publications */
+        .publications-feed {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .publication-card {
+            background: var(--white);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .pub-header {
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .pub-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+        }
+
+        .pub-author h4 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin-bottom: 2px;
+        }
+
+        .pub-time {
+            font-size: 0.7rem;
+            color: var(--gray-600);
+        }
+
+        .pub-content {
+            padding: 16px;
+        }
+
+        .pub-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .pub-text {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: var(--gray-800);
+        }
+
+        .pub-media {
+            width: 100%;
+            max-height: 300px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-top: 12px;
+        }
+
+        .pub-footer {
+            padding: 12px 16px;
+            border-top: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .like-btn {
+            background: none;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--gray-600);
+            font-size: 0.9rem;
+            padding: 8px 12px;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .like-btn.liked {
+            color: var(--accent);
+        }
+
+        .like-btn.liked i {
+            font-weight: 900;
+        }
+
+        .views-count {
+            color: var(--gray-600);
+            font-size: 0.8rem;
+        }
+
+        /* Classes */
+        .classes-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .class-card {
+            background: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .class-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: var(--white);
+            padding: 16px;
+        }
+
+        .class-level {
+            background: rgba(255,255,255,0.2);
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            display: inline-block;
+            margin-bottom: 8px;
+        }
+
+        .class-title {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .class-meta {
+            font-size: 0.7rem;
+            opacity: 0.9;
+        }
+
+        .class-body {
+            padding: 16px;
+        }
+
+        .class-desc {
+            font-size: 0.85rem;
+            color: var(--gray-600);
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+
+        .download-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--success);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        /* Profile */
+        .profile-card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 800;
+            margin: 0 auto 16px;
+        }
+
+        .profile-name {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+
+        .profile-role {
+            color: var(--gray-600);
+            font-size: 0.9rem;
+            margin-bottom: 16px;
+        }
+
+        .profile-stats {
+            background: var(--gray-100);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: left;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            color: var(--gray-600);
+        }
+
+        .stat-value {
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .no-level {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--gray-600);
+        }
+
+        .no-level i {
+            font-size: 3rem;
+            color: var(--gray-200);
+            margin-bottom: 16px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--gray-200);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>English<span>Classes</span></h1>
+        <button class="header-btn" id="logoutBtn">
+            <i class="fas fa-sign-out-alt"></i>
+        </button>
+    </header>
+
+    <main>
+        <!-- Inicio (Publicaciones) -->
+        <div class="page active" id="homePage">
+            <div class="publications-feed" id="publicationsFeed"></div>
+            <div class="loading hidden" id="loadingPublications">
+                <div class="spinner"></div>
+            </div>
+        </div>
+
+        <!-- Clases -->
+        <div class="page" id="classesPage">
+            <div id="noLevelMessage" class="no-level hidden">
+                <i class="fas fa-user-clock"></i>
+                <h3>Esperando asignación de nivel</h3>
+                <p>El profesor te asignará un nivel pronto</p>
+            </div>
+            <div class="classes-grid" id="classesContainer"></div>
+            <div class="loading hidden" id="loadingClasses">
+                <div class="spinner"></div>
+            </div>
+        </div>
+
+        <!-- Perfil -->
+        <div class="page" id="profilePage">
+            <div class="profile-card" id="profileContainer">
+                <!-- Se llena con JS -->
+            </div>
+        </div>
+    </main>
+
+    <nav class="bottom-nav">
+        <a href="#" class="nav-item active" data-page="home">
+            <i class="fas fa-home"></i>
+            <span>Inicio</span>
+        </a>
+        <a href="#" class="nav-item" data-page="classes">
+            <i class="fas fa-book"></i>
+            <span>Clases</span>
+        </a>
+        <a href="#" class="nav-item" data-page="profile">
+            <i class="fas fa-user"></i>
+            <span>Perfil</span>
+        </a>
+    </nav>
+
+    <script src="https://cdn.socket.io/4.5.0/socket.io.min.js"></script>
+    <script>
+        let currentUser = null;
+        let currentPage = 'home';
+        let socket = null;
+
+        const pages = {
+            home: document.getElementById('homePage'),
+            classes: document.getElementById('classesPage'),
+            profile: document.getElementById('profilePage')
+        };
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAuth();
+            setupNavigation();
+            connectSocket();
+        });
+
+        function checkAuth() {
+            const user = localStorage.getItem('current_user');
+            const token = localStorage.getItem('auth_token');
+            
+            if (!user || !token) {
+                window.location.href = 'auth.html';
+                return;
+            }
+
+            currentUser = JSON.parse(user);
+            
+            if (currentUser.role !== 'student') {
+                window.location.href = 'profesor.html';
+                return;
+            }
+
+            loadProfile();
+            loadPublications();
+            checkStudentLevel();
+        }
+
+        function connectSocket() {
+            socket = io();
+            
+            socket.on('new_publication', () => {
+                if (currentPage === 'home') {
+                    loadPublications();
+                }
+            });
+
+            socket.on('like_updated', (data) => {
+                updateLikeCount(data.publication_id, data.likes_count, data.liked);
+            });
+        }
+
+        function setupNavigation() {
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const page = item.dataset.page;
+                    
+                    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+                    item.classList.add('active');
+                    
+                    Object.values(pages).forEach(p => p.classList.remove('active'));
+                    pages[page].classList.add('active');
+                    
+                    currentPage = page;
+                    
+                    if (page === 'home') loadPublications();
+                    if (page === 'classes') checkStudentLevel();
+                });
+            });
+
+            document.getElementById('logoutBtn').addEventListener('click', () => {
+                localStorage.clear();
+                window.location.href = 'auth.html';
+            });
+        }
+
+        // ============ PERFIL ============
+        async function loadProfile() {
+            const container = document.getElementById('profileContainer');
+            
+            try {
+                const token = localStorage.getItem('auth_token');
+                const res = await fetch('/api/profile', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (res.ok) {
+                    const profile = await res.json();
+                    const initials = profile.name.split(' ').map(n => n[0]).join('').toUpperCase();
+                    
+                    container.innerHTML = `
+                        <div class="profile-avatar">${initials.substring(0, 2)}</div>
+                        <h2 class="profile-name">${profile.name}</h2>
+                        <p class="profile-role">ESTUDIANTE</p>
+                        <div class="profile-stats">
+                            <div class="stat-item">
+                                <span class="stat-label">Usuario:</span>
+                                <span class="stat-value">@${profile.username}</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Nivel:</span>
+                                <span class="stat-value">${profile.level || 'Sin asignar'}</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Miembro desde:</span>
+                                <span class="stat-value">${new Date(profile.registration_date).toLocaleDateString()}</span>
+                            </div>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        // ============ PUBLICACIONES ============
+        async function loadPublications() {
+            const feed = document.getElementById('publicationsFeed');
+            const loading = document.getElementById('loadingPublications');
+
+            loading.classList.remove('hidden');
+            feed.innerHTML = '';
+
+            try {
+                const token = localStorage.getItem('auth_token');
+                const res = await fetch('/api/publications', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (res.ok) {
+                    const pubs = await res.json();
+                    
+                    if (pubs.length === 0) {
+                        feed.innerHTML = '<div class="no-level">No hay publicaciones aún</div>';
+                    } else {
+                        pubs.forEach(pub => {
+                            feed.appendChild(createPublicationCard(pub));
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            } finally {
+                loading.classList.add('hidden');
+            }
+        }
+
+        function createPublicationCard(pub) {
+            const card = document.createElement('div');
+            card.className = 'publication-card';
+
+            const date = new Date(pub.created_at).toLocaleDateString('es-ES', {
+                day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit'
+            });
+
+            let mediaHtml = '';
+            if (pub.publication_type === 'photo' && pub.file_url) {
+                mediaHtml = `<img src="${pub.file_url}" class="pub-media">`;
+            } else if (pub.publication_type === 'video' && pub.file_url) {
+                mediaHtml = `<video src="${pub.file_url}" class="pub-media" controls></video>`;
+            } else if (pub.publication_type === 'document' && pub.file_url) {
+                mediaHtml = `
+                    <div style="background: var(--gray-100); padding: 20px; text-align: center; border-radius: 12px;">
+                        <i class="fas fa-file-pdf" style="font-size: 2rem; color: var(--accent);"></i>
+                        <p style="font-size: 0.8rem; margin-top: 8px;">${pub.file_name}</p>
+                    </div>
+                `;
+            }
+
+            const authorInitials = pub.author_name?.split(' ').map(n => n[0]).join('').toUpperCase() || 'P';
+
+            card.innerHTML = `
+                <div class="pub-header">
+                    <div class="pub-avatar">${authorInitials.substring(0, 2)}</div>
+                    <div class="pub-author">
+                        <h4>${pub.author_name}</h4>
+                        <span class="pub-time">${date}</span>
+                    </div>
+                </div>
+                <div class="pub-content">
+                    <h3 class="pub-title">${pub.title}</h3>
+                    ${pub.publication_type === 'text' ? `<p class="pub-text">${pub.content}</p>` : ''}
+                    ${mediaHtml}
+                </div>
+                <div class="pub-footer">
+                    <button class="like-btn ${pub.user_liked ? 'liked' : ''}" data-id="${pub.id}">
+                        <i class="fas fa-heart"></i>
+                        <span class="likes-count">${pub.likes_count || 0}</span>
+                    </button>
+                    <span class="views-count">
+                        <i class="far fa-eye"></i> ${pub.views_count || 0}
+                    </span>
+                </div>
+            `;
+
+            const likeBtn = card.querySelector('.like-btn');
+            likeBtn.addEventListener('click', () => toggleLike(pub.id, likeBtn));
+
+            return card;
+        }
+
+        async function toggleLike(publicationId, btn) {
+            try {
+                const token = localStorage.getItem('auth_token');
+                const res = await fetch(`/api/publications/${publicationId}/like`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    btn.classList.toggle('liked', data.liked);
+                    btn.querySelector('.likes-count').textContent = data.likes_count;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        function updateLikeCount(pubId, count, liked) {
+            const btn = document.querySelector(`.like-btn[data-id="${pubId}"]`);
+            if (btn) {
+                btn.classList.toggle('liked', liked);
+                btn.querySelector('.likes-count').textContent = count;
+            }
+        }
+
+        // ============ CLASES ============
+        async function checkStudentLevel() {
+            try {
+                const token = localStorage.getItem('auth_token');
+                const res = await fetch('/api/profile', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (res.ok) {
+                    const profile = await res.json();
+                    currentUser.level = profile.level;
+
+                    if (currentUser.level && currentUser.level !== 'Sin asignar') {
+                        document.getElementById('noLevelMessage').classList.add('hidden');
+                        loadClasses(currentUser.level);
+                    } else {
+                        document.getElementById('noLevelMessage').classList.remove('hidden');
+                        document.getElementById('classesContainer').innerHTML = '';
+                    }
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        async function loadClasses(level) {
+            const container = document.getElementById('classesContainer');
+            const loading = document.getElementById('loadingClasses');
+
+            loading.classList.remove('hidden');
+            container.innerHTML = '';
+
+            try {
+                const token = localStorage.getItem('auth_token');
+                const res = await fetch(`/api/classes?level=${level}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (res.ok) {
+                    const classes = await res.json();
+                    
+                    if (classes.length === 0) {
+                        container.innerHTML = '<div class="no-level">No hay clases disponibles para tu nivel</div>';
+                    } else {
+                        classes.forEach(cls => {
+                            container.appendChild(createClassCard(cls));
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            } finally {
+                loading.classList.add('hidden');
+            }
+        }
+
+        function createClassCard(cls) {
+            const card = document.createElement('div');
+            card.className = 'class-card';
+
+            const date = new Date(cls.created_at).toLocaleDateString();
+
+            card.innerHTML = `
+                <div class="class-header">
+                    <span class="class-level">${cls.level}</span>
+                    <h3 class="class-title">${cls.title}</h3>
+                    <div class="class-meta">
+                        <i class="far fa-calendar"></i> ${date}
+                    </div>
+                </div>
+                <div class="class-body">
+                    <p class="class-desc">${cls.description}</p>
+                    <button class="download-btn" onclick="downloadClass(${cls.id})">
+                        <i class="fas fa-download"></i> DESCARGAR
+                    </button>
+                </div>
+            `;
+
+            return card;
+        }
+
+        window.downloadClass = async function(classId) {
+            try {
+                const token = localStorage.getItem('auth_token');
+                const res = await fetch(`/api/classes/${classId}/download`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    window.open(data.download_url, '_blank');
+                } else {
+                    alert('No tienes acceso a esta clase');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        };
+    </script>
+</body>
+</html>
