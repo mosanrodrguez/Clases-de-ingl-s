@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>EnglishClasses - Profesor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #1d3c6e;
+            --primary-dark: #2a5298;
+            --accent: #c41e1e;
+            --success: #25D366;
+            --gray-100: #f8fafc;
+            --gray-200: #e2e8f0;
+            --gray-600: #64748b;
+            --gray-800: #334155;
+            --white: #ffffff;
+            --shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            --radius: 12px;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: var(--gray-100);
+            color: var(--gray-800);
+            padding-bottom: 70px;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: var(--white);
+            padding: 16px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header h1 {
+            font-size: 1.2rem;
+            font-weight: 800;
+        }
+
+        .header h1 span {
+            color: #ff6b6b;
+        }
+
+        .header-btn {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            border-radius: 50%;
+            color: var(--white);
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--white);
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 4px;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+
+        .nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px;
+            color: var(--gray-600);
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .nav-item i {
+            font-size: 1.3rem;
+            margin-bottom: 4px;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+            background: rgba(29,60,110,0.05);
+        }
+
+        /* Pages */
+        .page {
+            display: none;
+            padding: 16px;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* Filtros */
+        .filters {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding: 4px 0 12px;
+            margin-bottom: 16px;
+        }
+
+        .filter-chip {
+            padding: 8px 16px;
+            background: var(--white);
+            border: 1px solid var(--gray-200);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--gray-600);
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        .filter-chip.active {
+            background: var(--primary);
+            color: var(--white);
+            border-color: var(--primary);
+        }
+
+        /* Grid de clases/publicaciones */
+        .grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: var(--white);
+            padding: 16px;
+        }
+
+        .card-header.small {
+            padding: 12px;
+        }
+
+        .card-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            display: inline-block;
+            margin-bottom: 8px;
+        }
+
+        .card-title {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .card-meta {
+            font-size: 0.7rem;
+            opacity: 0.9;
+        }
+
+        .card-body {
+            padding: 16px;
+        }
+
+        .card-desc {
+            font-size: 0.85rem;
+            color: var(--gray-600);
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+
+        .btn-edit {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        .btn-delete {
+            background: var(--accent);
+            color: var(--white);
+        }
+
+        /* Estudiantes */
+        .students-list {
+            background: var(--white);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+
+        .student-item {
+            padding: 16px;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .student-avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+        }
+
+        .student-info {
+            flex: 1;
+        }
+
+        .student-name {
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin-bottom: 2px;
+        }
+
+        .student-level {
+            font-size: 0.7rem;
+            color: var(--primary);
+            background: rgba(29,60,110,0.1);
+            padding: 2px 8px;
+            border-radius: 10px;
+            display: inline-block;
+        }
+
+        .student-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .level-select {
+            padding: 8px;
+            border: 1px solid var(--gray-200);
+            border-radius: 8px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.8rem;
+        }
+
+        .access-btn {
+            padding: 8px 12px;
+            background: var(--success);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 200;
+            display: flex;
+            align-items: flex-end;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: var(--white);
+            width: 100%;
+            border-radius: 20px 20px 0 0;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-overlay.active .modal {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray-600);
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--gray-200);
+            border-radius: 8px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            padding: 0 20px 20px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .btn-submit {
+            background: var(--success);
+            color: var(--white);
+        }
+
+        .btn-cancel {
+            background: var(--accent);
+            color: var(--white);
+        }
+
+        /* FAB */
+        .fab {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: var(--white);
+            border: none;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 12px rgba(29,60,110,0.3);
+            cursor: pointer;
+            z-index: 90;
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--gray-200);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>English<span>Classes</span></h1>
+        <button class="header-btn" id="logoutBtn">
+            <i class="fas fa-sign-out-alt"></i>
+        </button>
+    </header>
+
+    <main>
+        <!-- Publicaciones -->
+        <div class="page active" id="publicationsPage">
+            <div class="filters">
+                <button class="filter-chip active" data-type="all">Todas</button>
+                <button class="filter-chip" data-type="text">Texto</button>
+                <button class="filter-chip" data-type="photo">Fotos</button>
+                <button class="filter-chip" data-type="video">Videos</button>
+            </div>
+            <div class="grid" id="publicationsGrid"></div>
+            <div class="loading hidden" id="loadingPublications">
+                <div class="spinner"></div>
+            </div>
+            <button class="fab" id="newPublicationBtn">
+                <i class="fas fa-plus"></i>
+            </button>
+        </div>
+
+        <!-- Clases -->
+        <div class="page" id="classesPage">
+            <div class="filters">
+                <button class="filter-chip active" data-level="all">Todas</button>
+                <button class="filter-chip" data-level="A1">A1</button>
+                <button class="filter-chip" data-level="A2">A2</button>
+                <button class="filter-chip" data-level="B1">B1</button>
+            </div>
+            <div class="grid" id="classesGrid"></div>
+            <div class="loading hidden" id="loadingClasses">
+                <div class="spinner"></div>
+            </div>
+            <button class="fab" id="newClassBtn">
+                <i class="fas fa-plus"></i>
+            </button>
+        </div>
+
+        <!-- Estudiantes -->
+        <div class="page" id="studentsPage">
+            <div class="students-list" id="studentsList"></div>
+            <div class="loading hidden" id="loadingStudents">
+                <div class="spinner"></div>
+            </div>
+        </div>
+
+        <!-- Perfil -->
+        <div class="page" id="profilePage">
+            <div class="card" id="profileContainer"></div>
+        </div>
+    </main>
+
+    <nav class="bottom-nav">
+        <a class="nav-item active" data-page="publications">
+            <i class="fas fa-newspaper"></i>
+            <span>Publicaciones</span>
+        </a>
+        <a class="nav-item" data-page="classes">
+            <i class="fas fa-book"></i>
+            <span>Clases</span>
+        </a>
+        <a class="nav-item" data-page="students">
+            <i class="fas fa-users"></i>
+            <span>Estudiantes</span>
+        </a>
+        <a class="nav-item" data-page="profile">
+            <i class="fas fa-user"></i>
+            <span>Perfil</span>
+        </a>
+    </nav>
+
+    <!-- Modal Publicación -->
+    <div class="modal-overlay" id="publicationModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Nueva Publicación</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="publicationForm">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Tipo</label>
+                        <select id="pubType" required>
+                            <option value="text">Texto</option>
+                            <option value="photo">Foto</option>
+                            <option value="video">Video</option>
+                            <option value="document">Documento</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Título</label>
+                        <input type="text" id="pubTitle" required>
+                    </div>
+                    <div class="form-group" id="contentGroup">
+                        <label>Contenido</label>
+                        <textarea id="pubContent" rows="3"></textarea>
+                    </div>
+                    <div class="form-group hidden" id="fileGroup">
+                        <label>Archivo</label>
+                        <input type="file" id="pubFile">
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="submit" class="modal-btn btn-submit">Publicar</button>
+                    <button type="button" class="modal-btn btn-cancel close-modal">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Clase -->
+    <div class="modal-overlay" id="classModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="classModalTitle">Nueva Clase</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="classForm">
+                <div class="modal-body">
+                    <input type="hidden" id="classId">
+                    <div class="form-group">
+                        <label>Título</label>
+                        <input type="text" id="classTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Descripción</label>
+                        <textarea id="classDescription" rows="3" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Nivel</label>
+                        <select id="classLevel" required>
+                            <option value="">Seleccionar</option>
+                            <option value="A1">A1 - Básico</option>
+                            <option value="A2">A2 - Funcional</option>
+                            <option value="B1">B1 - Intermedio</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Archivo</label>
+                        <input type="file" id="classFile" id="classFileInput">
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="submit" class="modal-btn btn-submit" id="submitClassBtn">Guardar</button>
+                    <button type="button" class="modal-btn btn-cancel close-modal">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Accesos -->
+    <div class="modal-overlay" id="accessModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Gestionar Accesos</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body" id="accessModalBody"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.socket.io/4.5.0/socket.io.min.js"></script>
+    <script>
+        let currentUser = null;
+        let currentPage = 'publications';
+        let socket = null;
+        let currentFilter = 'all';
+
+        const pages = {
+            publications: document.getElementById('publicationsPage'),
+            classes: document.getElementById('classesPage'),
+            students: document.getElementById('studentsPage'),
+            profile: document.getElementById('profilePage')
+        };
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAuth();
+            setupNavigation();
+            setupModals();
+            connectSocket();
+        });
+
+        function checkAuth() {
+            const user = localStorage.getItem('current_user');
+            const token = localStorage.getItem('auth_token');
+            
+            if (!user || !token) {
+                window.location.href = 'auth.html';
+                return;
+            }
+
+            currentUser = JSON.parse(user);
+            
+            if (currentUser.role !== 'teacher') {
+                window.location.href = 'estudiante.html';
+                return;
+            }
+
+            loadProfile();
+            loadPublications();
+            loadClasses();
+            loadStudents();
+        }
+
+        function connectSocket() {
+            socket = io();
+        }
+
+        function setupNavigation() {
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const page = item.dataset.page;
+                    
+                    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+                    item.classList.add('active');
+                    
+                    Object.values(pages).forEach(p => p.classList.remove('active'));
+                    pages[page].classList.add('active');
+                    
+                    currentPage = page;
+                    
+                    if (page === 'publications') loadPublications();
+                    if (page === 'classes') loadClasses();
+                    if (page === 'students') loadStudents();
+                });
+            });
+
+            document.getElementById('logoutBtn').addEventListener('click', () => {
+                localStorage.clear();
+                window.location.href = 'auth.html';
+            });
+        }
+
+        function setupModals() {
+            // Cerrar modales
+            document.querySelectorAll('.close-modal').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('active'));
+                });
+            });
+
+            // Publicación
+            document.getElementById('newPublicationBtn').addEventListener('click', () => {
+                document.getElementById('publicationModal').classList.add('active');
+            });
+
+            document.getElementById('pubType').addEventListener('change', function() {
+                const contentGroup = document.getElementById('contentGroup');
+                const fileGroup = document.getElementById('fileGroup');
+                
+                if (this.value === 'text') {
+                    contentGroup.classList.remove('hidden');
+                    fileGroup.classList.add('hidden');
+                } else {
+                    contentGroup.classList.add('hidden');
+                    fileGroup.classList.remove('hidden');
+                }
+            });
+
+            document.getElementById('publicationForm').addEventListener('submit', handlePublicationSubmit);
+
+            // Clase
+            document.getElementById('newClassBtn').addEventListener('click', () => {
+                document.getElementById('classModalTitle').textContent = 'Nueva Clase';
+                document.getElementById('classForm').reset();
+                document.getElementById('classId').value = '';
+                document.getElementById('classFile').required = true;
+                document.getElementById('classModal').classList.add('active');
+            });
+
+            document.getElementById('classForm').addEventListener('submit', handleClassSubmit);
+
+            // Filtros
+            document.querySelectorAll('#publicationsPage .filter-chip').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('#publicationsPage .filter-chip').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentFilter = btn.dataset.type;
+                    filterPublications();
+                });
+            });
+
+            document.querySelectorAll('#classesPage .filter-chip').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('#classesPage .filter-chip').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    loadClasses(btn.dataset.level === 'all' ? null : btn.dataset.level);
+                });
+            });
+        }
+
+        // ============ PERFIL ============
+        async function loadProfile() {
+            const container = document.getElementById('profileContainer');
+            
+            try {
+                const token = localStorage.getItem('auth_token');
+                const res = await fetch('/api/profile', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (res.ok) {
+                    const profile = await res.json();
+                    container.innerHTML = `
+                        <div class="card-header">
+                            <h3 class="card-title">Perfil del Profesor</h3>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Nombre:</strong> ${profile.name}</p>
+                            <p><strong>Usuario:</strong> @${profile.username}</p>
+                            <p><strong>Miembro desde:</strong> ${new Date(profile.registration_date).toLocaleDateString()}</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        // ============ PUBLICACIONES ============
+        async function loadPublications() {
+            const grid = document.getElementById('publicationsGrid');
+            const loading = document.getElementById('loadingPublications');
+
+            loading.classList.remove('hidden');
+            grid.innerHTML = '';
+
+            try {
+                const token = localStorage.getItem('auth_token');
+                const res = await fetch('/api/publications', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (res.ok) {
+                    window.allPublications = await res.json();
+                    filterPublications();
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            } finally {
+                loading.classList.add('hidden');
+            }
+        }
+
+        function filterPublications() {
+            const grid = document.getElementById('publicationsGrid');
+            let filtered = window.allPublications || [];
+
+            if (currentFilter !== 'all') {
+                filtered = filtered.filter(p => p.publication_type === currentFilter);
+            }
+
+            if (filtered.length === 0) {
+                grid.innerHTML = '<div class="no-level">No hay publicaciones</div>';
+            } else {
+                grid.innerHTML = filtered.map(pub => createPublicationCard(pub)).join('');
+            }
+        }
+
+        function createPublicationCard(pub) {
+            const date = new Date(pub.created_at).toLocaleDateString();
+            return `
+                <div class="card">
+                    <div class="card-header small">
+                        <span class="card-badge">${pub.publication_type.toUpperCase()}</span>
+                        <h3 class="card-title">${pub.title}</h3>
+                        <div class="card-meta">${date}</div>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-desc">${pub.content || 'Sin contenido'}</p>
+                        <div class="card-actions">
+                            <button class="btn btn-delete" onclick="deletePublication(${pub.id})">
+                                <i class="fas fa-trash"></i> Eliminar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function handlePublicationSubmit(e) {
+            e.preventDefault();
+
+            const type = document.getElementById('pubType').value;
+            const title = document.getElementById('pubTitle').value.trim();
+            const content = document.getElementById('pubContent').value.trim();
+            const file = document.getElementById('pubFile').files[0];
+
+            if (!title) {
+                alert('El título es requerido');
+                return;
+            }
+
+            if (type === 'text' && !content) {
+                alert('El contenido es requerido');
+                return;
+            }
+
+            if (type !== 'text' && !file) {
+                alert('Selecciona un archivo');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('type', type);
+            formData.append('title', title);
+            if (type === 'text') formData.append('content', content);
+            if (file) formData.append('file', file);
+
+            const btn = e.target.querySelector('button[type="submit"]');
+            const original = btn.innerHTML;
+            btn.innerHTML = 'Publicando...';
+            btn.disabled = true;
+
+            try {
+                const token = localStorage.getItem('auth_token');
+                const res = await fetch('/api/publications', {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    body: formData
+                });
+
+                if (res.ok) {
+                    document.getElementById('publicationModal').classList.remove('active');
+                    loadPublications();
+                } else {
+                    alert('Error al publicar');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            } finally {
+                btn.innerHTML = original;
+                btn.disabled = false;
+            }
+        }
+
+        window.deletePublication = async function(id) {
+            if (!confirm('¿Eliminar publicación?')) return;
+
+            try {
+                const token = localStorage.getItem('auth_token');
+                const res = await fetch(`/api/publications/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (res.ok) {
+                    loadPublications();
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        };
+
+        // ============ CLASES ============
+        async function loadClasses(level = null) {
+            const grid = document.getElementById('classesGrid');
+            const loading = document.getElementById('loadingClasses');
+
+            loading.classList.remove('hidden');
+            grid.innerHTML = '';
+
+            try {
+                const token = localStorage.getItem('auth_token');
+                const url = level ? `/api/classes?level=${level}` : '/api/classes/all';
+                const res = await fetch(url, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (res.ok) {
+                    const classes = await res.json();
+                    
+                    if (classes.length === 0) {
+                        grid.innerHTML = '<div class="no-level">No hay clases</div>';
+                    } else {
+                        grid.innerHTML = classes.map(cls => createClassCard(cls)).join('');
+                    }
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            } finally {
+                loading.classList.add('hidden');
+            }
+        }
+
+        function createClassCard(cls) {
+            const date = new Date(cls.created_at).toLocaleDateString();
+            return `
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-badge">${cls.level}</span>
+                        <h3 class="card-title">${cls.title}</h3>
+                        <div class="card-meta">${date}</div>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-desc">${cls.description}</p>
+                        <div class="card-actions">
+                            <button class="btn btn-edit" onclick="editClass(${cls.id})">
+                                <i class="fas fa-edit"></i> Editar
+                            </button>
+                            <button class="btn btn-delete" onclick="deleteClass(${cls.id})">
+                                <i class="fas fa-trash"></i> Eliminar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        window.editClass = async function(id) {
+            try {
+                const token = localStorage.getItem('auth_token');
+                const res = await fetch(`/api/classes/${id}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (res.ok) {
+                    const cls = await res.json();
+                    
+                    document.getElementById('classModalTitle').textContent = 'Editar Clase';
+                    document.getElementById('classId').value = cls.id;
+                    document.getElementById('classTitle').value = cls.title;
+                    document.getElementById('classDescription').value = cls.description;
+                    document.getElementById('classLevel').value = cls.level;
+                    document.getElementById('classFile').required = false;
+                    
+                    document.getElementById('classModal').classList.add('active');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        };
+
+        window.deleteClass = async function(id) {
+            if (!confirm('¿Eliminar clase?')) return;
+
+            try {
+                const token = localStorage.getItem('auth_token');
+                const res = await fetch(`/api/classes/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (res.ok) {
+                    loadClasses();
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        };
+
+        async function handleClassSubmit(e) {
+            e.preventDefault();
+
+            const id = document.getElementById('classId').value;
+            const title = document.getElementById('classTitle').value.trim();
+            const description = document.getElementById('classDescription').value.trim();
+            const level = document.getElementById('classLevel').value;
+            const file = document.getElementById('classFile').files[0];
+
+            if (!title || !description || !level) {
+                alert('Completa todos los campos');
+                return;
+            }
+
+            if (!id && !file) {
+                alert('Selecciona un archivo');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('title', title);
+            formData.append('description', description);
+            formData.append('level', level);
+            if (file) formData.append('file', file);
+
+            const btn = e.target.querySelector('button[type="submit"]');
+            const original = btn.innerHTML;
+            btn.innerHTML = 'Guardando...';
+            btn.disabled = true;
+
+            try {
+                const token = localStorage.getItem('auth_token');
+                const url = id ? `/api/classes/${id}` : '/api/classes';
+                const method = id ? 'PUT' : 'POST';
+
+                const res = await fetch(url, {
+                    method,
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    body: formData
+                });
+
+                if (res.ok) {
+                    document.getElementById('classModal').classList.remove('active');
+                    loadClasses();
+                } else {
+                    alert('Error al guardar');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            } finally {
+                btn.innerHTML = original;
+                btn.disabled = false;
+            }
+        }
+
+        // ============ ESTUDIANTES ============
+        async function loadStudents() {
+            const list = document.getElementById('studentsList');
+            const loading = document.getElementById('loadingStudents');
+
+            loading.classList.remove('hidden');
+            list.innerHTML = '';
+
+            try {
+                const token = localStorage.getItem('auth_token');
+                const res = await fetch('/api/students', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (res.ok) {
+                    const students = await res.json();
+                    
+                    if (students.length === 0) {
+                        list.innerHTML = '<div class="no-level">No hay estudiantes</div>';
+                    } else {
+                        list.innerHTML = students.map(s => createStudentItem(s)).join('');
+                    }
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            } finally {
+                loading.classList.add('hidden');
+            }
+        }
+
+        function createStudentItem(student) {
+            const initials = student.name.split(' ').map(n => n[0]).join('').toUpperCase();
+            return `
+                <div class="student-item">
+                    <div class="student-avatar">${initials.substring(0, 2)}</div>
+                    <div class="student-info">
+                        <div class="student-name">${student.name}</div>
+                        <span class="student-level">${student.level || 'Sin nivel'}</span>
+                    </div>
+                    <div class="student-actions">
+                        <select class="level-select" onchange="updateStudentLevel(${student.id}, this.value)">
+                            <option value="Sin asignar" ${student.level === 'Sin asignar' ? 'selected' : ''}>Sin nivel</option>
+                            <option value="A1" ${student.level === 'A1' ? 'selected' : ''}>A1</option>
+                            <option value="A2" ${student.level === 'A2' ? 'selected' : ''}>A2</option>
+                            <option value="B1" ${student.level === 'B1' ? 'selected' : ''}>B1</option>
+                        </select>
+                        <button class="access-btn" onclick="openAccessModal(${student.id}, '${student.name}')">
+                            <i class="fas fa-key"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        window.updateStudentLevel = async function(studentId, level) {
+            try {
+                const token = localStorage.getItem('auth_token');
+                await fetch(`/api/students/${studentId}/level`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ level })
+                });
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        };
+
+        window.openAccessModal = async function(studentId, studentName) {
+            try {
+                const token = localStorage.getItem('auth_token');
+                const res = await fetch(`/api/students/${studentId}/access`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (res.ok) {
+                    const classes = await res.json();
+                    const modalBody = document.getElementById('accessModalBody');
+                    
+                    modalBody.innerHTML = `
+                        <h4 style="margin-bottom: 16px;">${studentName}</h4>
+                        ${classes.map(cls => `
+                            <div style="background: var(--gray-100); padding: 12px; border-radius: 8px; margin-bottom: 8px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <div>
+                                        <strong>${cls.title}</strong>
+                                        <p style="font-size: 0.8rem; color: var(--gray-600);">${cls.level}</p>
+                                    </div>
+                                    <button class="access-toggle" onclick="toggleAccess(${studentId}, ${cls.id}, ${!cls.has_access})" 
+                                            style="background: ${cls.has_access ? 'var(--success)' : 'var(--gray-200)'}; width: 44px; height: 24px; border: none; border-radius: 12px; position: relative; cursor: pointer;">
+                                        <span style="content: ''; width: 20px; height: 20px; background: white; border-radius: 50%; position: absolute; top: 2px; left: ${cls.has_access ? '22px' : '2px'}; transition: all 0.3s;"></span>
+                                    </button>
+                                </div>
+                            </div>
+                        `).join('')}
+                    `;
+                    
+                    document.getElementById('accessModal').classList.add('active');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        };
+
+        window.toggleAccess = async function(studentId, classId, hasAccess) {
+            try {
+                const token = localStorage.getItem('auth_token');
+                await fetch(`/api/students/${studentId}/access`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ class_id: classId, has_access: hasAccess })
+                });
+                
+                // Recargar modal
+                const studentName = document.querySelector('#accessModalBody h4').textContent;
+                openAccessModal(studentId, studentName);
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        };
+    </script>
+</body>
+</html>
