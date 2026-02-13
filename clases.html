@@ -2,13 +2,13 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Clases de Inglés</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
-        /* RESET Y BASE */
+        /* ===== VARIABLES Y RESET (paleta original) ===== */
         * {
             margin: 0;
             padding: 0;
@@ -21,310 +21,167 @@
             --secondary-blue: #2a5298;
             --accent-red: #c41e1e;
             --success-green: #25D366;
-            --light-gray: #f5f7fa;
-            --medium-gray: #e0e0e0;
-            --dark-gray: #333333;
+            --light-gray: #f8fafc;
+            --medium-gray: #e2e8f0;
+            --dark-gray: #334155;
+            --text-gray: #64748b;
             --white: #ffffff;
-            --shadow: 0 2px 10px rgba(0,0,0,0.1);
-            --border-radius: 10px;
-            --transition: all 0.3s ease;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.07);
+            --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         body {
             font-family: 'Montserrat', sans-serif;
-            background-color: var(--light-gray);
+            background: var(--light-gray);
             color: var(--dark-gray);
-            line-height: 1.4;
-            overflow-x: hidden;
             min-height: 100vh;
+            padding-bottom: 70px; /* Espacio para navbar inferior */
+            line-height: 1.5;
         }
 
-        /* HEADER SIMPLIFICADO */
+        /* ===== HEADER SUPERIOR ===== */
         .app-header {
             background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
             color: var(--white);
-            padding: 15px;
-            position: fixed;
+            padding: 16px;
+            position: sticky;
             top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            height: 60px;
+            z-index: 90;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            box-shadow: var(--shadow);
+            box-shadow: var(--shadow-md);
         }
 
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
+        .header-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
         }
 
-        .menu-btn {
-            background: none;
-            border: none;
-            color: var(--white);
-            font-size: 1.4rem;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            transition: var(--transition);
-        }
-
-        .menu-btn:active {
-            background-color: rgba(255, 255, 255, 0.1);
-            transform: scale(0.95);
-        }
-
-        .app-title {
-            font-size: 1.1rem;
-            font-weight: 700;
-        }
-
-        .app-title span {
+        .header-title span {
             color: #ff6b6b;
         }
 
-        /* PANEL LATERAL */
-        .side-panel {
-            position: fixed;
-            top: 0;
-            left: -100%;
-            width: 85%;
-            max-width: 300px;
-            height: 100vh;
-            background: linear-gradient(180deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
-            color: var(--white);
-            z-index: 1100;
-            transition: var(--transition);
+        .header-actions {
             display: flex;
-            flex-direction: column;
-            box-shadow: 2px 0 20px rgba(0,0,0,0.3);
-            overflow-y: auto;
+            gap: 8px;
         }
 
-        .side-panel.open {
-            left: 0;
-        }
-
-        .panel-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(0,0,0,0.5);
-            z-index: 1099;
-            opacity: 0;
-            visibility: hidden;
-            transition: var(--transition);
-        }
-
-        .panel-overlay.open {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .panel-header {
-            padding: 20px 15px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            background-color: rgba(0, 0, 0, 0.1);
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .user-avatar {
-            width: 50px;
-            height: 50px;
-            background-color: var(--accent-red);
+        .header-btn {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
             border-radius: 50%;
+            color: var(--white);
+            font-size: 1.2rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 700;
-            font-size: 1.2rem;
+            position: relative;
+            backdrop-filter: blur(4px);
+            transition: var(--transition);
+        }
+
+        .header-btn:active {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(0.95);
+        }
+
+        .badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--accent-red);
             color: var(--white);
+            font-size: 0.7rem;
+            font-weight: 700;
+            min-width: 18px;
+            height: 18px;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 4px;
             border: 2px solid var(--white);
         }
 
-        .user-details {
-            flex: 1;
-        }
-
-        .user-name {
-            font-weight: 700;
-            font-size: 1rem;
-            margin-bottom: 4px;
-        }
-
-        .user-role {
-            background-color: rgba(255, 255, 255, 0.2);
-            padding: 3px 10px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            display: inline-block;
-        }
-
-        .user-level {
-            margin-top: 8px;
-            background-color: rgba(37, 211, 102, 0.2);
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            color: var(--success-green);
-            border: 1px solid rgba(37, 211, 102, 0.3);
-            display: inline-block;
-        }
-
-        .panel-nav {
-            padding: 15px 0;
-            flex: 1;
+        /* ===== BARRA DE NAVEGACIÓN INFERIOR ===== */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--white);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 8px 4px;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 100;
+            border-top: 1px solid var(--medium-gray);
         }
 
         .nav-item {
+            flex: 1;
             display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 15px;
-            color: var(--white);
-            text-decoration: none;
-            transition: var(--transition);
-            border-left: 4px solid transparent;
-            font-weight: 600;
-            font-size: 0.95rem;
-            cursor: pointer;
-        }
-
-        .nav-item.active {
-            background-color: rgba(255, 255, 255, 0.15);
-            border-left-color: var(--success-green);
-        }
-
-        .nav-item:active {
-            background-color: rgba(255, 255, 255, 0.1);
-        }
-
-        .nav-item i {
-            width: 24px;
-            text-align: center;
-            font-size: 1.1rem;
-        }
-
-        .panel-footer {
-            padding: 15px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .logout-btn {
-            width: 100%;
-            padding: 12px;
-            background-color: rgba(196, 30, 30, 0.2);
-            color: var(--white);
-            border: 1px solid rgba(196, 30, 30, 0.4);
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            padding: 8px 4px;
+            color: var(--text-gray);
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: var(--radius-sm);
             transition: var(--transition);
-            cursor: pointer;
-        }
-
-        .logout-btn:active {
-            background-color: rgba(196, 30, 30, 0.3);
-        }
-
-        /* CONTENIDO PRINCIPAL */
-        .main-content {
-            margin-top: 60px;
-            padding: 15px;
-            min-height: calc(100vh - 60px);
             position: relative;
         }
 
-        /* PÁGINAS */
+        .nav-item i {
+            font-size: 1.3rem;
+            margin-bottom: 4px;
+        }
+
+        .nav-item.active {
+            color: var(--primary-blue);
+            background: rgba(29, 60, 110, 0.05);
+        }
+
+        .nav-item .badge {
+            top: 0;
+            right: 50%;
+            transform: translateX(15px);
+            font-size: 0.6rem;
+            min-width: 16px;
+            height: 16px;
+        }
+
+        /* ===== CONTENIDO PRINCIPAL ===== */
+        .main-content {
+            padding: 16px;
+        }
+
+        /* ===== PÁGINAS ===== */
         .page {
             display: none;
-            opacity: 0;
-            transform: translateY(10px);
-            transition: opacity 0.3s ease, transform 0.3s ease;
+            animation: fadeIn 0.3s ease;
         }
 
         .page.active {
             display: block;
-            opacity: 1;
-            transform: translateY(0);
         }
 
-        /* HEADER DE PÁGINA */
-        .page-header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .back-btn {
-            width: 40px;
-            height: 40px;
-            background: none;
-            border: none;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            color: var(--primary-blue);
-            transition: var(--transition);
-            cursor: pointer;
-        }
-
-        .back-btn:active {
-            background-color: rgba(29, 60, 110, 0.1);
-        }
-
-        .page-title-section {
-            flex: 1;
-        }
-
-        .page-title {
-            font-size: 1.5rem;
-            font-weight: 900;
-            color: var(--primary-blue);
-            margin-bottom: 4px;
-        }
-
-        .page-subtitle {
-            font-size: 0.85rem;
-            color: #666;
-        }
-
-        /* MENSAJES */
-        .message {
-            padding: 12px 15px;
-            border-radius: var(--border-radius);
-            margin-bottom: 20px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            text-align: center;
-            animation: slideIn 0.3s ease;
-        }
-
-        @keyframes slideIn {
+        @keyframes fadeIn {
             from {
                 opacity: 0;
-                transform: translateY(-10px);
+                transform: translateY(10px);
             }
             to {
                 opacity: 1;
@@ -332,321 +189,201 @@
             }
         }
 
-        .message.info {
-            background-color: rgba(29, 60, 110, 0.1);
-            color: var(--primary-blue);
-            border: 1px solid var(--primary-blue);
-        }
-
-        .message.success {
-            background-color: rgba(37, 211, 102, 0.1);
-            color: var(--success-green);
-            border: 1px solid var(--success-green);
-        }
-
-        .message.error {
-            background-color: rgba(196, 30, 30, 0.1);
-            color: var(--accent-red);
-            border: 1px solid var(--accent-red);
-        }
-
-        /* PÁGINA: PUBLICACIONES */
-        .publications-container {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 15px;
+        /* ===== HEADER DE PÁGINA ===== */
+        .page-header {
             margin-bottom: 20px;
         }
 
-        .publication-card {
-            background-color: var(--white);
-            border-radius: var(--border-radius);
-            overflow: hidden;
-            box-shadow: var(--shadow);
+        .page-title {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--primary-blue);
+            letter-spacing: -0.5px;
+            margin-bottom: 4px;
+        }
+
+        .page-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-gray);
+            font-weight: 500;
+        }
+
+        /* ===== TABS DE FILTROS ===== */
+        .filters-scroll {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding: 4px 0 12px;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+
+        .filters-scroll::-webkit-scrollbar {
+            display: none;
+        }
+
+        .filter-chip {
+            padding: 8px 16px;
+            background: var(--white);
             border: 1px solid var(--medium-gray);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-gray);
+            white-space: nowrap;
             transition: var(--transition);
         }
 
-        .publication-card:active {
-            transform: translateY(-2px);
+        .filter-chip:active {
+            background: var(--light-gray);
         }
 
-        .publication-card.new {
-            border-left: 4px solid var(--success-green);
+        .filter-chip.active {
+            background: var(--primary-blue);
+            color: var(--white);
+            border-color: var(--primary-blue);
+        }
+
+        /* ===== PUBLICACIONES ESTILO INSTAGRAM ===== */
+        .publications-feed {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .publication-card {
+            background: var(--white);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--medium-gray);
         }
 
         .publication-header {
-            background-color: rgba(29, 60, 110, 0.05);
-            padding: 15px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
             border-bottom: 1px solid var(--medium-gray);
+        }
+
+        .publication-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
+            color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1rem;
+        }
+
+        .publication-author {
+            flex: 1;
+        }
+
+        .publication-author h4 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--dark-gray);
+            margin-bottom: 2px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .publication-badge {
+            background: var(--accent-red);
+            color: var(--white);
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 10px;
+        }
+
+        .publication-time {
+            font-size: 0.7rem;
+            color: var(--text-gray);
+        }
+
+        .publication-content {
+            padding: 16px;
         }
 
         .publication-title {
             font-size: 1.1rem;
             font-weight: 700;
             color: var(--primary-blue);
-            margin-bottom: 5px;
+            margin-bottom: 8px;
         }
 
-        .publication-meta {
+        .publication-text {
+            font-size: 0.9rem;
+            color: var(--dark-gray);
+            line-height: 1.6;
+        }
+
+        .publication-media {
+            width: 100%;
+            max-height: 300px;
+            object-fit: cover;
+            border-radius: var(--radius-sm);
+            margin-top: 12px;
+        }
+
+        .publication-footer {
+            padding: 12px 16px;
+            border-top: 1px solid var(--medium-gray);
             display: flex;
             justify-content: space-between;
             align-items: center;
             font-size: 0.8rem;
-            color: #666;
         }
 
-        .publication-type {
-            background-color: var(--primary-blue);
+        .viewed-badge {
+            background: var(--success-green);
             color: var(--white);
-            padding: 3px 10px;
+            padding: 4px 8px;
             border-radius: 12px;
             font-size: 0.7rem;
             font-weight: 600;
         }
 
-        .publication-author {
-            font-weight: 600;
-        }
-
-        .publication-date {
-            color: #888;
-        }
-
-        .publication-body {
-            padding: 15px;
-        }
-
-        .publication-content {
-            color: #555;
-            font-size: 0.9rem;
-            line-height: 1.5;
-            margin-bottom: 15px;
-        }
-
-        .publication-file {
-            background-color: #f8f9fa;
-            border-radius: 8px;
-            padding: 10px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 10px;
-            border: 1px solid var(--medium-gray);
-        }
-
-        .file-icon {
-            width: 40px;
-            height: 40px;
-            background-color: var(--primary-blue);
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .unread-badge {
+            background: var(--primary-blue);
             color: var(--white);
-            font-size: 1.2rem;
-        }
-
-        .file-info {
-            flex: 1;
-        }
-
-        .file-name {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
             font-weight: 600;
-            font-size: 0.9rem;
-            margin-bottom: 2px;
         }
 
-        .file-type {
-            font-size: 0.8rem;
-            color: #666;
-        }
-
-        .download-file-btn {
-            background-color: var(--success-green);
-            color: var(--white);
-            border: none;
-            border-radius: 6px;
-            padding: 8px 15px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .download-file-btn:active {
-            background-color: #1da851;
-            transform: scale(0.98);
-        }
-
-        .publication-actions {
-            display: flex;
-            gap: 8px;
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid var(--medium-gray);
-        }
-
-        .mark-read-btn {
-            flex: 1;
-            padding: 8px;
-            background-color: var(--primary-blue);
-            color: var(--white);
-            border: none;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .mark-read-btn:active {
-            background-color: #152a50;
-            transform: scale(0.98);
-        }
-
-        .delete-publication-btn {
-            padding: 8px 15px;
-            background-color: var(--accent-red);
-            color: var(--white);
-            border: none;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .delete-publication-btn:active {
-            background-color: #a01818;
-            transform: scale(0.98);
-        }
-
-        /* PÁGINA: MIS CLASES (Estudiantes) */
-        .no-level-message {
-            text-align: center;
-            padding: 40px 20px;
-            background-color: var(--white);
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
-            margin-top: 20px;
-        }
-
-        .no-level-message i {
-            font-size: 3rem;
-            color: var(--medium-gray);
-            margin-bottom: 15px;
-        }
-
-        .no-level-message h3 {
-            color: var(--primary-blue);
-            margin-bottom: 10px;
-            font-size: 1.2rem;
-        }
-
-        .no-level-message p {
-            color: #666;
-            font-size: 0.9rem;
-            line-height: 1.5;
-        }
-
-        /* FILTROS */
-        .filters-container {
-            background-color: var(--white);
-            border-radius: var(--border-radius);
-            padding: 15px;
-            margin-bottom: 20px;
-            box-shadow: var(--shadow);
-        }
-
-        .filters-title {
-            color: var(--primary-blue);
-            font-weight: 700;
-            margin-bottom: 12px;
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .filters {
-            display: flex;
-            gap: 8px;
-            overflow-x: auto;
-            padding-bottom: 5px;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .filters::-webkit-scrollbar {
-            height: 4px;
-        }
-
-        .filters::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 2px;
-        }
-
-        .filters::-webkit-scrollbar-thumb {
-            background: #c1c1c1;
-            border-radius: 2px;
-        }
-
-        .filter-btn {
-            padding: 8px 16px;
-            background-color: #f0f2f5;
-            border: 2px solid var(--medium-gray);
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 0.85rem;
-            color: var(--primary-blue);
-            white-space: nowrap;
-            transition: var(--transition);
-            flex-shrink: 0;
-            cursor: pointer;
-        }
-
-        .filter-btn:active {
-            background-color: #e3e8f0;
-        }
-
-        .filter-btn.active {
-            background-color: var(--primary-blue);
-            color: var(--white);
-            border-color: var(--primary-blue);
-        }
-
-        /* TARJETAS DE CLASE */
+        /* ===== CLASES ===== */
         .classes-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 15px;
-            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
 
         .class-card {
-            background-color: var(--white);
-            border-radius: var(--border-radius);
+            background: var(--white);
+            border-radius: var(--radius-md);
             overflow: hidden;
-            box-shadow: var(--shadow);
-            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
             border: 1px solid var(--medium-gray);
-        }
-
-        .class-card:active {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
         }
 
         .class-header {
             background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
             color: var(--white);
-            padding: 12px;
+            padding: 16px;
         }
 
         .class-level {
-            background-color: var(--accent-red);
-            color: var(--white);
-            padding: 4px 10px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 4px 8px;
             border-radius: 12px;
             font-size: 0.7rem;
             font-weight: 700;
@@ -656,38 +393,26 @@
 
         .class-title {
             font-size: 1.1rem;
-            font-weight: 700;
-            line-height: 1.3;
-        }
-
-        .class-body {
-            padding: 15px;
-        }
-
-        .class-description {
-            color: #666;
-            font-size: 0.85rem;
-            line-height: 1.5;
-            margin-bottom: 12px;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
+            font-weight: 800;
+            margin-bottom: 4px;
         }
 
         .class-meta {
+            font-size: 0.75rem;
+            opacity: 0.9;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.8rem;
-            color: #888;
-            margin-bottom: 15px;
+            gap: 12px;
         }
 
-        .meta-item {
-            display: flex;
-            align-items: center;
-            gap: 4px;
+        .class-body {
+            padding: 16px;
+        }
+
+        .class-description {
+            font-size: 0.85rem;
+            color: var(--text-gray);
+            margin-bottom: 16px;
+            line-height: 1.5;
         }
 
         .class-actions {
@@ -697,17 +422,16 @@
 
         .action-btn {
             flex: 1;
-            padding: 10px;
+            padding: 12px;
             border: none;
-            border-radius: 6px;
-            font-weight: 600;
-            font-size: 0.85rem;
+            border-radius: var(--radius-sm);
+            font-weight: 700;
+            font-size: 0.8rem;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 6px;
             transition: var(--transition);
-            cursor: pointer;
         }
 
         .action-btn:active {
@@ -715,105 +439,89 @@
         }
 
         .download-btn {
-            background-color: var(--success-green);
+            background: var(--success-green);
             color: var(--white);
-        }
-
-        .download-btn:active {
-            background-color: #1da851;
         }
 
         .edit-btn {
-            background-color: var(--primary-blue);
+            background: var(--primary-blue);
             color: var(--white);
-        }
-
-        .edit-btn:active {
-            background-color: #152a50;
         }
 
         .delete-btn {
-            background-color: var(--accent-red);
+            background: var(--accent-red);
             color: var(--white);
         }
 
-        .delete-btn:active {
-            background-color: #a01818;
+        /* ===== NOTIFICACIONES ===== */
+        .notifications-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
         }
 
-        /* SIN CONTENIDO */
-        .no-content {
-            text-align: center;
-            padding: 50px 20px;
-            background-color: var(--white);
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
-            margin-top: 20px;
+        .notification-item {
+            background: var(--white);
+            padding: 16px;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-left: 4px solid transparent;
+            box-shadow: var(--shadow-sm);
         }
 
-        .no-content i {
-            font-size: 3rem;
-            color: var(--medium-gray);
-            margin-bottom: 15px;
+        .notification-item.unread {
+            background: rgba(29, 60, 110, 0.05);
+            border-left-color: var(--primary-blue);
         }
 
-        .no-content h3 {
-            color: var(--primary-blue);
-            margin-bottom: 10px;
-            font-size: 1.2rem;
-        }
-
-        .no-content p {
-            color: #666;
-            font-size: 0.9rem;
-            line-height: 1.5;
-        }
-
-        /* PÁGINA: GESTIONAR CLASES (Profesor) */
-        .upload-fab {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 56px;
-            height: 56px;
-            background-color: var(--success-green);
-            color: var(--white);
-            border: none;
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--light-gray);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.3rem;
-            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
-            z-index: 100;
-            transition: var(--transition);
-            cursor: pointer;
+            color: var(--primary-blue);
+            font-size: 1.1rem;
         }
 
-        .upload-fab:active {
-            transform: scale(0.95);
-            box-shadow: 0 6px 16px rgba(37, 211, 102, 0.5);
+        .notification-content {
+            flex: 1;
         }
 
-        /* PÁGINA: ESTUDIANTES (Profesor) */
+        .notification-content p {
+            font-size: 0.85rem;
+            color: var(--dark-gray);
+            margin-bottom: 4px;
+            line-height: 1.4;
+        }
+
+        .notification-content strong {
+            color: var(--primary-blue);
+        }
+
+        .notification-time {
+            font-size: 0.7rem;
+            color: var(--text-gray);
+        }
+
+        /* ===== ESTUDIANTES (profesor) ===== */
         .students-list {
-            background-color: var(--white);
-            border-radius: var(--border-radius);
+            background: var(--white);
+            border-radius: var(--radius-md);
             overflow: hidden;
-            box-shadow: var(--shadow);
+            box-shadow: var(--shadow-sm);
         }
 
         .student-item {
-            padding: 15px;
+            padding: 16px;
             border-bottom: 1px solid var(--medium-gray);
             display: flex;
             align-items: center;
             gap: 12px;
-            transition: var(--transition);
-        }
-
-        .student-item:active {
-            background-color: #f9f9f9;
         }
 
         .student-item:last-child {
@@ -823,15 +531,14 @@
         .student-avatar {
             width: 40px;
             height: 40px;
-            background-color: var(--primary-blue);
+            background: var(--primary-blue);
+            color: var(--white);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 700;
-            color: var(--white);
+            font-weight: 800;
             font-size: 0.9rem;
-            flex-shrink: 0;
         }
 
         .student-info {
@@ -839,68 +546,127 @@
         }
 
         .student-name {
-            font-weight: 600;
+            font-weight: 700;
+            font-size: 0.95rem;
             color: var(--dark-gray);
             margin-bottom: 2px;
-            font-size: 0.95rem;
         }
 
         .student-username {
-            color: #666;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
+            color: var(--text-gray);
             margin-bottom: 4px;
+        }
+
+        .student-level {
+            background: var(--light-gray);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            display: inline-block;
+            color: var(--primary-blue);
         }
 
         .student-actions {
             display: flex;
-            align-items: center;
             gap: 8px;
         }
 
         .level-select {
-            padding: 6px 10px;
-            border: 2px solid var(--medium-gray);
-            border-radius: 6px;
+            padding: 6px 8px;
+            border: 1px solid var(--medium-gray);
+            border-radius: var(--radius-sm);
             font-family: 'Montserrat', sans-serif;
-            font-size: 0.8rem;
-            background-color: var(--white);
+            font-size: 0.75rem;
+            background: var(--white);
             color: var(--dark-gray);
-            min-width: 120px;
-            cursor: pointer;
         }
 
-        .delete-student-btn {
-            background: none;
-            border: none;
-            color: var(--accent-red);
-            font-size: 1rem;
+        .access-btn {
             width: 36px;
             height: 36px;
-            border-radius: 50%;
+            background: var(--primary-blue);
+            color: var(--white);
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 0.9rem;
+        }
+
+        /* ===== GESTIÓN DE ACCESOS ===== */
+        .access-list {
+            margin-top: 16px;
+        }
+
+        .access-item {
+            background: var(--white);
+            border: 1px solid var(--medium-gray);
+            border-radius: var(--radius-sm);
+            padding: 12px;
+            margin-bottom: 8px;
+        }
+
+        .access-header {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            justify-content: center;
-            transition: var(--transition);
+            margin-bottom: 8px;
+        }
+
+        .access-header h4 {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+        }
+
+        .access-toggle {
+            width: 44px;
+            height: 24px;
+            background: var(--medium-gray);
+            border: none;
+            border-radius: 12px;
+            position: relative;
             cursor: pointer;
+            transition: var(--transition);
         }
 
-        .delete-student-btn:active {
-            background-color: rgba(196, 30, 30, 0.1);
+        .access-toggle.active {
+            background: var(--success-green);
         }
 
-        /* MODALES */
+        .access-toggle::after {
+            content: '';
+            width: 20px;
+            height: 20px;
+            background: var(--white);
+            border-radius: 50%;
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .access-toggle.active::after {
+            left: 22px;
+        }
+
+        .access-info {
+            font-size: 0.7rem;
+            color: var(--text-gray);
+        }
+
+        /* ===== MODALES ===== */
         .modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background-color: rgba(0,0,0,0.7);
-            z-index: 2000;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 200;
             display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 15px;
+            align-items: flex-end;
             opacity: 0;
             visibility: hidden;
             transition: var(--transition);
@@ -912,65 +678,52 @@
         }
 
         .modal {
-            background-color: var(--white);
+            background: var(--white);
             width: 100%;
-            max-width: 500px;
-            border-radius: var(--border-radius);
-            overflow: hidden;
+            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
             max-height: 90vh;
-            display: flex;
-            flex-direction: column;
-            animation: modalSlideUp 0.3s ease;
+            overflow-y: auto;
         }
 
-        @keyframes modalSlideUp {
-            from {
-                opacity: 0;
-                transform: translateY(40px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .modal-overlay.active .modal {
+            transform: translateY(0);
         }
 
         .modal-header {
-            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
-            color: var(--white);
-            padding: 15px;
+            padding: 20px;
+            border-bottom: 1px solid var(--medium-gray);
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .modal-title {
+        .modal-header h3 {
             font-size: 1.2rem;
-            font-weight: 700;
+            font-weight: 800;
+            color: var(--primary-blue);
         }
 
         .close-modal {
             background: none;
             border: none;
-            color: var(--white);
             font-size: 1.5rem;
-            width: 36px;
-            height: 36px;
+            color: var(--text-gray);
+            width: 40px;
+            height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 50%;
-            transition: var(--transition);
-            cursor: pointer;
         }
 
         .close-modal:active {
-            background-color: rgba(255, 255, 255, 0.1);
+            background: var(--light-gray);
         }
 
         .modal-body {
             padding: 20px;
-            overflow-y: auto;
-            flex: 1;
         }
 
         .form-group {
@@ -979,27 +732,25 @@
 
         .form-label {
             display: block;
+            font-size: 0.85rem;
+            font-weight: 700;
             color: var(--primary-blue);
-            font-weight: 600;
             margin-bottom: 8px;
-            font-size: 0.9rem;
         }
 
         .form-control {
             width: 100%;
             padding: 12px;
             border: 2px solid var(--medium-gray);
-            border-radius: 8px;
+            border-radius: var(--radius-sm);
             font-family: 'Montserrat', sans-serif;
             font-size: 0.9rem;
             transition: var(--transition);
-            background-color: #f9f9f9;
         }
 
         .form-control:focus {
             outline: none;
             border-color: var(--primary-blue);
-            background-color: var(--white);
             box-shadow: 0 0 0 3px rgba(29, 60, 110, 0.1);
         }
 
@@ -1008,97 +759,68 @@
             resize: vertical;
         }
 
-        .file-upload-area {
-            border: 2px dashed var(--medium-gray);
-            padding: 25px 15px;
-            text-align: center;
-            border-radius: 8px;
-            background-color: #f9f9f9;
-            transition: var(--transition);
-            cursor: pointer;
-        }
-
-        .file-upload-area.active {
-            border-color: var(--success-green);
-            background-color: rgba(37, 211, 102, 0.05);
-        }
-
-        .file-upload-area i {
-            font-size: 2rem;
-            color: var(--primary-blue);
-            margin-bottom: 10px;
-        }
-
-        .file-info {
-            margin-top: 10px;
-            font-size: 0.8rem;
-            color: #666;
-        }
-
-        .file-input {
-            display: none;
-        }
-
         .modal-actions {
             display: flex;
-            gap: 10px;
-            margin-top: 20px;
+            gap: 12px;
+            padding: 0 20px 20px;
         }
 
         .modal-btn {
             flex: 1;
-            padding: 12px;
+            padding: 14px;
             border: none;
-            border-radius: 8px;
+            border-radius: var(--radius-sm);
             font-weight: 700;
             font-size: 0.9rem;
             transition: var(--transition);
-            cursor: pointer;
         }
 
         .modal-btn:active {
             transform: scale(0.98);
         }
 
-        .submit-btn {
-            background-color: var(--success-green);
+        .modal-btn.submit {
+            background: var(--success-green);
             color: var(--white);
         }
 
-        .submit-btn:active {
-            background-color: #1da851;
-        }
-
-        .cancel-btn {
-            background-color: var(--accent-red);
+        .modal-btn.cancel {
+            background: var(--accent-red);
             color: var(--white);
         }
 
-        .cancel-btn:active {
-            background-color: #a01818;
+        /* ===== BOTÓN FLOTANTE (solo profesor) ===== */
+        .fab {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
+            color: var(--white);
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: var(--shadow-lg);
+            z-index: 90;
+            transition: var(--transition);
         }
 
-        /* MODAL DE CONFIRMACIÓN */
-        .confirm-modal .modal {
-            max-width: 400px;
+        .fab:active {
+            transform: scale(0.9);
         }
 
-        .confirm-modal .modal-header {
-            background: linear-gradient(135deg, var(--accent-red) 0%, #d63031 100%);
+        .fab.hidden {
+            display: none;
         }
 
-        .confirm-message {
-            text-align: center;
-            padding: 10px 0;
-            line-height: 1.5;
-            color: var(--dark-gray);
-        }
-
-        /* LOADING */
+        /* ===== LOADING ===== */
         .loading {
             display: flex;
             justify-content: center;
-            align-items: center;
             padding: 40px;
         }
 
@@ -1112,283 +834,314 @@
         }
 
         @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
+            to { transform: rotate(360deg); }
         }
 
-        /* BADGE DE NOTIFICACIONES */
-        .badge {
-            background-color: var(--accent-red);
-            color: var(--white);
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
+        /* ===== NO CONTENT ===== */
+        .no-content {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-gray);
+        }
+
+        .no-content i {
+            font-size: 3rem;
+            color: var(--medium-gray);
+            margin-bottom: 16px;
+        }
+
+        .no-content h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-bottom: 8px;
+        }
+
+        .no-content p {
+            font-size: 0.85rem;
+        }
+
+        /* ===== MENSAJES ===== */
+        .message {
+            margin: 16px;
+            padding: 14px 16px;
+            border-radius: var(--radius-sm);
+            font-size: 0.85rem;
+            font-weight: 600;
             display: flex;
             align-items: center;
-            justify-content: center;
-            font-size: 0.7rem;
-            font-weight: 700;
-            margin-left: auto;
+            gap: 10px;
+            animation: slideDown 0.3s ease;
+            border-left: 4px solid;
         }
 
-        /* RESPONSIVE */
-        @media (min-width: 768px) {
-            .side-panel {
-                width: 300px;
-            }
-            
-            .classes-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .publications-container {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .main-content {
-                padding: 20px;
-            }
+        .message.success {
+            background: rgba(37, 211, 102, 0.1);
+            color: var(--success-green);
+            border-color: var(--success-green);
         }
 
-        @media (min-width: 1024px) {
-            .classes-grid {
-                grid-template-columns: repeat(3, 1fr);
+        .message.error {
+            background: rgba(196, 30, 30, 0.1);
+            color: var(--accent-red);
+            border-color: var(--accent-red);
+        }
+
+        .message.hidden {
+            display: none;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
             }
-            
-            .publications-container {
-                grid-template-columns: repeat(2, 1fr);
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
         }
 
-        /* UTILITIES */
+        /* ===== UTILIDADES ===== */
         .hidden {
             display: none !important;
         }
 
         .teacher-only {
-            display: none !important;
+            display: none;
         }
 
-        .is-teacher .teacher-only {
-            display: flex !important;
+        body.is-teacher .teacher-only {
+            display: flex;
         }
 
-        .sr-only {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            white-space: nowrap;
-            border: 0;
+        body.is-teacher .fab.teacher-only {
+            display: flex;
         }
 
+        /* ===== RESPONSIVE ===== */
+        @media (min-width: 768px) {
+            .main-content {
+                max-width: 600px;
+                margin: 0 auto;
+            }
+            
+            .bottom-nav {
+                max-width: 400px;
+                left: 50%;
+                transform: translateX(-50%);
+                border-radius: 30px 30px 0 0;
+            }
+        }
     </style>
 </head>
 <body>
-    <!-- HEADER DE LA APLICACIÓN -->
+    <!-- HEADER SUPERIOR -->
     <header class="app-header">
-        <div class="header-left">
-            <button class="menu-btn" id="menuBtn" aria-label="Abrir menú">
-                <i class="fas fa-bars"></i>
+        <h1 class="header-title">Clases de <span>Inglés</span></h1>
+        <div class="header-actions">
+            <button class="header-btn" id="notificationsBtn">
+                <i class="fas fa-bell"></i>
+                <span class="badge hidden" id="notificationBadge">0</span>
             </button>
-            <h1 class="app-title">Clases de <span>Inglés</span></h1>
         </div>
     </header>
 
-    <!-- PANEL LATERAL -->
-    <div class="side-panel" id="sidePanel">
-        <div class="panel-header">
-            <div class="user-info">
-                <div class="user-avatar" id="userAvatar">JS</div>
-                <div class="user-details">
-                    <div class="user-name" id="userName">Cargando...</div>
-                    <div class="user-role" id="userRole">Estudiante</div>
-                    <div class="user-level hidden" id="userLevel">Sin nivel asignado</div>
-                </div>
-            </div>
-        </div>
-
-        <nav class="panel-nav">
-            <div class="nav-item active" data-page="home">
-                <i class="fas fa-home"></i>
-                <span>Mis Clases</span>
-            </div>
-            
-            <div class="nav-item" data-page="publications">
-                <i class="fas fa-newspaper"></i>
-                <span>Publicaciones</span>
-                <span class="badge hidden" id="unreadBadge">0</span>
-            </div>
-            
-            <div class="nav-item teacher-only" data-page="manage-classes">
-                <i class="fas fa-tasks"></i>
-                <span>Gestionar Clases</span>
-            </div>
-            
-            <div class="nav-item teacher-only" data-page="students">
-                <i class="fas fa-users"></i>
-                <span>Estudiantes</span>
-            </div>
-        </nav>
-
-        <div class="panel-footer">
-            <button class="logout-btn" id="logoutBtn">
-                <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
-            </button>
-        </div>
-    </div>
-
-    <div class="panel-overlay" id="panelOverlay"></div>
-
     <!-- CONTENIDO PRINCIPAL -->
     <main class="main-content">
-        <!-- MENSAJES GLOBALES -->
         <div id="message" class="message hidden"></div>
 
-        <!-- PÁGINA: INICIO (MIS CLASES) -->
+        <!-- PÁGINA: INICIO (PUBLICACIONES) -->
         <div class="page active" id="homePage">
             <div class="page-header">
-                <div class="page-title-section">
-                    <h2 class="page-title" id="homeTitle">Mis Clases</h2>
-                    <p class="page-subtitle" id="homeSubtitle">Accede a tu material de estudio</p>
-                </div>
+                <h2 class="page-title">Inicio</h2>
+                <p class="page-subtitle">Últimas publicaciones del profesor</p>
             </div>
 
-            <!-- Mensaje para estudiantes sin nivel -->
-            <div class="no-level-message hidden" id="noLevelMessage">
-                <i class="fas fa-user-clock"></i>
-                <h3>Esperando asignación de nivel</h3>
-                <p>El profesor debe asignarte un nivel para que puedas ver las clases correspondientes.</p>
-            </div>
+            <div class="publications-feed" id="publicationsFeed"></div>
 
-            <!-- Filtros (visible cuando hay nivel) -->
-            <div class="filters-container hidden" id="filtersContainer">
-                <div class="filters-title">
-                    <i class="fas fa-filter"></i> FILTRAR POR NIVEL
-                </div>
-                <div class="filters">
-                    <button class="filter-btn active" data-level="A1">A1 - BÁSICO</button>
-                    <button class="filter-btn" data-level="A2">A2 - FUNCIONAL</button>
-                    <button class="filter-btn" data-level="B1">B1 - INTERMEDIO</button>
-                </div>
-            </div>
-
-            <!-- Lista de clases -->
-            <div class="classes-grid" id="classesContainer"></div>
-
-            <!-- Sin clases disponibles -->
-            <div class="no-content hidden" id="noClasses">
-                <i class="fas fa-folder-open"></i>
-                <h3>No hay clases disponibles</h3>
-                <p id="noClassesMessage">El profesor aún no ha subido material para tu nivel.</p>
-            </div>
-
-            <!-- Loading -->
-            <div class="loading hidden" id="loadingClasses">
+            <div class="loading hidden" id="loadingPublications">
                 <div class="spinner"></div>
             </div>
-        </div>
-
-        <!-- PÁGINA: PUBLICACIONES -->
-        <div class="page" id="publicationsPage">
-            <div class="page-header">
-                <button class="back-btn" data-target="home">
-                    <i class="fas fa-arrow-left"></i>
-                </button>
-                <div class="page-title-section">
-                    <h2 class="page-title">Publicaciones</h2>
-                    <p class="page-subtitle" id="publicationsSubtitle">Anuncios y materiales importantes</p>
-                </div>
-            </div>
-
-            <!-- FAB para crear publicación (solo profesor) -->
-            <button class="upload-fab teacher-only" id="createPublicationFab" aria-label="Crear nueva publicación">
-                <i class="fas fa-plus"></i>
-            </button>
-
-            <div class="publications-container" id="publicationsContainer"></div>
 
             <div class="no-content hidden" id="noPublications">
                 <i class="fas fa-newspaper"></i>
                 <h3>No hay publicaciones</h3>
-                <p id="noPublicationsMessage">Aún no hay publicaciones disponibles.</p>
-            </div>
-
-            <!-- Loading -->
-            <div class="loading hidden" id="loadingPublications">
-                <div class="spinner"></div>
+                <p>El profesor aún no ha publicado nada</p>
             </div>
         </div>
 
-        <!-- PÁGINA: GESTIONAR CLASES (Solo para profesores) -->
+        <!-- PÁGINA: MIS CLASES -->
+        <div class="page" id="classesPage">
+            <div class="page-header">
+                <h2 class="page-title">Mis Clases</h2>
+                <p class="page-subtitle" id="classesSubtitle">Material de estudio</p>
+            </div>
+
+            <!-- Mensaje para estudiantes sin nivel -->
+            <div class="no-content hidden" id="noLevelMessage">
+                <i class="fas fa-user-clock"></i>
+                <h3>Esperando asignación de nivel</h3>
+                <p>El profesor debe asignarte un nivel para ver las clases</p>
+            </div>
+
+            <!-- Filtros de nivel -->
+            <div class="filters-scroll hidden" id="filtersContainer">
+                <button class="filter-chip active" data-level="A1">A1 - Básico</button>
+                <button class="filter-chip" data-level="A2">A2 - Funcional</button>
+                <button class="filter-chip" data-level="B1">B1 - Intermedio</button>
+            </div>
+
+            <div class="classes-grid" id="classesContainer"></div>
+
+            <div class="loading hidden" id="loadingClasses">
+                <div class="spinner"></div>
+            </div>
+
+            <div class="no-content hidden" id="noClasses">
+                <i class="fas fa-folder-open"></i>
+                <h3>No hay clases</h3>
+                <p>No hay material disponible para tu nivel</p>
+            </div>
+        </div>
+
+        <!-- PÁGINA: NOTIFICACIONES -->
+        <div class="page" id="notificationsPage">
+            <div class="page-header">
+                <h2 class="page-title">Notificaciones</h2>
+                <p class="page-subtitle">Actividad reciente</p>
+            </div>
+
+            <div class="notifications-list" id="notificationsList"></div>
+
+            <div class="loading hidden" id="loadingNotifications">
+                <div class="spinner"></div>
+            </div>
+
+            <div class="no-content hidden" id="noNotifications">
+                <i class="fas fa-bell-slash"></i>
+                <h3>No hay notificaciones</h3>
+                <p>Cuando haya actividad, aparecerá aquí</p>
+            </div>
+        </div>
+
+        <!-- PÁGINA: GESTIONAR CLASES (solo profesor) -->
         <div class="page teacher-only" id="manageClassesPage">
             <div class="page-header">
-                <button class="back-btn" data-target="home">
-                    <i class="fas fa-arrow-left"></i>
-                </button>
-                <div class="page-title-section">
-                    <h2 class="page-title">Gestionar Clases</h2>
-                    <p class="page-subtitle">Administra todo el material</p>
-                </div>
+                <h2 class="page-title">Gestionar Clases</h2>
+                <p class="page-subtitle">Administra el material</p>
             </div>
 
-            <div class="filters-container">
-                <div class="filters-title">
-                    <i class="fas fa-filter"></i> FILTRAR CLASES
-                </div>
-                <div class="filters">
-                    <button class="filter-btn active" data-level="all">TODAS</button>
-                    <button class="filter-btn" data-level="A1">A1</button>
-                    <button class="filter-btn" data-level="A2">A2</button>
-                    <button class="filter-btn" data-level="B1">B1</button>
-                </div>
+            <div class="filters-scroll">
+                <button class="filter-chip active" data-filter="all">Todas</button>
+                <button class="filter-chip" data-filter="A1">A1</button>
+                <button class="filter-chip" data-filter="A2">A2</button>
+                <button class="filter-chip" data-filter="B1">B1</button>
             </div>
 
-            <div class="classes-grid" id="manageClassesContainer"></div>
+            <div class="classes-grid" id="manageClassesGrid"></div>
+
+            <div class="loading hidden" id="loadingManageClasses">
+                <div class="spinner"></div>
+            </div>
 
             <div class="no-content hidden" id="noManageClasses">
                 <i class="fas fa-folder-open"></i>
-                <h3>No hay clases subidas</h3>
-                <p>Comienza subiendo tu primera clase.</p>
+                <h3>No hay clases</h3>
+                <p>Sube tu primera clase usando el botón +</p>
             </div>
 
-            <!-- FAB para subir clase -->
-            <button class="upload-fab teacher-only" id="uploadFab" aria-label="Subir nueva clase">
+            <button class="fab teacher-only" id="uploadClassBtn">
                 <i class="fas fa-plus"></i>
             </button>
         </div>
 
-        <!-- PÁGINA: ESTUDIANTES (Solo para profesores) -->
+        <!-- PÁGINA: ESTUDIANTES (solo profesor) -->
         <div class="page teacher-only" id="studentsPage">
             <div class="page-header">
-                <button class="back-btn" data-target="home">
-                    <i class="fas fa-arrow-left"></i>
-                </button>
-                <div class="page-title-section">
-                    <h2 class="page-title">Estudiantes</h2>
-                    <p class="page-subtitle">Gestiona los estudiantes registrados</p>
-                </div>
+                <h2 class="page-title">Estudiantes</h2>
+                <p class="page-subtitle">Gestiona niveles y accesos</p>
             </div>
 
             <div class="students-list" id="studentsList"></div>
 
+            <div class="loading hidden" id="loadingStudents">
+                <div class="spinner"></div>
+            </div>
+
             <div class="no-content hidden" id="noStudents">
                 <i class="fas fa-users"></i>
                 <h3>No hay estudiantes</h3>
-                <p>Los estudiantes aparecerán aquí cuando se registren.</p>
+                <p>Los estudiantes aparecerán cuando se registren</p>
+            </div>
+        </div>
+
+        <!-- PÁGINA: PERFIL -->
+        <div class="page" id="profilePage">
+            <div class="page-header">
+                <h2 class="page-title">Perfil</h2>
+                <p class="page-subtitle">Tu información</p>
+            </div>
+
+            <div class="profile-card" style="background: var(--white); border-radius: var(--radius-md); padding: 24px; text-align: center; box-shadow: var(--shadow-sm);">
+                <div style="width: 80px; height: 80px; background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%); color: var(--white); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 800; margin: 0 auto 16px;" id="profileAvatar">
+                    JS
+                </div>
+                <h3 style="font-size: 1.3rem; font-weight: 800; color: var(--primary-blue); margin-bottom: 4px;" id="profileName">Cargando...</h3>
+                <p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 16px;" id="profileRole">Estudiante</p>
+                
+                <div style="background: var(--light-gray); border-radius: var(--radius-sm); padding: 16px; text-align: left;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                        <span style="color: var(--text-gray);">Nivel:</span>
+                        <span style="font-weight: 700; color: var(--primary-blue);" id="profileLevel">Sin asignar</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                        <span style="color: var(--text-gray);">Usuario:</span>
+                        <span style="font-weight: 600;" id="profileUsername">@usuario</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span style="color: var(--text-gray);">Miembro desde:</span>
+                        <span style="font-weight: 600;" id="profileDate">-</span>
+                    </div>
+                </div>
             </div>
         </div>
     </main>
+
+    <!-- BARRA DE NAVEGACIÓN INFERIOR -->
+    <nav class="bottom-nav">
+        <a href="#" class="nav-item active" data-page="home">
+            <i class="fas fa-home"></i>
+            <span>Inicio</span>
+        </a>
+        <a href="#" class="nav-item" data-page="classes">
+            <i class="fas fa-book"></i>
+            <span>Clases</span>
+        </a>
+        <a href="#" class="nav-item" data-page="notifications">
+            <i class="fas fa-bell"></i>
+            <span>Notis</span>
+            <span class="badge hidden" id="navNotificationBadge">0</span>
+        </a>
+        <a href="#" class="nav-item teacher-only" data-page="manage-classes">
+            <i class="fas fa-tasks"></i>
+            <span>Gestionar</span>
+        </a>
+        <a href="#" class="nav-item teacher-only" data-page="students">
+            <i class="fas fa-users"></i>
+            <span>Alumnos</span>
+        </a>
+        <a href="#" class="nav-item" data-page="profile">
+            <i class="fas fa-user"></i>
+            <span>Perfil</span>
+        </a>
+    </nav>
 
     <!-- MODAL: SUBIR/EDITAR CLASE -->
     <div class="modal-overlay" id="classModal">
         <div class="modal">
             <div class="modal-header">
-                <div class="modal-title" id="modalTitle">Subir Nueva Clase</div>
+                <h3 id="classModalTitle">Subir Clase</h3>
                 <button class="close-modal" id="closeClassModal">&times;</button>
             </div>
             
@@ -1397,58 +1150,40 @@
                     <input type="hidden" id="classId">
                     
                     <div class="form-group">
-                        <label for="classTitle" class="form-label">
-                            <i class="fas fa-heading"></i> Título de la Clase
-                        </label>
-                        <input type="text" id="classTitle" class="form-control" placeholder="Ej: Present Simple Tense" required>
+                        <label class="form-label">Título</label>
+                        <input type="text" id="classTitle" class="form-control" required>
                     </div>
 
                     <div class="form-group">
-                        <label for="classDescription" class="form-label">
-                            <i class="fas fa-align-left"></i> Descripción
-                        </label>
-                        <textarea id="classDescription" class="form-control" 
-                                  placeholder="Describe el contenido de esta clase..." 
-                                  required></textarea>
+                        <label class="form-label">Descripción</label>
+                        <textarea id="classDescription" class="form-control" rows="3" required></textarea>
                     </div>
 
                     <div class="form-group">
-                        <label for="classCategory" class="form-label">
-                            <i class="fas fa-tag"></i> Nivel
-                        </label>
-                        <select id="classCategory" class="form-control" required>
-                            <option value="">Selecciona un nivel</option>
-                            <option value="A1">A1 - Básico Inicial</option>
-                            <option value="A2">A2 - Básico Funcional</option>
+                        <label class="form-label">Nivel</label>
+                        <select id="classLevel" class="form-control" required>
+                            <option value="">Selecciona</option>
+                            <option value="A1">A1 - Básico</option>
+                            <option value="A2">A2 - Funcional</option>
                             <option value="B1">B1 - Intermedio</option>
                         </select>
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">
-                            <i class="fas fa-file-upload"></i> Archivo
-                        </label>
-                        <div class="file-upload-area" id="fileUploadArea">
-                            <i class="fas fa-cloud-upload-alt"></i>
-                            <div>Haz clic para seleccionar un archivo</div>
-                            <input type="file" id="classFile" class="file-input" 
-                                   accept=".pdf,.doc,.docx,.ppt,.pptx,.txt,.jpg,.png,.mp3,.mp4">
-                            <div class="file-info" id="fileInfo">
-                                Formatos aceptados: PDF, DOC, PPT, TXT, JPG, PNG, MP3, MP4
-                            </div>
-                        </div>
-                        <div class="file-info hidden" id="currentFileInfo">
-                            <strong>Archivo actual:</strong> <span id="currentFileName"></span>
-                            <small>Selecciona un nuevo archivo solo si deseas cambiarlo</small>
+                        <label class="form-label">Archivo</label>
+                        <input type="file" id="classFile" class="form-control" 
+                               accept=".pdf,.doc,.docx,.ppt,.pptx,.txt,.jpg,.png,.mp3,.mp4">
+                        <div id="currentFileInfo" class="hidden" style="margin-top: 8px; font-size: 0.8rem;">
+                            Archivo actual: <span id="currentFileName"></span>
                         </div>
                     </div>
                 </div>
 
-                <div class="modal-actions" style="padding: 0 20px 20px;">
-                    <button type="submit" class="modal-btn submit-btn" id="modalSubmitBtn">
-                        <i class="fas fa-upload"></i> Subir Clase
+                <div class="modal-actions">
+                    <button type="submit" class="modal-btn submit" id="submitClassBtn">
+                        <i class="fas fa-upload"></i> Subir
                     </button>
-                    <button type="button" class="modal-btn cancel-btn" id="cancelClassModal">
+                    <button type="button" class="modal-btn cancel" id="cancelClassModal">
                         Cancelar
                     </button>
                 </div>
@@ -1456,24 +1191,19 @@
         </div>
     </div>
 
-    <!-- MODAL: CREAR/EDITAR PUBLICACIÓN -->
-    <div class="modal-overlay" id="publicationModal">
+    <!-- MODAL: CREAR PUBLICACIÓN (profesor) -->
+    <div class="modal-overlay teacher-only" id="publicationModal">
         <div class="modal">
             <div class="modal-header">
-                <div class="modal-title" id="publicationModalTitle">Crear Nueva Publicación</div>
+                <h3>Crear Publicación</h3>
                 <button class="close-modal" id="closePublicationModal">&times;</button>
             </div>
             
             <form id="publicationForm">
                 <div class="modal-body">
-                    <input type="hidden" id="publicationId">
-                    
                     <div class="form-group">
-                        <label for="publicationType" class="form-label">
-                            <i class="fas fa-tag"></i> Tipo de Publicación
-                        </label>
+                        <label class="form-label">Tipo</label>
                         <select id="publicationType" class="form-control" required>
-                            <option value="">Selecciona un tipo</option>
                             <option value="text">Texto</option>
                             <option value="photo">Foto</option>
                             <option value="video">Video</option>
@@ -1482,42 +1212,26 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="publicationTitle" class="form-label">
-                            <i class="fas fa-heading"></i> Título
-                        </label>
-                        <input type="text" id="publicationTitle" class="form-control" 
-                               placeholder="Ej: Recordatorio importante" required>
+                        <label class="form-label">Título</label>
+                        <input type="text" id="publicationTitle" class="form-control" required>
                     </div>
 
-                    <div class="form-group" id="contentFieldGroup">
-                        <label for="publicationContent" class="form-label">
-                            <i class="fas fa-align-left"></i> Contenido
-                        </label>
-                        <textarea id="publicationContent" class="form-control" 
-                                  placeholder="Escribe el contenido de tu publicación..."></textarea>
+                    <div class="form-group" id="contentGroup">
+                        <label class="form-label">Contenido</label>
+                        <textarea id="publicationContent" class="form-control" rows="3"></textarea>
                     </div>
 
-                    <div class="form-group hidden" id="fileFieldGroup">
-                        <label class="form-label">
-                            <i class="fas fa-file-upload"></i> Archivo
-                        </label>
-                        <div class="file-upload-area" id="publicationFileUploadArea">
-                            <i class="fas fa-cloud-upload-alt"></i>
-                            <div>Haz clic para seleccionar un archivo</div>
-                            <input type="file" id="publicationFile" class="file-input" 
-                                   accept=".pdf,.doc,.docx,.ppt,.pptx,.txt,.jpg,.png,.mp3,.mp4">
-                            <div class="file-info" id="publicationFileInfo">
-                                Formatos aceptados: PDF, DOC, PPT, TXT, JPG, PNG, MP3, MP4
-                            </div>
-                        </div>
+                    <div class="form-group hidden" id="fileGroup">
+                        <label class="form-label">Archivo</label>
+                        <input type="file" id="publicationFile" class="form-control">
                     </div>
                 </div>
 
-                <div class="modal-actions" style="padding: 0 20px 20px;">
-                    <button type="submit" class="modal-btn submit-btn" id="publicationSubmitBtn">
+                <div class="modal-actions">
+                    <button type="submit" class="modal-btn submit">
                         <i class="fas fa-paper-plane"></i> Publicar
                     </button>
-                    <button type="button" class="modal-btn cancel-btn" id="cancelPublicationModal">
+                    <button type="button" class="modal-btn cancel" id="cancelPublicationModal">
                         Cancelar
                     </button>
                 </div>
@@ -1525,127 +1239,79 @@
         </div>
     </div>
 
-    <!-- MODAL: CONFIRMAR ELIMINACIÓN -->
-    <div class="modal-overlay confirm-modal" id="confirmModal">
+    <!-- MODAL: GESTIÓN DE ACCESOS -->
+    <div class="modal-overlay" id="accessModal">
         <div class="modal">
             <div class="modal-header">
-                <div class="modal-title">Confirmar Eliminación</div>
+                <h3>Gestionar Accesos</h3>
+                <button class="close-modal" id="closeAccessModal">&times;</button>
+            </div>
+            
+            <div class="modal-body" id="accessModalBody">
+                <!-- Se llena dinámicamente -->
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: CONFIRMAR ELIMINACIÓN -->
+    <div class="modal-overlay" id="confirmModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Confirmar</h3>
                 <button class="close-modal" id="closeConfirmModal">&times;</button>
             </div>
             
             <div class="modal-body">
-                <p class="confirm-message" id="confirmMessage">
-                    ¿Estás seguro de que deseas eliminar este elemento?
-                </p>
-                
+                <p style="text-align: center; margin-bottom: 20px;" id="confirmMessage"></p>
                 <div class="modal-actions">
-                    <button type="button" class="modal-btn submit-btn" id="confirmDeleteBtn" 
-                            style="background-color: var(--accent-red);">
-                        <i class="fas fa-trash"></i> Eliminar
-                    </button>
-                    <button type="button" class="modal-btn cancel-btn" id="cancelDeleteBtn">
-                        Cancelar
-                    </button>
+                    <button class="modal-btn submit" id="confirmActionBtn">Confirmar</button>
+                    <button class="modal-btn cancel" id="cancelConfirmBtn">Cancelar</button>
                 </div>
             </div>
         </div>
     </div>
 
+    <script src="https://cdn.socket.io/4.5.0/socket.io.min.js"></script>
     <script>
-        // Variables globales
+        // ============ VARIABLES GLOBALES ============
         let currentUser = null;
         let currentPage = 'home';
-        let currentFilter = 'A1';
-        let manageFilter = 'all';
+        let unreadCount = 0;
+        let notifications = [];
+        let publications = [];
+        let classes = [];
+        let students = [];
         let pendingAction = null;
         let pendingData = null;
+        let socket = null;
 
-        // Elementos del DOM
-        const menuBtn = document.getElementById('menuBtn');
-        const sidePanel = document.getElementById('sidePanel');
-        const panelOverlay = document.getElementById('panelOverlay');
-        const logoutBtn = document.getElementById('logoutBtn');
+        // Elementos DOM
         const messageEl = document.getElementById('message');
-        const userAvatar = document.getElementById('userAvatar');
-        const userName = document.getElementById('userName');
-        const userRole = document.getElementById('userRole');
-        const userLevel = document.getElementById('userLevel');
-        const uploadFab = document.getElementById('uploadFab');
-        const createPublicationFab = document.getElementById('createPublicationFab');
-        const unreadBadge = document.getElementById('unreadBadge');
-
-        // Páginas
+        const notificationBadge = document.getElementById('notificationBadge');
+        const navNotificationBadge = document.getElementById('navNotificationBadge');
+        const notificationsBtn = document.getElementById('notificationsBtn');
+        const navItems = document.querySelectorAll('.nav-item');
         const pages = {
             home: document.getElementById('homePage'),
-            publications: document.getElementById('publicationsPage'),
+            classes: document.getElementById('classesPage'),
+            notifications: document.getElementById('notificationsPage'),
             'manage-classes': document.getElementById('manageClassesPage'),
-            students: document.getElementById('studentsPage')
+            students: document.getElementById('studentsPage'),
+            profile: document.getElementById('profilePage')
         };
 
-        // Elementos de la página home
-        const homeTitle = document.getElementById('homeTitle');
-        const homeSubtitle = document.getElementById('homeSubtitle');
-        const noLevelMessage = document.getElementById('noLevelMessage');
-        const filtersContainer = document.getElementById('filtersContainer');
-        const classesContainer = document.getElementById('classesContainer');
-        const noClasses = document.getElementById('noClasses');
-        const noClassesMessage = document.getElementById('noClassesMessage');
-        const loadingClasses = document.getElementById('loadingClasses');
-        const filterBtns = document.querySelectorAll('#homePage .filter-btn');
-
-        // Elementos de publicaciones
-        const publicationsContainer = document.getElementById('publicationsContainer');
-        const noPublications = document.getElementById('noPublications');
-        const noPublicationsMessage = document.getElementById('noPublicationsMessage');
-        const loadingPublications = document.getElementById('loadingPublications');
-        const publicationsSubtitle = document.getElementById('publicationsSubtitle');
-
-        // Elementos de gestión de clases
-        const manageClassesContainer = document.getElementById('manageClassesContainer');
-        const noManageClasses = document.getElementById('noManageClasses');
-        const manageFilterBtns = document.querySelectorAll('#manageClassesPage .filter-btn');
-
-        // Elementos de estudiantes
-        const studentsList = document.getElementById('studentsList');
-        const noStudents = document.getElementById('noStudents');
-
-        // Modales
-        const classModal = document.getElementById('classModal');
-        const publicationModal = document.getElementById('publicationModal');
-        const confirmModal = document.getElementById('confirmModal');
-        
-        const classForm = document.getElementById('classForm');
-        const publicationForm = document.getElementById('publicationForm');
-        
-        const modalTitle = document.getElementById('modalTitle');
-        const modalSubmitBtn = document.getElementById('modalSubmitBtn');
-        
-        const publicationModalTitle = document.getElementById('publicationModalTitle');
-        const publicationSubmitBtn = document.getElementById('publicationSubmitBtn');
-        
-        // Elementos del formulario de publicación
-        const publicationTypeSelect = document.getElementById('publicationType');
-        const contentFieldGroup = document.getElementById('contentFieldGroup');
-        const fileFieldGroup = document.getElementById('fileFieldGroup');
-        const publicationFileUploadArea = document.getElementById('publicationFileUploadArea');
-        const publicationFileInput = document.getElementById('publicationFile');
-        const publicationFileInfo = document.getElementById('publicationFileInfo');
-
-        // Botones de navegación
-        const backBtns = document.querySelectorAll('.back-btn');
-        const navItems = document.querySelectorAll('.nav-item');
-
-        // Inicialización
+        // ============ INICIALIZACIÓN ============
         document.addEventListener('DOMContentLoaded', () => {
             checkAuth();
             setupEventListeners();
+            connectWebSocket();
         });
 
         function checkAuth() {
             const userData = localStorage.getItem('current_user');
-            const authToken = localStorage.getItem('auth_token');
+            const token = localStorage.getItem('auth_token');
             
-            if (!userData || !authToken) {
+            if (!userData || !token) {
                 window.location.href = 'auth.html';
                 return;
             }
@@ -1653,153 +1319,163 @@
             currentUser = JSON.parse(userData);
             updateUserInfo();
             
-            // Configurar interfaz según el rol
             if (currentUser.role === 'teacher') {
                 document.body.classList.add('is-teacher');
-                loadAllClasses();
+            }
+            
+            loadPublications();
+            loadNotifications();
+            
+            if (currentUser.role === 'teacher') {
+                loadManageClasses();
                 loadStudents();
             } else {
                 checkStudentLevel();
             }
-
-            // Cargar publicaciones para todos
-            loadPublications();
         }
 
         function updateUserInfo() {
-            userName.textContent = currentUser.name;
-            userRole.textContent = currentUser.role === 'teacher' ? 'PROFESOR' : 'ESTUDIANTE';
+            // Actualizar perfil
+            document.getElementById('profileName').textContent = currentUser.name;
+            document.getElementById('profileRole').textContent = currentUser.role === 'teacher' ? 'Profesor' : 'Estudiante';
+            document.getElementById('profileUsername').textContent = `@${currentUser.username}`;
             
             const initials = currentUser.name.split(' ').map(n => n[0]).join('').toUpperCase();
-            userAvatar.textContent = initials.substring(0, 2);
+            document.getElementById('profileAvatar').textContent = initials.substring(0, 2);
             
             if (currentUser.level && currentUser.level !== 'Sin asignar') {
-                userLevel.textContent = `Nivel: ${getLevelText(currentUser.level)}`;
-                userLevel.classList.remove('hidden');
+                document.getElementById('profileLevel').textContent = currentUser.level;
             } else {
-                userLevel.classList.add('hidden');
+                document.getElementById('profileLevel').textContent = 'Sin asignar';
+            }
+
+            if (currentUser.registration_date) {
+                const date = new Date(currentUser.registration_date).toLocaleDateString();
+                document.getElementById('profileDate').textContent = date;
             }
         }
 
         function setupEventListeners() {
-            // Panel lateral
-            menuBtn.addEventListener('click', openPanel);
-            panelOverlay.addEventListener('click', closePanel);
-
-            // Cerrar panel con Escape
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' && sidePanel.classList.contains('open')) {
-                    closePanel();
-                }
-            });
-
-            // Navegación del panel
+            // Navegación inferior
             navItems.forEach(item => {
-                item.addEventListener('click', () => {
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
                     const page = item.dataset.page;
                     if (page) {
                         navigateTo(page);
-                        closePanel();
                     }
                 });
             });
 
-            // Botones de retroceso
-            backBtns.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const target = btn.dataset.target;
-                    navigateTo(target);
-                });
+            // Botón de notificaciones
+            notificationsBtn.addEventListener('click', () => {
+                navigateTo('notifications');
+                markAllAsRead();
             });
 
-            // Cerrar sesión
-            logoutBtn.addEventListener('click', () => {
-                localStorage.clear();
-                window.location.href = 'auth.html';
-            });
+            // Cerrar sesión (desde perfil)
+            // Agregar botón de logout en perfil si lo deseas
 
-            // Filtros de home
-            filterBtns.forEach(btn => {
+            // Filtros de clases para estudiantes
+            document.querySelectorAll('#classesPage .filter-chip').forEach(btn => {
                 btn.addEventListener('click', () => {
-                    filterBtns.forEach(b => b.classList.remove('active'));
+                    document.querySelectorAll('#classesPage .filter-chip').forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
-                    currentFilter = btn.dataset.level;
-                    loadClasses();
+                    loadClasses(btn.dataset.level);
                 });
             });
 
-            // Filtros de gestión
-            manageFilterBtns.forEach(btn => {
+            // Filtros de gestión para profesor
+            document.querySelectorAll('#manageClassesPage .filter-chip').forEach(btn => {
                 btn.addEventListener('click', () => {
-                    manageFilterBtns.forEach(b => b.classList.remove('active'));
+                    document.querySelectorAll('#manageClassesPage .filter-chip').forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
-                    manageFilter = btn.dataset.level;
-                    loadAllClasses();
+                    loadManageClasses(btn.dataset.filter);
                 });
             });
 
-            // FAB para subir clase
-            uploadFab?.addEventListener('click', () => openClassModal());
+            // Botón subir clase
+            document.getElementById('uploadClassBtn')?.addEventListener('click', () => openClassModal());
 
-            // FAB para crear publicación
-            createPublicationFab?.addEventListener('click', () => openPublicationModal());
+            // Configurar modales
+            setupModals();
+        }
 
-            // Sistema de archivos
-            document.getElementById('fileUploadArea').addEventListener('click', () => document.getElementById('classFile').click());
-            document.getElementById('classFile').addEventListener('change', handleFileSelect);
-
-            publicationFileUploadArea.addEventListener('click', () => publicationFileInput.click());
-            publicationFileInput.addEventListener('change', handlePublicationFileSelect);
-
-            // Formularios
-            classForm.addEventListener('submit', handleClassSubmit);
-            publicationForm.addEventListener('submit', handlePublicationSubmit);
-
-            // Cambiar tipo de publicación
-            publicationTypeSelect.addEventListener('change', handlePublicationTypeChange);
-
+        function setupModals() {
             // Cerrar modales
-            document.getElementById('closeClassModal').addEventListener('click', () => closeModal('classModal'));
-            document.getElementById('cancelClassModal').addEventListener('click', () => closeModal('classModal'));
-            
-            document.getElementById('closePublicationModal').addEventListener('click', () => closeModal('publicationModal'));
-            document.getElementById('cancelPublicationModal').addEventListener('click', () => closeModal('publicationModal'));
-            
-            document.getElementById('closeConfirmModal').addEventListener('click', () => closeModal('confirmModal'));
-            document.getElementById('cancelDeleteBtn').addEventListener('click', () => closeModal('confirmModal'));
-            
-            document.getElementById('confirmDeleteBtn').addEventListener('click', executePendingAction);
+            document.querySelectorAll('.close-modal, .cancel').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.modal-overlay').forEach(modal => {
+                        modal.classList.remove('active');
+                    });
+                });
+            });
 
-            // Cerrar modales al hacer clic fuera
-            [classModal, publicationModal, confirmModal].forEach(modal => {
-                modal.addEventListener('click', (e) => {
-                    if (e.target === modal) {
-                        closeModal(modal.id);
+            // Cerrar al hacer clic fuera
+            document.querySelectorAll('.modal-overlay').forEach(overlay => {
+                overlay.addEventListener('click', (e) => {
+                    if (e.target === overlay) {
+                        overlay.classList.remove('active');
                     }
                 });
             });
+
+            // Formulario de clase
+            document.getElementById('classForm').addEventListener('submit', handleClassSubmit);
+
+            // Formulario de publicación
+            document.getElementById('publicationForm')?.addEventListener('submit', handlePublicationSubmit);
+            
+            // Cambiar tipo de publicación
+            document.getElementById('publicationType')?.addEventListener('change', togglePublicationFields);
+
+            // Confirmar acción
+            document.getElementById('confirmActionBtn').addEventListener('click', executePendingAction);
+            document.getElementById('cancelConfirmBtn').addEventListener('click', () => {
+                document.getElementById('confirmModal').classList.remove('active');
+            });
         }
 
-        function openPanel() {
-            sidePanel.classList.add('open');
-            panelOverlay.classList.add('open');
-            document.body.style.overflow = 'hidden';
+        function connectWebSocket() {
+            socket = io();
+            
+            socket.on('connect', () => {
+                console.log('Conectado');
+            });
+
+            socket.on('new_publication', (publication) => {
+                showMessage('Nueva publicación disponible', 'success');
+                updateUnreadCount(1);
+                if (currentPage === 'home') {
+                    loadPublications();
+                }
+                addNotification({
+                    type: 'publication',
+                    message: `${publication.author_name} publicó: ${publication.title}`,
+                    time: new Date()
+                });
+            });
+
+            socket.on('new_class', (classData) => {
+                showMessage('Nueva clase disponible', 'success');
+                addNotification({
+                    type: 'class',
+                    message: `Nueva clase: ${classData.title}`,
+                    time: new Date()
+                });
+            });
+
+            socket.on('student_updated', (data) => {
+                if (currentUser.id === data.student_id) {
+                    currentUser.level = data.level;
+                    updateUserInfo();
+                }
+            });
         }
 
-        function closePanel() {
-            sidePanel.classList.remove('open');
-            panelOverlay.classList.remove('open');
-            document.body.style.overflow = '';
-        }
-
+        // ============ NAVEGACIÓN ============
         function navigateTo(page) {
-            // Verificar permisos
-            if ((page === 'manage-classes' || page === 'students') && currentUser.role !== 'teacher') {
-                showMessage('Acceso denegado. Solo para profesores.', 'error');
-                return;
-            }
-
-            // Actualizar navegación
+            // Actualizar nav items
             navItems.forEach(item => {
                 if (item.dataset.page === page) {
                     item.classList.add('active');
@@ -1809,45 +1485,178 @@
             });
 
             // Ocultar todas las páginas
-            Object.values(pages).forEach(pageEl => {
-                if (pageEl) {
-                    pageEl.classList.remove('active');
-                }
+            Object.values(pages).forEach(p => {
+                if (p) p.classList.remove('active');
             });
 
-            // Mostrar la página solicitada
+            // Mostrar página seleccionada
             currentPage = page;
             const targetPage = pages[page];
             if (targetPage) {
                 targetPage.classList.add('active');
             }
 
-            // Actualizar contenido según la página
+            // Cargar contenido según página
             switch(page) {
                 case 'home':
+                    loadPublications();
+                    break;
+                case 'classes':
                     if (currentUser.role === 'student') {
                         checkStudentLevel();
                     } else {
-                        loadClassesForTeacher();
+                        loadClasses();
                     }
                     break;
-                case 'publications':
-                    loadPublications();
+                case 'notifications':
+                    loadNotifications();
+                    markAllAsRead();
                     break;
                 case 'manage-classes':
-                    loadAllClasses();
+                    loadManageClasses();
                     break;
                 case 'students':
                     loadStudents();
                     break;
+                case 'profile':
+                    // Ya está actualizado
+                    break;
             }
         }
 
-        async function checkStudentLevel() {
+        // ============ PUBLICACIONES ============
+        async function loadPublications() {
+            const feed = document.getElementById('publicationsFeed');
+            const loading = document.getElementById('loadingPublications');
+            const noContent = document.getElementById('noPublications');
+
+            loading.classList.remove('hidden');
+            feed.innerHTML = '';
+
             try {
-                const authToken = localStorage.getItem('auth_token');
+                const token = localStorage.getItem('auth_token');
+                const response = await fetch('/api/publications', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (response.ok) {
+                    publications = await response.json();
+                    displayPublications(publications);
+                    
+                    const unread = publications.filter(p => !p.is_viewed).length;
+                    updateUnreadCount(unread);
+                }
+            } catch (error) {
+                showMessage('Error al cargar publicaciones', 'error');
+            } finally {
+                loading.classList.add('hidden');
+            }
+        }
+
+        function displayPublications(publications) {
+            const feed = document.getElementById('publicationsFeed');
+            const noContent = document.getElementById('noPublications');
+
+            if (publications.length === 0) {
+                noContent.classList.remove('hidden');
+                feed.innerHTML = '';
+                return;
+            }
+
+            noContent.classList.add('hidden');
+
+            publications.forEach(pub => {
+                const card = createPublicationCard(pub);
+                feed.appendChild(card);
+            });
+        }
+
+        function createPublicationCard(pub) {
+            const card = document.createElement('div');
+            card.className = 'publication-card';
+            card.dataset.id = pub.id;
+
+            const isUnread = !pub.is_viewed;
+            const authorInitials = pub.author_name?.split(' ').map(n => n[0]).join('').toUpperCase() || 'P';
+            const time = new Date(pub.created_at).toLocaleString();
+
+            let mediaHtml = '';
+            if (pub.publication_type === 'photo' && pub.file_url) {
+                mediaHtml = `<img src="${pub.file_url}" class="publication-media" alt="${pub.title}">`;
+            } else if (pub.publication_type === 'video' && pub.file_url) {
+                mediaHtml = `<video src="${pub.file_url}" class="publication-media" controls></video>`;
+            } else if (pub.publication_type === 'document' && pub.file_url) {
+                mediaHtml = `
+                    <div style="background: var(--light-gray); padding: 20px; text-align: center; border-radius: var(--radius-sm);">
+                        <i class="fas fa-file-pdf" style="font-size: 2rem; color: var(--accent-red);"></i>
+                        <p style="font-size: 0.8rem; margin-top: 8px;">${pub.file_name || 'Documento'}</p>
+                    </div>
+                `;
+            }
+
+            card.innerHTML = `
+                <div class="publication-header">
+                    <div class="publication-avatar">${authorInitials.substring(0, 2)}</div>
+                    <div class="publication-author">
+                        <h4>
+                            ${pub.author_name || 'Profesor'}
+                            ${isUnread ? '<span class="publication-badge">NUEVO</span>' : ''}
+                        </h4>
+                        <span class="publication-time">${time}</span>
+                    </div>
+                </div>
+                
+                <div class="publication-content">
+                    <h3 class="publication-title">${pub.title}</h3>
+                    ${pub.publication_type === 'text' ? `<p class="publication-text">${pub.content}</p>` : ''}
+                    ${mediaHtml}
+                </div>
+                
+                <div class="publication-footer">
+                    <span><i class="far fa-eye"></i> ${pub.views_count || 0} vistas</span>
+                    ${pub.is_viewed ? 
+                        '<span class="viewed-badge"><i class="fas fa-check"></i> Visto</span>' : 
+                        '<span class="unread-badge"><i class="fas fa-circle"></i> No leído</span>'}
+                </div>
+            `;
+
+            card.addEventListener('click', () => markPublicationAsViewed(pub.id));
+            return card;
+        }
+
+        async function markPublicationAsViewed(publicationId) {
+            try {
+                const token = localStorage.getItem('auth_token');
+                await fetch(`/api/publications/${publicationId}/view`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                const card = document.querySelector(`.publication-card[data-id="${publicationId}"]`);
+                if (card) {
+                    const badge = card.querySelector('.publication-badge');
+                    const footerBadge = card.querySelector('.publication-footer span:last-child');
+                    if (badge) badge.remove();
+                    if (footerBadge) {
+                        footerBadge.outerHTML = '<span class="viewed-badge"><i class="fas fa-check"></i> Visto</span>';
+                    }
+                }
+                
+                unreadCount = Math.max(0, unreadCount - 1);
+                updateBadges();
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        // ============ CLASES ============
+        async function checkStudentLevel() {
+            if (currentUser.role !== 'student') return;
+
+            try {
+                const token = localStorage.getItem('auth_token');
                 const response = await fetch('/api/profile', {
-                    headers: { 'Authorization': `Bearer ${authToken}` }
+                    headers: { 'Authorization': `Bearer ${token}` }
                 });
 
                 if (response.ok) {
@@ -1856,182 +1665,122 @@
                     updateUserInfo();
 
                     if (currentUser.level && currentUser.level !== 'Sin asignar') {
-                        // Tiene nivel asignado
-                        noLevelMessage.classList.add('hidden');
-                        filtersContainer.classList.remove('hidden');
-                        homeSubtitle.textContent = `Nivel: ${getLevelText(currentUser.level)}`;
-                        loadClasses();
+                        document.getElementById('noLevelMessage').classList.add('hidden');
+                        document.getElementById('filtersContainer').classList.remove('hidden');
+                        document.getElementById('classesSubtitle').textContent = `Nivel: ${currentUser.level}`;
+                        loadClasses(currentUser.level);
                     } else {
-                        // No tiene nivel
-                        noLevelMessage.classList.remove('hidden');
-                        filtersContainer.classList.add('hidden');
-                        classesContainer.innerHTML = '';
-                        noClasses.classList.add('hidden');
-                        loadingClasses.classList.add('hidden');
+                        document.getElementById('noLevelMessage').classList.remove('hidden');
+                        document.getElementById('filtersContainer').classList.add('hidden');
+                        document.getElementById('classesContainer').innerHTML = '';
                     }
                 }
             } catch (error) {
                 console.error('Error:', error);
-                showMessage('Error al cargar el perfil', 'error');
             }
         }
 
-        async function loadClasses() {
+        async function loadClasses(level = 'A1') {
             if (currentUser.role !== 'student') return;
 
-            loadingClasses.classList.remove('hidden');
-            classesContainer.innerHTML = '';
-            noClasses.classList.add('hidden');
+            const container = document.getElementById('classesContainer');
+            const loading = document.getElementById('loadingClasses');
+            const noContent = document.getElementById('noClasses');
+
+            loading.classList.remove('hidden');
+            container.innerHTML = '';
 
             try {
-                const authToken = localStorage.getItem('auth_token');
-                const response = await fetch(`/api/classes?level=${currentFilter}`, {
-                    headers: { 'Authorization': `Bearer ${authToken}` }
-                });
-
-                if (response.status === 401) {
-                    window.location.href = 'auth.html';
-                    return;
-                }
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                const classes = await response.json();
-                displayClasses(classes);
-            } catch (error) {
-                console.error('Error:', error);
-                showMessage('Error al cargar las clases', 'error');
-            } finally {
-                loadingClasses.classList.add('hidden');
-            }
-        }
-
-        async function loadClassesForTeacher() {
-            loadingClasses.classList.remove('hidden');
-            classesContainer.innerHTML = '';
-            noClasses.classList.add('hidden');
-
-            try {
-                const authToken = localStorage.getItem('auth_token');
-                const response = await fetch('/api/classes/all', {
-                    headers: { 'Authorization': `Bearer ${authToken}` }
+                const token = localStorage.getItem('auth_token');
+                const response = await fetch(`/api/classes?level=${level}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
                 });
 
                 if (response.ok) {
-                    const classes = await response.json();
-                    displayClasses(classes);
+                    classes = await response.json();
+                    
+                    if (classes.length === 0) {
+                        noContent.classList.remove('hidden');
+                    } else {
+                        noContent.classList.add('hidden');
+                        classes.forEach(cls => {
+                            const card = createClassCard(cls, false);
+                            container.appendChild(card);
+                        });
+                    }
                 }
             } catch (error) {
-                console.error('Error:', error);
-                showMessage('Error al cargar las clases', 'error');
+                showMessage('Error al cargar clases', 'error');
             } finally {
-                loadingClasses.classList.add('hidden');
+                loading.classList.add('hidden');
             }
         }
 
-        function displayClasses(classes) {
-            classesContainer.innerHTML = '';
+        async function loadManageClasses(filter = 'all') {
+            const container = document.getElementById('manageClassesGrid');
+            const loading = document.getElementById('loadingManageClasses');
+            const noContent = document.getElementById('noManageClasses');
 
-            if (classes.length === 0) {
-                noClasses.classList.remove('hidden');
-                noClassesMessage.textContent = currentUser.role === 'teacher' 
-                    ? 'No has subido ninguna clase aún.' 
-                    : 'El profesor aún no ha subido material para tu nivel.';
-                return;
-            }
+            loading.classList.remove('hidden');
+            container.innerHTML = '';
 
-            noClasses.classList.add('hidden');
-
-            classes.forEach((classItem, index) => {
-                const card = createClassCard(classItem, index, currentUser.role === 'teacher');
-                classesContainer.appendChild(card);
-            });
-        }
-
-        async function loadAllClasses() {
             try {
-                const authToken = localStorage.getItem('auth_token');
-                const url = manageFilter === 'all' 
-                    ? '/api/classes/all' 
-                    : `/api/classes/all?level=${manageFilter}`;
+                const token = localStorage.getItem('auth_token');
+                const url = filter === 'all' ? '/api/classes/all' : `/api/classes?level=${filter}`;
                 
                 const response = await fetch(url, {
-                    headers: { 'Authorization': `Bearer ${authToken}` }
+                    headers: { 'Authorization': `Bearer ${token}` }
                 });
 
                 if (response.ok) {
-                    const classes = await response.json();
-                    displayAllClasses(classes);
+                    classes = await response.json();
+                    
+                    if (classes.length === 0) {
+                        noContent.classList.remove('hidden');
+                    } else {
+                        noContent.classList.add('hidden');
+                        classes.forEach(cls => {
+                            const card = createClassCard(cls, true);
+                            container.appendChild(card);
+                        });
+                    }
                 }
             } catch (error) {
-                console.error('Error:', error);
-                showMessage('Error al cargar las clases', 'error');
+                showMessage('Error al cargar clases', 'error');
+            } finally {
+                loading.classList.add('hidden');
             }
         }
 
-        function displayAllClasses(classes) {
-            manageClassesContainer.innerHTML = '';
-
-            if (classes.length === 0) {
-                noManageClasses.classList.remove('hidden');
-                manageClassesContainer.classList.add('hidden');
-                return;
-            }
-
-            noManageClasses.classList.add('hidden');
-            manageClassesContainer.classList.remove('hidden');
-
-            classes.forEach((classItem, index) => {
-                const card = createClassCard(classItem, index, true);
-                manageClassesContainer.appendChild(card);
-            });
-        }
-
-        function createClassCard(classItem, index, isManage = false) {
+        function createClassCard(cls, isManage = false) {
             const card = document.createElement('div');
             card.className = 'class-card';
-            card.style.animationDelay = `${index * 0.05}s`;
 
-            const levelText = getLevelText(classItem.level);
-            const formattedDate = new Date(classItem.created_at).toLocaleDateString('es-ES', {
-                day: '2-digit',
-                month: 'short'
-            });
+            const date = new Date(cls.created_at).toLocaleDateString();
 
             card.innerHTML = `
                 <div class="class-header">
-                    <div class="class-level">${levelText}</div>
-                    <div class="class-title">${classItem.title}</div>
+                    <span class="class-level">${cls.level}</span>
+                    <h3 class="class-title">${cls.title}</h3>
+                    <div class="class-meta">
+                        <span><i class="far fa-calendar"></i> ${date}</span>
+                        <span><i class="fas fa-file"></i> ${cls.file_type || 'Archivo'}</span>
+                    </div>
                 </div>
                 <div class="class-body">
-                    <p class="class-description">${classItem.description}</p>
-                    <div class="class-meta">
-                        <div class="meta-item">
-                            <i class="far fa-calendar-alt"></i>
-                            <span>${formattedDate}</span>
-                        </div>
-                        <div class="meta-item">
-                            <i class="fas fa-file"></i>
-                            <span>${classItem.file_type || 'Archivo'}</span>
-                        </div>
-                    </div>
+                    <p class="class-description">${cls.description}</p>
                     <div class="class-actions">
+                        <button class="action-btn download-btn" onclick="downloadClass(${cls.id})">
+                            <i class="fas fa-download"></i> Descargar
+                        </button>
                         ${isManage ? `
-                            <button class="action-btn edit-btn" onclick="editClass(${classItem.id})">
-                                <i class="fas fa-edit"></i>
-                                <span>Editar</span>
+                            <button class="action-btn edit-btn" onclick="editClass(${cls.id})">
+                                <i class="fas fa-edit"></i> Editar
                             </button>
-                            <button class="action-btn delete-btn" onclick="deleteClass(${classItem.id}, '${classItem.title.replace(/'/g, "\\'")}')">
+                            <button class="action-btn delete-btn" onclick="confirmDeleteClass(${cls.id}, '${cls.title}')">
                                 <i class="fas fa-trash"></i>
-                                <span>Eliminar</span>
                             </button>
                         ` : ''}
-                        <button class="action-btn download-btn" onclick="downloadClass(${classItem.id})">
-                            <i class="fas fa-download"></i>
-                            <span>Descargar</span>
-                        </button>
                     </div>
                 </div>
             `;
@@ -2039,221 +1788,400 @@
             return card;
         }
 
-        // FUNCIONES DE PUBLICACIONES - USANDO LA API DEL SERVIDOR
-        async function loadPublications() {
-            loadingPublications.classList.remove('hidden');
-            publicationsContainer.innerHTML = '';
-            noPublications.classList.add('hidden');
-
-            try {
-                const authToken = localStorage.getItem('auth_token');
-                const response = await fetch('/api/publications', {
-                    headers: { 'Authorization': `Bearer ${authToken}` }
-                });
-
-                if (response.ok) {
-                    const publications = await response.json();
-                    displayPublications(publications);
-                    
-                    // Actualizar badge de no leídos
-                    checkUnreadPublications();
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                showMessage('Error al cargar las publicaciones', 'error');
-            } finally {
-                loadingPublications.classList.add('hidden');
+        // ============ NOTIFICACIONES ============
+        function addNotification(notification) {
+            notifications.unshift({
+                id: Date.now(),
+                ...notification,
+                read: false
+            });
+            
+            unreadCount++;
+            updateBadges();
+            
+            if (notifications.length > 50) {
+                notifications.pop();
+            }
+            
+            if (currentPage === 'notifications') {
+                displayNotifications();
             }
         }
 
-        function displayPublications(publications) {
-            publicationsContainer.innerHTML = '';
+        function updateUnreadCount(increment) {
+            unreadCount += increment;
+            updateBadges();
+        }
 
-            if (publications.length === 0) {
-                noPublications.classList.remove('hidden');
-                noPublicationsMessage.textContent = 'Aún no hay publicaciones disponibles.';
+        function updateBadges() {
+            if (unreadCount > 0) {
+                notificationBadge.textContent = unreadCount;
+                notificationBadge.classList.remove('hidden');
+                navNotificationBadge.textContent = unreadCount;
+                navNotificationBadge.classList.remove('hidden');
+            } else {
+                notificationBadge.classList.add('hidden');
+                navNotificationBadge.classList.add('hidden');
+            }
+        }
+
+        function loadNotifications() {
+            displayNotifications();
+        }
+
+        function displayNotifications() {
+            const list = document.getElementById('notificationsList');
+            const loading = document.getElementById('loadingNotifications');
+            const noContent = document.getElementById('noNotifications');
+
+            loading.classList.add('hidden');
+
+            if (notifications.length === 0) {
+                noContent.classList.remove('hidden');
+                list.innerHTML = '';
                 return;
             }
 
-            noPublications.classList.add('hidden');
+            noContent.classList.add('hidden');
 
-            publications.forEach((pub, index) => {
-                const card = createPublicationCard(pub, index);
-                publicationsContainer.appendChild(card);
-            });
-        }
-
-        function createPublicationCard(pub, index) {
-            const card = document.createElement('div');
-            card.className = `publication-card ${!pub.is_viewed ? 'new' : ''}`;
-            card.style.animationDelay = `${index * 0.05}s`;
-
-            const formattedDate = new Date(pub.created_at).toLocaleDateString('es-ES', {
-                day: '2-digit',
-                month: 'long',
-                year: 'numeric'
-            });
-
-            let contentHTML = '';
-            let fileHTML = '';
-
-            // Usar el campo correcto según la API del servidor
-            if (pub.publication_type === 'text') {
-                contentHTML = `<div class="publication-content">${pub.content || ''}</div>`;
-            } else if (pub.file_url) {
-                const fileIcon = getFileIcon(pub.publication_type);
-                contentHTML = pub.content ? `<div class="publication-content">${pub.content}</div>` : '';
-                fileHTML = `
-                    <div class="publication-file">
-                        <div class="file-icon">
-                            <i class="${fileIcon}"></i>
-                        </div>
-                        <div class="file-info">
-                            <div class="file-name">${pub.file_name || 'Archivo adjunto'}</div>
-                            <div class="file-type">${pub.file_type || 'Archivo'}</div>
-                        </div>
-                        <button class="download-file-btn" onclick="downloadPublicationFile('${pub.file_url}')">
-                            <i class="fas fa-download"></i>
-                        </button>
+            list.innerHTML = notifications.map(n => `
+                <div class="notification-item ${n.read ? '' : 'unread'}">
+                    <div class="notification-icon">
+                        <i class="fas ${n.type === 'publication' ? 'fa-newspaper' : 'fa-book'}"></i>
                     </div>
-                `;
-            }
-
-            // Determinar el nombre del autor (usar author_name de la API)
-            const authorName = pub.author_name || 'Profesor';
-
-            card.innerHTML = `
-                <div class="publication-header">
-                    <div class="publication-title">${pub.title}</div>
-                    <div class="publication-meta">
-                        <div>
-                            <span class="publication-author">${authorName}</span>
-                            <span class="publication-date"> • ${formattedDate}</span>
-                        </div>
-                        <span class="publication-type">${getPublicationTypeText(pub.publication_type)}</span>
+                    <div class="notification-content">
+                        <p>${n.message}</p>
+                        <span class="notification-time">${formatTime(n.time)}</span>
                     </div>
                 </div>
-                <div class="publication-body">
-                    ${contentHTML}
-                    ${fileHTML}
-                    <div class="publication-actions">
-                        ${!pub.is_viewed ? `
-                            <button class="mark-read-btn" onclick="markPublicationAsViewed(${pub.id})">
-                                <i class="fas fa-check"></i> Marcar como leído
-                            </button>
-                        ` : ''}
-                        ${currentUser.role === 'teacher' ? `
-                            <button class="delete-publication-btn" onclick="deletePublication(${pub.id}, '${pub.title.replace(/'/g, "\\'")}')">
-                                <i class="fas fa-trash"></i> Eliminar
-                            </button>
-                        ` : ''}
-                    </div>
+            `).join('');
+        }
+
+        function markAllAsRead() {
+            notifications = notifications.map(n => ({ ...n, read: true }));
+            unreadCount = 0;
+            updateBadges();
+            displayNotifications();
+        }
+
+        function formatTime(date) {
+            const now = new Date();
+            const diff = now - new Date(date);
+            
+            if (diff < 60000) return 'ahora';
+            if (diff < 3600000) return `hace ${Math.floor(diff / 60000)} min`;
+            if (diff < 86400000) return `hace ${Math.floor(diff / 3600000)} h`;
+            return new Date(date).toLocaleDateString();
+        }
+
+        // ============ ESTUDIANTES Y ACCESOS ============
+        async function loadStudents() {
+            const list = document.getElementById('studentsList');
+            const loading = document.getElementById('loadingStudents');
+            const noContent = document.getElementById('noStudents');
+
+            loading.classList.remove('hidden');
+            list.innerHTML = '';
+
+            try {
+                const token = localStorage.getItem('auth_token');
+                const response = await fetch('/api/students', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (response.ok) {
+                    students = await response.json();
+                    
+                    if (students.length === 0) {
+                        noContent.classList.remove('hidden');
+                    } else {
+                        noContent.classList.add('hidden');
+                        students.forEach(student => {
+                            const item = createStudentItem(student);
+                            list.appendChild(item);
+                        });
+                    }
+                }
+            } catch (error) {
+                showMessage('Error al cargar estudiantes', 'error');
+            } finally {
+                loading.classList.add('hidden');
+            }
+        }
+
+        function createStudentItem(student) {
+            const div = document.createElement('div');
+            div.className = 'student-item';
+
+            const initials = student.name.split(' ').map(n => n[0]).join('').toUpperCase();
+
+            div.innerHTML = `
+                <div class="student-avatar">${initials.substring(0, 2)}</div>
+                <div class="student-info">
+                    <div class="student-name">${student.name}</div>
+                    <div class="student-username">@${student.username}</div>
+                    <span class="student-level">${student.level || 'Sin nivel'}</span>
+                </div>
+                <div class="student-actions">
+                    <select class="level-select" onchange="updateStudentLevel(${student.id}, this.value)">
+                        <option value="Sin asignar" ${student.level === 'Sin asignar' ? 'selected' : ''}>Sin nivel</option>
+                        <option value="A1" ${student.level === 'A1' ? 'selected' : ''}>A1</option>
+                        <option value="A2" ${student.level === 'A2' ? 'selected' : ''}>A2</option>
+                        <option value="B1" ${student.level === 'B1' ? 'selected' : ''}>B1</option>
+                    </select>
+                    <button class="access-btn" onclick="openAccessModal(${student.id}, '${student.name}')">
+                        <i class="fas fa-key"></i>
+                    </button>
                 </div>
             `;
 
-            return card;
+            return div;
         }
 
-        async function checkUnreadPublications() {
+        async function openAccessModal(studentId, studentName) {
             try {
-                const authToken = localStorage.getItem('auth_token');
-                const response = await fetch('/api/publications/unread', {
-                    headers: { 'Authorization': `Bearer ${authToken}` }
+                const token = localStorage.getItem('auth_token');
+                const response = await fetch(`/api/students/${studentId}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (response.ok) {
+                    const student = await response.json();
+                    displayAccessModal(student);
+                }
+            } catch (error) {
+                showMessage('Error al cargar accesos', 'error');
+            }
+        }
+
+        function displayAccessModal(student) {
+            const modalBody = document.getElementById('accessModalBody');
+            const modal = document.getElementById('accessModal');
+
+            const levelClasses = student.classes?.filter(c => c.level === student.level) || [];
+
+            modalBody.innerHTML = `
+                <h4 style="margin-bottom: 16px;">${student.name}</h4>
+                <p style="margin-bottom: 20px; color: var(--text-gray);">
+                    Nivel: <strong>${student.level || 'Sin asignar'}</strong>
+                </p>
+                
+                ${levelClasses.length === 0 ? `
+                    <div class="no-content" style="padding: 30px;">
+                        <i class="fas fa-folder-open"></i>
+                        <p>No hay clases para este nivel</p>
+                    </div>
+                ` : levelClasses.map(cls => `
+                    <div class="access-item">
+                        <div class="access-header">
+                            <h4>${cls.title}</h4>
+                            <button class="access-toggle ${cls.has_access ? 'active' : ''}" 
+                                    onclick="toggleAccess(${student.id}, ${cls.id}, ${!cls.has_access})">
+                            </button>
+                        </div>
+                        ${cls.has_access ? `
+                            <div class="access-info">
+                                <i class="fas fa-check-circle" style="color: var(--success-green);"></i>
+                                Acceso concedido
+                                ${cls.downloaded ? '· Descargado' : ''}
+                            </div>
+                        ` : ''}
+                    </div>
+                `).join('')}
+            `;
+
+            modal.classList.add('active');
+        }
+
+        async function toggleAccess(studentId, classId, hasAccess) {
+            try {
+                const token = localStorage.getItem('auth_token');
+                const response = await fetch(`/api/students/${studentId}/access`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ class_id: classId, has_access: hasAccess })
+                });
+
+                if (response.ok) {
+                    showMessage('Acceso actualizado', 'success');
+                    openAccessModal(studentId, '');
+                }
+            } catch (error) {
+                showMessage('Error al actualizar', 'error');
+            }
+        }
+
+        // ============ ACCIONES DE CLASES ============
+        window.downloadClass = async function(classId) {
+            try {
+                const token = localStorage.getItem('auth_token');
+                const response = await fetch(`/api/classes/${classId}/download`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
                 });
 
                 if (response.ok) {
                     const data = await response.json();
-                    const unreadCount = data.unread_count || 0;
-                    
-                    if (unreadCount > 0) {
-                        unreadBadge.textContent = unreadCount;
-                        unreadBadge.classList.remove('hidden');
-                    } else {
-                        unreadBadge.classList.add('hidden');
-                    }
+                    window.open(data.download_url, '_blank');
+                    showMessage('Descargando...', 'success');
+                } else {
+                    showMessage('No tienes acceso', 'error');
                 }
             } catch (error) {
-                console.error('Error checking unread publications:', error);
+                showMessage('Error al descargar', 'error');
             }
-        }
+        };
 
-        window.markPublicationAsViewed = async function(publicationId) {
+        window.editClass = async function(classId) {
             try {
-                const authToken = localStorage.getItem('auth_token');
-                const response = await fetch(`/api/publications/${publicationId}/view`, {
-                    method: 'POST',
-                    headers: { 'Authorization': `Bearer ${authToken}` }
+                const token = localStorage.getItem('auth_token');
+                const response = await fetch(`/api/classes/${classId}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
                 });
 
                 if (response.ok) {
-                    // Recargar publicaciones para actualizar el estado
-                    loadPublications();
-                    showMessage('Publicación marcada como leída', 'success');
+                    const classData = await response.json();
+                    openClassModal(classData);
                 }
             } catch (error) {
-                console.error('Error:', error);
-                showMessage('Error al marcar como leída', 'error');
+                showMessage('Error al cargar', 'error');
             }
         };
 
-        window.downloadPublicationFile = function(fileUrl) {
-            window.open(fileUrl, '_blank');
-        };
-
-        window.deletePublication = function(publicationId, publicationTitle) {
-            pendingAction = 'deletePublication';
-            pendingData = { id: publicationId };
-            
+        window.confirmDeleteClass = function(classId, className) {
+            pendingAction = 'deleteClass';
+            pendingData = { id: classId };
             document.getElementById('confirmMessage').textContent = 
-                `¿Eliminar la publicación "${publicationTitle}"? Esta acción no se puede deshacer.`;
-            
-            openModal('confirmModal');
+                `¿Eliminar "${className}"? Esta acción no se puede deshacer.`;
+            document.getElementById('confirmModal').classList.add('active');
         };
 
-        function openPublicationModal(publicationData = null) {
-            publicationForm.reset();
-            publicationFileUploadArea.classList.remove('active');
-            contentFieldGroup.classList.remove('hidden');
-            fileFieldGroup.classList.add('hidden');
+        window.updateStudentLevel = async function(studentId, level) {
+            try {
+                const token = localStorage.getItem('auth_token');
+                const response = await fetch(`/api/students/${studentId}/level`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ level })
+                });
 
-            if (publicationData) {
-                // Modo edición (si se implementa en el futuro)
-                publicationModalTitle.textContent = 'Editar Publicación';
-                publicationSubmitBtn.innerHTML = '<i class="fas fa-save"></i> Guardar Cambios';
-                document.getElementById('publicationId').value = publicationData.id;
-                // ... cargar datos existentes
-            } else {
-                // Modo creación
-                publicationModalTitle.textContent = 'Crear Nueva Publicación';
-                publicationSubmitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Publicar';
-                document.getElementById('publicationId').value = '';
+                if (response.ok) {
+                    showMessage('Nivel actualizado', 'success');
+                }
+            } catch (error) {
+                showMessage('Error al actualizar', 'error');
             }
-            
-            openModal('publicationModal');
+        };
+
+        // ============ FORMULARIOS ============
+        function openClassModal(classData = null) {
+            const modal = document.getElementById('classModal');
+            const title = document.getElementById('classModalTitle');
+            const form = document.getElementById('classForm');
+            const submitBtn = document.getElementById('submitClassBtn');
+            const currentFileInfo = document.getElementById('currentFileInfo');
+
+            form.reset();
+            currentFileInfo.classList.add('hidden');
+
+            if (classData) {
+                title.textContent = 'Editar Clase';
+                submitBtn.innerHTML = '<i class="fas fa-save"></i> Guardar';
+                document.getElementById('classId').value = classData.id;
+                document.getElementById('classTitle').value = classData.title;
+                document.getElementById('classDescription').value = classData.description;
+                document.getElementById('classLevel').value = classData.level;
+                document.getElementById('currentFileName').textContent = classData.file_name;
+                currentFileInfo.classList.remove('hidden');
+                document.getElementById('classFile').required = false;
+            } else {
+                title.textContent = 'Subir Clase';
+                submitBtn.innerHTML = '<i class="fas fa-upload"></i> Subir';
+                document.getElementById('classId').value = '';
+                document.getElementById('classFile').required = true;
+            }
+
+            modal.classList.add('active');
         }
 
-        function handlePublicationTypeChange() {
-            const type = publicationTypeSelect.value;
-            
+        async function handleClassSubmit(e) {
+            e.preventDefault();
+
+            const classId = document.getElementById('classId').value;
+            const title = document.getElementById('classTitle').value.trim();
+            const description = document.getElementById('classDescription').value.trim();
+            const level = document.getElementById('classLevel').value;
+            const file = document.getElementById('classFile').files[0];
+
+            if (!title || !description || !level) {
+                showMessage('Completa todos los campos', 'error');
+                return;
+            }
+
+            if (!classId && !file) {
+                showMessage('Selecciona un archivo', 'error');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('title', title);
+            formData.append('description', description);
+            formData.append('level', level);
+            if (file) {
+                formData.append('file', file);
+            }
+
+            const btn = e.target.querySelector('button[type="submit"]');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Procesando...';
+            btn.disabled = true;
+
+            try {
+                const token = localStorage.getItem('auth_token');
+                const url = classId ? `/api/classes/${classId}` : '/api/classes';
+                const method = classId ? 'PUT' : 'POST';
+
+                const response = await fetch(url, {
+                    method,
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    body: formData
+                });
+
+                if (response.ok) {
+                    showMessage(classId ? 'Clase actualizada' : 'Clase subida', 'success');
+                    document.getElementById('classModal').classList.remove('active');
+                    loadManageClasses();
+                } else {
+                    const data = await response.json();
+                    showMessage(data.error || 'Error', 'error');
+                }
+            } catch (error) {
+                showMessage('Error de conexión', 'error');
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        function togglePublicationFields() {
+            const type = document.getElementById('publicationType').value;
+            const contentGroup = document.getElementById('contentGroup');
+            const fileGroup = document.getElementById('fileGroup');
+            const fileInput = document.getElementById('publicationFile');
+
             if (type === 'text') {
-                contentFieldGroup.classList.remove('hidden');
-                fileFieldGroup.classList.add('hidden');
-                document.getElementById('publicationContent').required = true;
+                contentGroup.classList.remove('hidden');
+                fileGroup.classList.add('hidden');
+                fileInput.required = false;
             } else {
-                contentFieldGroup.classList.remove('hidden');
-                fileFieldGroup.classList.remove('hidden');
-                document.getElementById('publicationContent').required = false;
-            }
-        }
-
-        function handlePublicationFileSelect(e) {
-            if (e.target.files.length > 0) {
-                const file = e.target.files[0];
-                publicationFileInfo.innerHTML = `
-                    <strong>Archivo seleccionado:</strong> ${file.name}<br>
-                    <small>Tamaño: ${(file.size / 1024).toFixed(2)} KB</small>
-                `;
-                publicationFileUploadArea.classList.add('active');
+                contentGroup.classList.add('hidden');
+                fileGroup.classList.remove('hidden');
+                fileInput.required = true;
             }
         }
 
@@ -2271,422 +2199,86 @@
             }
 
             if (type === 'text' && !content) {
-                showMessage('El contenido es requerido para publicaciones de texto', 'error');
+                showMessage('El contenido es requerido', 'error');
                 return;
             }
 
             if (type !== 'text' && !file) {
-                showMessage('Debes seleccionar un archivo para este tipo de publicación', 'error');
+                showMessage('Selecciona un archivo', 'error');
                 return;
             }
 
             const formData = new FormData();
             formData.append('type', type);
             formData.append('title', title);
-            
             if (type === 'text') {
                 formData.append('content', content);
             }
-            
             if (file) {
                 formData.append('file', file);
             }
 
+            const btn = e.target.querySelector('button[type="submit"]');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Publicando...';
+            btn.disabled = true;
+
             try {
-                const authToken = localStorage.getItem('auth_token');
+                const token = localStorage.getItem('auth_token');
                 const response = await fetch('/api/publications', {
                     method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${authToken}`
-                    },
+                    headers: { 'Authorization': `Bearer ${token}` },
                     body: formData
                 });
 
-                const data = await response.json();
-
                 if (response.ok) {
-                    showMessage('¡Publicación creada exitosamente!', 'success');
-                    closeModal('publicationModal');
+                    showMessage('Publicación creada', 'success');
+                    document.getElementById('publicationModal').classList.remove('active');
                     loadPublications();
                 } else {
-                    showMessage(data.error || 'Error al crear la publicación', 'error');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                showMessage('Error de conexión', 'error');
-            }
-        }
-
-        async function loadStudents() {
-            try {
-                const authToken = localStorage.getItem('auth_token');
-                const response = await fetch('/api/students', {
-                    headers: { 'Authorization': `Bearer ${authToken}` }
-                });
-
-                if (response.ok) {
-                    const students = await response.json();
-                    displayStudents(students);
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                showMessage('Error al cargar estudiantes', 'error');
-            }
-        }
-
-        function displayStudents(students) {
-            studentsList.innerHTML = '';
-
-            if (students.length === 0) {
-                noStudents.classList.remove('hidden');
-                studentsList.classList.add('hidden');
-                return;
-            }
-
-            noStudents.classList.add('hidden');
-            studentsList.classList.remove('hidden');
-
-            students.forEach(student => {
-                const item = document.createElement('div');
-                item.className = 'student-item';
-
-                const initials = student.name.split(' ').map(n => n[0]).join('').toUpperCase();
-                const formattedDate = new Date(student.registration_date).toLocaleDateString('es-ES');
-
-                item.innerHTML = `
-                    <div class="student-avatar">${initials.substring(0, 2)}</div>
-                    <div class="student-info">
-                        <div class="student-name">${student.name}</div>
-                        <div class="student-username">@${student.username}</div>
-                        <div class="student-date">Registrado: ${formattedDate}</div>
-                    </div>
-                    <div class="student-actions">
-                        <select class="level-select" onchange="updateStudentLevel(${student.id}, this.value)">
-                            <option value="Sin asignar" ${student.level === 'Sin asignar' ? 'selected' : ''}>
-                                Sin asignar
-                            </option>
-                            <option value="A1" ${student.level === 'A1' ? 'selected' : ''}>A1</option>
-                            <option value="A2" ${student.level === 'A2' ? 'selected' : ''}>A2</option>
-                            <option value="B1" ${student.level === 'B1' ? 'selected' : ''}>B1</option>
-                        </select>
-                        <button class="delete-student-btn" onclick="deleteStudent(${student.id}, '${student.name.replace(/'/g, "\\'")}')">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                `;
-
-                studentsList.appendChild(item);
-            });
-        }
-
-        // Funciones globales para estudiantes
-        window.updateStudentLevel = async function(studentId, level) {
-            try {
-                const authToken = localStorage.getItem('auth_token');
-                const response = await fetch(`/api/students/${studentId}/level`, {
-                    method: 'PUT',
-                    headers: {
-                        'Authorization': `Bearer ${authToken}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ level })
-                });
-
-                if (response.ok) {
-                    showMessage('Nivel actualizado exitosamente', 'success');
-                    
-                    // Si el estudiante actualizó su propio nivel
-                    if (currentUser.id === studentId) {
-                        currentUser.level = level;
-                        updateUserInfo();
-                        checkStudentLevel();
-                    }
-                } else {
-                    showMessage('Error al actualizar el nivel', 'error');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                showMessage('Error de conexión', 'error');
-            }
-        };
-
-        window.deleteStudent = function(studentId, studentName) {
-            pendingAction = 'deleteStudent';
-            pendingData = { id: studentId };
-            
-            document.getElementById('confirmMessage').textContent = 
-                `¿Eliminar al estudiante "${studentName}"? Esta acción no se puede deshacer.`;
-            
-            openModal('confirmModal');
-        };
-
-        // Funciones globales para clases
-        window.editClass = async function(classId) {
-            try {
-                const authToken = localStorage.getItem('auth_token');
-                const response = await fetch(`/api/classes/${classId}`, {
-                    headers: { 'Authorization': `Bearer ${authToken}` }
-                });
-
-                if (response.ok) {
-                    const classData = await response.json();
-                    openClassModal(classData);
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                showMessage('Error al cargar la clase', 'error');
-            }
-        };
-
-        window.deleteClass = function(classId, className) {
-            pendingAction = 'deleteClass';
-            pendingData = { id: classId };
-            
-            document.getElementById('confirmMessage').textContent = 
-                `¿Eliminar la clase "${className}"? Esta acción no se puede deshacer.`;
-            
-            openModal('confirmModal');
-        };
-
-        window.downloadClass = async function(classId) {
-            try {
-                const authToken = localStorage.getItem('auth_token');
-                const response = await fetch(`/api/classes/${classId}/download`, {
-                    headers: { 'Authorization': `Bearer ${authToken}` }
-                });
-
-                if (response.ok) {
                     const data = await response.json();
-                    window.open(data.download_url, '_blank');
-                    showMessage('Redirigiendo a descarga...', 'success');
-                } else {
-                    const error = await response.json();
-                    showMessage(error.error || 'Error al descargar', 'error');
+                    showMessage(data.error || 'Error', 'error');
                 }
             } catch (error) {
-                console.error('Error:', error);
                 showMessage('Error de conexión', 'error');
-            }
-        };
-
-        function openClassModal(classData = null) {
-            classForm.reset();
-            fileUploadArea.classList.remove('active');
-            currentFileInfo.classList.add('hidden');
-            classFileInput.required = true;
-
-            if (classData) {
-                // Modo edición
-                modalTitle.textContent = 'Editar Clase';
-                modalSubmitBtn.innerHTML = '<i class="fas fa-save"></i> Guardar Cambios';
-                modalSubmitBtn.dataset.mode = 'edit';
-                
-                document.getElementById('classId').value = classData.id;
-                document.getElementById('classTitle').value = classData.title;
-                document.getElementById('classDescription').value = classData.description;
-                document.getElementById('classCategory').value = classData.level;
-                
-                if (classData.file_name) {
-                    currentFileName.textContent = classData.file_name;
-                    currentFileInfo.classList.remove('hidden');
-                    classFileInput.required = false;
-                }
-            } else {
-                // Modo creación
-                modalTitle.textContent = 'Subir Nueva Clase';
-                modalSubmitBtn.innerHTML = '<i class="fas fa-upload"></i> Subir Clase';
-                modalSubmitBtn.dataset.mode = 'create';
-                
-                document.getElementById('classId').value = '';
-            }
-            
-            openModal('classModal');
-        }
-
-        function handleFileSelect(e) {
-            if (e.target.files.length > 0) {
-                const file = e.target.files[0];
-                fileInfo.innerHTML = `
-                    <strong>Archivo seleccionado:</strong> ${file.name}<br>
-                    <small>Tamaño: ${(file.size / 1024).toFixed(2)} KB</small>
-                `;
-                fileUploadArea.classList.add('active');
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
             }
         }
 
-        async function handleClassSubmit(e) {
-            e.preventDefault();
-
-            const classId = document.getElementById('classId').value;
-            const title = document.getElementById('classTitle').value.trim();
-            const description = document.getElementById('classDescription').value.trim();
-            const level = document.getElementById('classCategory').value;
-            const file = classFileInput.files[0];
-
-            if (!title || !description || !level) {
-                showMessage('Completa todos los campos requeridos', 'error');
-                return;
-            }
-
-            // En creación, el archivo es requerido
-            if (!classId && !file) {
-                showMessage('Debes seleccionar un archivo', 'error');
-                return;
-            }
-
-            const formData = new FormData();
-            formData.append('title', title);
-            formData.append('description', description);
-            formData.append('level', level);
-            if (file) {
-                formData.append('file', file);
-            }
+        // ============ ACCIONES GENERALES ============
+        async function executePendingAction() {
+            if (!pendingAction || !pendingData) return;
 
             try {
-                const authToken = localStorage.getItem('auth_token');
-                const url = classId ? `/api/classes/${classId}` : '/api/classes';
-                const method = classId ? 'PUT' : 'POST';
+                const token = localStorage.getItem('auth_token');
 
-                const response = await fetch(url, {
-                    method: method,
-                    headers: {
-                        'Authorization': `Bearer ${authToken}`
-                    },
-                    body: formData
-                });
+                switch(pendingAction) {
+                    case 'deleteClass':
+                        const response = await fetch(`/api/classes/${pendingData.id}`, {
+                            method: 'DELETE',
+                            headers: { 'Authorization': `Bearer ${token}` }
+                        });
 
-                const data = await response.json();
-
-                if (response.ok) {
-                    showMessage(classId ? '¡Clase actualizada!' : '¡Clase subida!', 'success');
-                    closeModal('classModal');
-
-                    // Recargar según la página
-                    if (currentPage === 'manage-classes') {
-                        loadAllClasses();
-                    } else if (currentPage === 'home') {
-                        if (currentUser.role === 'teacher') {
-                            loadClassesForTeacher();
-                        } else {
-                            loadClasses();
+                        if (response.ok) {
+                            showMessage('Clase eliminada', 'success');
+                            loadManageClasses();
                         }
-                    }
-                } else {
-                    showMessage(data.error || 'Error al procesar', 'error');
+                        break;
                 }
             } catch (error) {
-                console.error('Error:', error);
-                showMessage('Error de conexión', 'error');
-            }
-        }
-
-        function openModal(modalId) {
-            const modal = document.getElementById(modalId);
-            if (modal) {
-                modal.classList.add('active');
-                document.body.style.overflow = 'hidden';
-            }
-        }
-
-        function closeModal(modalId) {
-            const modal = document.getElementById(modalId);
-            if (modal) {
-                modal.classList.remove('active');
-                document.body.style.overflow = '';
-            }
-
-            if (modalId === 'confirmModal') {
+                showMessage('Error al eliminar', 'error');
+            } finally {
+                document.getElementById('confirmModal').classList.remove('active');
                 pendingAction = null;
                 pendingData = null;
             }
         }
 
-        async function executePendingAction() {
-            if (!pendingAction || !pendingData) return;
-
-            try {
-                const authToken = localStorage.getItem('auth_token');
-
-                switch(pendingAction) {
-                    case 'deleteClass':
-                        const classResponse = await fetch(`/api/classes/${pendingData.id}`, {
-                            method: 'DELETE',
-                            headers: { 'Authorization': `Bearer ${authToken}` }
-                        });
-
-                        if (classResponse.ok) {
-                            showMessage('Clase eliminada', 'success');
-                            if (currentPage === 'manage-classes') {
-                                loadAllClasses();
-                            } else if (currentPage === 'home') {
-                                if (currentUser.role === 'teacher') {
-                                    loadClassesForTeacher();
-                                } else {
-                                    loadClasses();
-                                }
-                            }
-                        }
-                        break;
-
-                    case 'deleteStudent':
-                        const studentResponse = await fetch(`/api/students/${pendingData.id}`, {
-                            method: 'DELETE',
-                            headers: { 'Authorization': `Bearer ${authToken}` }
-                        });
-
-                        if (studentResponse.ok) {
-                            showMessage('Estudiante eliminado', 'success');
-                            loadStudents();
-                        }
-                        break;
-
-                    case 'deletePublication':
-                        const publicationResponse = await fetch(`/api/publications/${pendingData.id}`, {
-                            method: 'DELETE',
-                            headers: { 'Authorization': `Bearer ${authToken}` }
-                        });
-
-                        if (publicationResponse.ok) {
-                            showMessage('Publicación eliminada', 'success');
-                            loadPublications();
-                        }
-                        break;
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                showMessage('Error al eliminar', 'error');
-            } finally {
-                closeModal('confirmModal');
-            }
-        }
-
-        // Funciones auxiliares
-        function getLevelText(category) {
-            switch(category) {
-                case 'A1': return 'A1 - BÁSICO';
-                case 'A2': return 'A2 - FUNCIONAL';
-                case 'B1': return 'B1 - INTERMEDIO';
-                default: return category || 'Sin asignar';
-            }
-        }
-
-        function getPublicationTypeText(type) {
-            switch(type) {
-                case 'text': return 'TEXTO';
-                case 'photo': return 'FOTO';
-                case 'video': return 'VIDEO';
-                case 'document': return 'DOCUMENTO';
-                default: return type.toUpperCase();
-            }
-        }
-
-        function getFileIcon(type) {
-            switch(type) {
-                case 'photo': return 'fas fa-image';
-                case 'video': return 'fas fa-video';
-                case 'document': return 'fas fa-file-alt';
-                default: return 'fas fa-file';
-            }
+        function logout() {
+            localStorage.clear();
+            window.location.href = 'auth.html';
         }
 
         function showMessage(text, type) {
@@ -2698,6 +2290,21 @@
                 messageEl.classList.add('hidden');
             }, 3000);
         }
+
+        // Auto logout por inactividad
+        let inactivityTimer;
+        function resetInactivityTimer() {
+            clearTimeout(inactivityTimer);
+            inactivityTimer = setTimeout(() => {
+                showMessage('Sesión expirada por inactividad', 'error');
+                setTimeout(logout, 2000);
+            }, 30 * 60 * 1000);
+        }
+
+        document.addEventListener('mousemove', resetInactivityTimer);
+        document.addEventListener('keypress', resetInactivityTimer);
+        document.addEventListener('click', resetInactivityTimer);
+        resetInactivityTimer();
     </script>
 </body>
 </html>
