@@ -2,104 +2,60 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Clases de Inglés - Acceso</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>English Classes - Acceso</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
-        /* ===== VARIABLES Y RESET ===== */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
         }
 
         :root {
-            --primary-blue: #1d3c6e;
-            --secondary-blue: #2a5298;
-            --accent-red: #c41e1e;
-            --success-green: #25D366;
-            --light-gray: #f8fafc;
-            --medium-gray: #e2e8f0;
-            --dark-gray: #334155;
-            --text-gray: #64748b;
+            --primary: #1d3c6e;
+            --primary-dark: #2a5298;
+            --accent: #c41e1e;
+            --success: #25D366;
+            --gray-100: #f8fafc;
+            --gray-200: #e2e8f0;
+            --gray-600: #64748b;
+            --gray-800: #334155;
             --white: #ffffff;
-            --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
-            --shadow-md: 0 4px 6px rgba(0,0,0,0.07);
-            --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
-            --radius-sm: 8px;
-            --radius-md: 12px;
-            --radius-lg: 16px;
-            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            --shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
         }
 
         body {
             font-family: 'Montserrat', sans-serif;
-            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 16px;
-            color: var(--dark-gray);
         }
 
-        /* ===== CONTAINER PRINCIPAL ===== */
-        .auth-container {
+        .container {
             width: 100%;
             max-width: 400px;
             background: var(--white);
-            border-radius: var(--radius-lg);
+            border-radius: 24px;
             overflow: hidden;
-            box-shadow: var(--shadow-lg);
-            animation: slideUp 0.5s ease;
+            box-shadow: var(--shadow);
         }
 
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* ===== HEADER ===== */
-        .auth-header {
-            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
-            padding: 32px 20px;
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            padding: 32px 24px;
             text-align: center;
-            position: relative;
-            overflow: hidden;
         }
 
-        .auth-header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
-            background-size: 20px 20px;
-            opacity: 0.1;
-            animation: moveBackground 20s linear infinite;
-        }
-
-        @keyframes moveBackground {
-            from { transform: translate(0, 0); }
-            to { transform: translate(20px, 20px); }
-        }
-
-        .logo-icon {
+        .logo {
             width: 70px;
             height: 70px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
+            background: rgba(255,255,255,0.1);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -107,129 +63,91 @@
             margin: 0 auto 16px;
             font-size: 30px;
             color: var(--white);
-            border: 2px solid rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255,255,255,0.2);
         }
 
-        .auth-title {
+        h1 {
+            color: var(--white);
             font-size: 28px;
             font-weight: 900;
-            color: var(--white);
             margin-bottom: 8px;
-            letter-spacing: -0.5px;
         }
 
-        .auth-title span {
+        h1 span {
             color: #ff6b6b;
         }
 
-        .auth-subtitle {
-            color: rgba(255, 255, 255, 0.9);
+        .subtitle {
+            color: rgba(255,255,255,0.9);
             font-size: 14px;
-            font-weight: 500;
         }
 
-        /* ===== TABS ===== */
-        .auth-tabs {
+        .tabs {
             display: flex;
-            background: var(--light-gray);
-            padding: 4px;
-            margin: 16px;
-            border-radius: 30px;
-            border: 1px solid var(--medium-gray);
+            padding: 16px 16px 0;
+            gap: 8px;
         }
 
-        .tab-btn {
+        .tab {
             flex: 1;
             padding: 12px;
             border: none;
-            background: transparent;
+            background: var(--gray-100);
             font-family: 'Montserrat', sans-serif;
             font-weight: 700;
             font-size: 14px;
-            color: var(--text-gray);
-            border-radius: 30px;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
+            color: var(--gray-600);
+            border-radius: 12px;
             cursor: pointer;
+            transition: all 0.3s ease;
         }
 
-        .tab-btn i {
-            font-size: 14px;
-        }
-
-        .tab-btn.active {
+        .tab.active {
             background: var(--white);
-            color: var(--primary-blue);
-            box-shadow: var(--shadow-sm);
+            color: var(--primary);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
 
-        /* ===== CONTENIDO ===== */
         .tab-content {
             display: none;
-            padding: 20px;
+            padding: 24px;
         }
 
         .tab-content.active {
             display: block;
-            animation: fadeIn 0.3s ease;
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* ===== FORMULARIOS ===== */
         .form-group {
             margin-bottom: 20px;
         }
 
-        .form-label {
+        label {
             display: block;
             font-size: 13px;
             font-weight: 700;
-            color: var(--primary-blue);
+            color: var(--primary);
             margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
         }
 
         .input-wrapper {
             position: relative;
         }
 
-        .form-control {
+        input {
             width: 100%;
             padding: 14px 16px;
-            border: 2px solid var(--medium-gray);
-            border-radius: var(--radius-sm);
+            border: 2px solid var(--gray-200);
+            border-radius: 12px;
             font-family: 'Montserrat', sans-serif;
             font-size: 14px;
-            transition: var(--transition);
-            background: var(--light-gray);
-            color: var(--dark-gray);
+            transition: all 0.3s ease;
+            background: var(--gray-100);
         }
 
-        .form-control:focus {
+        input:focus {
             outline: none;
-            border-color: var(--primary-blue);
+            border-color: var(--primary);
             background: var(--white);
-            box-shadow: 0 0 0 3px rgba(29, 60, 110, 0.1);
-        }
-
-        .form-control.error {
-            border-color: var(--accent-red);
-            background: rgba(196, 30, 30, 0.05);
         }
 
         .toggle-password {
@@ -239,293 +157,161 @@
             transform: translateY(-50%);
             background: none;
             border: none;
-            color: var(--text-gray);
-            font-size: 16px;
+            color: var(--gray-600);
             cursor: pointer;
             padding: 8px;
-            border-radius: 50%;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
 
-        .toggle-password:hover {
-            color: var(--primary-blue);
-            background: var(--light-gray);
-        }
-
-        .toggle-password:active {
-            background: var(--medium-gray);
-        }
-
-        /* ===== CÓDIGO DE ACCESO ===== */
-        .code-instruction {
-            background: linear-gradient(135deg, rgba(29, 60, 110, 0.05) 0%, rgba(42, 82, 152, 0.05) 100%);
-            border-left: 4px solid var(--primary-blue);
+        .code-hint {
+            background: rgba(29,60,110,0.05);
+            border-left: 4px solid var(--primary);
             padding: 16px;
-            border-radius: var(--radius-sm);
+            border-radius: 12px;
             margin-bottom: 24px;
             font-size: 13px;
-            color: var(--primary-blue);
             display: flex;
             align-items: center;
             gap: 12px;
-            font-weight: 600;
         }
 
-        .code-instruction i {
+        .code-hint i {
+            color: var(--accent);
             font-size: 20px;
-            color: var(--accent-red);
         }
 
-        /* ===== BOTÓN PRINCIPAL ===== */
-        .auth-submit-btn {
+        button[type="submit"] {
             width: 100%;
             padding: 16px;
-            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             color: var(--white);
             border: none;
-            border-radius: var(--radius-sm);
+            border-radius: 12px;
             font-weight: 800;
             font-size: 15px;
             cursor: pointer;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 24px;
-            box-shadow: 0 4px 12px rgba(29, 60, 110, 0.3);
-            letter-spacing: 0.5px;
-            position: relative;
-            overflow: hidden;
+            transition: all 0.3s ease;
+            margin-top: 16px;
         }
 
-        .auth-submit-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: 0.5s;
+        button[type="submit"]:active {
+            transform: scale(0.98);
         }
 
-        .auth-submit-btn:hover::before {
-            left: 100%;
-        }
-
-        .auth-submit-btn:active {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(29, 60, 110, 0.4);
-        }
-
-        .auth-submit-btn:disabled {
-            opacity: 0.7;
-            transform: none;
-        }
-
-        /* ===== ENLACES ===== */
-        .auth-links {
+        .links {
             text-align: center;
             margin-top: 24px;
             padding-top: 20px;
-            border-top: 1px solid var(--medium-gray);
+            border-top: 1px solid var(--gray-200);
         }
 
-        .auth-link {
-            color: var(--primary-blue);
+        .link {
+            color: var(--primary);
             text-decoration: none;
-            font-weight: 700;
+            font-weight: 600;
             font-size: 13px;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
             padding: 8px 16px;
-            border-radius: 20px;
-            transition: var(--transition);
+            display: inline-block;
         }
 
-        .auth-link:active {
-            background: var(--light-gray);
-        }
-
-        .help-text {
-            font-size: 11px;
-            color: var(--text-gray);
-            margin-top: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-        }
-
-        /* ===== MENSAJES ===== */
         .message {
             margin: 16px;
-            padding: 14px 16px;
-            border-radius: var(--radius-sm);
+            padding: 14px;
+            border-radius: 12px;
             font-size: 13px;
             font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            animation: slideDown 0.3s ease;
-            border-left: 4px solid;
-        }
-
-        .message.success {
-            background: rgba(37, 211, 102, 0.1);
-            color: var(--success-green);
-            border-color: var(--success-green);
-        }
-
-        .message.error {
-            background: rgba(196, 30, 30, 0.1);
-            color: var(--accent-red);
-            border-color: var(--accent-red);
-        }
-
-        .message.info {
-            background: rgba(29, 60, 110, 0.1);
-            color: var(--primary-blue);
-            border-color: var(--primary-blue);
-        }
-
-        .message.hidden {
             display: none;
         }
 
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .message.show {
+            display: block;
         }
 
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 380px) {
-            .auth-header {
-                padding: 24px 16px;
-            }
-            
-            .auth-title {
-                font-size: 24px;
-            }
-            
-            .tab-btn {
-                padding: 10px;
-                font-size: 13px;
-            }
-            
-            .tab-btn i {
-                display: none;
-            }
+        .message.success {
+            background: rgba(37,211,102,0.1);
+            color: var(--success);
+            border-left: 4px solid var(--success);
         }
 
-        /* ===== UTILIDADES ===== */
-        .hidden {
-            display: none !important;
+        .message.error {
+            background: rgba(196,30,30,0.1);
+            color: var(--accent);
+            border-left: 4px solid var(--accent);
+        }
+
+        .error {
+            border-color: var(--accent) !important;
         }
     </style>
 </head>
 <body>
-    <div class="auth-container">
-        <div class="auth-header">
-            <div class="logo-icon">
+    <div class="container">
+        <div class="header">
+            <div class="logo">
                 <i class="fas fa-graduation-cap"></i>
             </div>
-            <h1 class="auth-title">Clases de <span>Inglés</span></h1>
-            <p class="auth-subtitle">Acceso exclusivo para estudiantes y profesor</p>
+            <h1>English<span>Classes</span></h1>
+            <div class="subtitle">Acceso para estudiantes y profesor</div>
         </div>
 
-        <div id="message" class="message hidden"></div>
+        <div id="message" class="message"></div>
 
-        <div class="auth-tabs">
-            <button class="tab-btn active" id="loginTab">
-                <i class="fas fa-sign-in-alt"></i> INICIAR SESIÓN
-            </button>
-            <button class="tab-btn" id="registerTab">
-                <i class="fas fa-user-plus"></i> REGISTRARSE
-            </button>
+        <div class="tabs">
+            <button class="tab active" id="loginTab">INICIAR SESIÓN</button>
+            <button class="tab" id="registerTab">REGISTRARSE</button>
         </div>
 
-        <!-- LOGIN CONTENT -->
+        <!-- LOGIN -->
         <div class="tab-content active" id="loginContent">
-            <form class="auth-form" id="loginForm">
+            <form id="loginForm">
                 <div class="form-group">
-                    <label class="form-label">
-                        <i class="fas fa-user"></i> Nombre de Usuario
-                    </label>
-                    <input type="text" id="loginUsername" class="form-control" 
-                           placeholder="Ingresa tu usuario" required autocomplete="username">
+                    <label>Usuario</label>
+                    <input type="text" id="loginUsername" placeholder="Ingresa tu usuario" required>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">
-                        <i class="fas fa-lock"></i> Contraseña
-                    </label>
+                    <label>Contraseña</label>
                     <div class="input-wrapper">
-                        <input type="password" id="loginPassword" class="form-control" 
-                               placeholder="Ingresa tu contraseña" required autocomplete="current-password">
+                        <input type="password" id="loginPassword" placeholder="Ingresa tu contraseña" required>
                         <button type="button" class="toggle-password" data-target="loginPassword">
                             <i class="fas fa-eye"></i>
                         </button>
                     </div>
                 </div>
 
-                <button type="submit" class="auth-submit-btn">
-                    <i class="fas fa-sign-in-alt"></i> INGRESAR AL SISTEMA
+                <button type="submit">
+                    <i class="fas fa-sign-in-alt"></i> INGRESAR
                 </button>
             </form>
 
-            <div class="auth-links">
-                <a href="#" class="auth-link" id="goToRegister">
+            <div class="links">
+                <a href="#" class="link" id="goToRegister">
                     <i class="fas fa-user-plus"></i> ¿No tienes cuenta? Regístrate
                 </a>
-                <p class="help-text">
-                    <i class="fas fa-life-ring"></i> ¿Necesitas ayuda? Contacta al profesor
-                </p>
             </div>
         </div>
 
-        <!-- REGISTER CONTENT -->
+        <!-- REGISTER -->
         <div class="tab-content" id="registerContent">
-            <div class="code-instruction">
+            <div class="code-hint">
                 <i class="fas fa-key"></i>
-                <span>Para registrarte necesitas el código que te proporcionó el profesor</span>
+                <span>Necesitas el código que te proporcionó el profesor</span>
             </div>
 
-            <form class="auth-form" id="registerForm">
+            <form id="registerForm">
                 <div class="form-group">
-                    <label class="form-label">
-                        <i class="fas fa-user"></i> Nombre Completo
-                    </label>
-                    <input type="text" id="registerName" class="form-control" 
-                           placeholder="Ej: Juan Pérez González" required autocomplete="name">
+                    <label>Nombre Completo</label>
+                    <input type="text" id="registerName" placeholder="Ej: Juan Pérez" required>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">
-                        <i class="fas fa-at"></i> Nombre de Usuario
-                    </label>
-                    <input type="text" id="registerUsername" class="form-control" 
-                           placeholder="Ej: juanperez (mínimo 3 caracteres)" required autocomplete="username" minlength="3">
+                    <label>Usuario</label>
+                    <input type="text" id="registerUsername" placeholder="Mínimo 3 caracteres" required>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">
-                        <i class="fas fa-lock"></i> Contraseña
-                    </label>
+                    <label>Contraseña</label>
                     <div class="input-wrapper">
-                        <input type="password" id="registerPassword" class="form-control" 
-                               placeholder="Mínimo 6 caracteres" required autocomplete="new-password" minlength="6">
+                        <input type="password" id="registerPassword" placeholder="Mínimo 6 caracteres" required>
                         <button type="button" class="toggle-password" data-target="registerPassword">
                             <i class="fas fa-eye"></i>
                         </button>
@@ -533,12 +319,9 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">
-                        <i class="fas fa-lock"></i> Confirmar Contraseña
-                    </label>
+                    <label>Confirmar Contraseña</label>
                     <div class="input-wrapper">
-                        <input type="password" id="confirmPassword" class="form-control" 
-                               placeholder="Repite tu contraseña" required autocomplete="new-password">
+                        <input type="password" id="confirmPassword" placeholder="Repite tu contraseña" required>
                         <button type="button" class="toggle-password" data-target="confirmPassword">
                             <i class="fas fa-eye"></i>
                         </button>
@@ -546,57 +329,66 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">
-                        <i class="fas fa-key"></i> Código de Acceso
-                    </label>
+                    <label>Código de Acceso</label>
                     <div class="input-wrapper">
-                        <input type="password" id="registerCode" class="form-control" 
-                               placeholder="Ej: QwErTy89 o MOISÉS5M" required maxlength="8">
+                        <input type="password" id="registerCode" placeholder="Ej: QwErTy89" maxlength="8" required>
                         <button type="button" class="toggle-password" data-target="registerCode">
                             <i class="fas fa-eye"></i>
                         </button>
                     </div>
                 </div>
 
-                <button type="submit" class="auth-submit-btn">
-                    <i class="fas fa-user-plus"></i> CREAR MI CUENTA
+                <button type="submit">
+                    <i class="fas fa-user-plus"></i> CREAR CUENTA
                 </button>
             </form>
 
-            <div class="auth-links">
-                <a href="#" class="auth-link" id="goToLogin">
-                    <i class="fas fa-sign-in-alt"></i> ¿Ya tienes cuenta? Inicia sesión aquí
+            <div class="links">
+                <a href="#" class="link" id="goToLogin">
+                    <i class="fas fa-sign-in-alt"></i> ¿Ya tienes cuenta? Inicia sesión
                 </a>
             </div>
         </div>
     </div>
 
     <script>
-        // Códigos de acceso (deben coincidir con server.py)
         const STUDENT_CODE = "QwErTy89";
         const TEACHER_CODE = "MOISÉS5M";
 
-        // Elementos DOM
+        // Elementos
         const loginTab = document.getElementById('loginTab');
         const registerTab = document.getElementById('registerTab');
         const loginContent = document.getElementById('loginContent');
         const registerContent = document.getElementById('registerContent');
-        const messageEl = document.getElementById('message');
+        const message = document.getElementById('message');
         const loginForm = document.getElementById('loginForm');
         const registerForm = document.getElementById('registerForm');
         const goToLogin = document.getElementById('goToLogin');
         const goToRegister = document.getElementById('goToRegister');
-        const toggleBtns = document.querySelectorAll('.toggle-password');
 
-        // ============ CAMBIAR PESTAÑAS ============
+        // Toggle password
+        document.querySelectorAll('.toggle-password').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const input = document.getElementById(this.dataset.target);
+                const icon = this.querySelector('i');
+                
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    icon.classList.replace('fa-eye', 'fa-eye-slash');
+                } else {
+                    input.type = 'password';
+                    icon.classList.replace('fa-eye-slash', 'fa-eye');
+                }
+            });
+        });
+
+        // Cambiar tabs
         loginTab.addEventListener('click', () => switchTab('login'));
         registerTab.addEventListener('click', () => switchTab('register'));
-        
         goToLogin?.addEventListener('click', (e) => {
             e.preventDefault();
             switchTab('login');
         });
-        
         goToRegister?.addEventListener('click', (e) => {
             e.preventDefault();
             switchTab('register');
@@ -611,71 +403,23 @@
             if (tab === 'login') {
                 loginTab.classList.add('active');
                 loginContent.classList.add('active');
-                document.getElementById('loginUsername').focus();
             } else {
                 registerTab.classList.add('active');
                 registerContent.classList.add('active');
-                document.getElementById('registerName').focus();
             }
-            
-            clearMessage();
+            hideMessage();
         }
 
-        // ============ MOSTRAR/OCULTAR CONTRASEÑA ============
-        toggleBtns.forEach(btn => {
-            btn.addEventListener('click', function() {
-                const targetId = this.dataset.target;
-                const input = document.getElementById(targetId);
-                const icon = this.querySelector('i');
-                
-                if (input.type === 'password') {
-                    input.type = 'text';
-                    icon.classList.remove('fa-eye');
-                    icon.classList.add('fa-eye-slash');
-                } else {
-                    input.type = 'password';
-                    icon.classList.remove('fa-eye-slash');
-                    icon.classList.add('fa-eye');
-                }
-            });
-        });
-
-        // ============ FUNCIONES DE MENSAJES ============
         function showMessage(text, type) {
-            messageEl.textContent = text;
-            messageEl.className = `message ${type}`;
-            messageEl.classList.remove('hidden');
-            
-            // Auto ocultar después de 5 segundos
-            setTimeout(() => {
-                messageEl.classList.add('hidden');
-            }, 5000);
+            message.textContent = text;
+            message.className = `message ${type} show`;
         }
 
-        function clearMessage() {
-            messageEl.classList.add('hidden');
-            messageEl.textContent = '';
+        function hideMessage() {
+            message.classList.remove('show');
         }
 
-        // ============ VALIDACIONES ============
-        function validatePassword(password) {
-            if (password.length < 6) {
-                return 'La contraseña debe tener al menos 6 caracteres';
-            }
-            return null;
-        }
-
-        function validateUsername(username) {
-            if (username.length < 3) {
-                return 'El nombre de usuario debe tener al menos 3 caracteres';
-            }
-            if (!/^[a-zA-Z0-9_]+$/.test(username)) {
-                return 'Solo letras, números y guión bajo';
-            }
-            return null;
-        }
-
-        // ============ LOGIN ============
+        // Login
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
@@ -683,132 +427,116 @@
             const password = document.getElementById('loginPassword').value.trim();
             
             if (!username || !password) {
-                showMessage('Por favor, completa todos los campos', 'error');
+                showMessage('Completa todos los campos', 'error');
                 return;
             }
 
-            const btn = loginForm.querySelector('button[type="submit"]');
-            const originalText = btn.innerHTML;
+            const btn = loginForm.querySelector('button');
+            const original = btn.innerHTML;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> INGRESANDO...';
             btn.disabled = true;
 
             try {
-                const response = await fetch('/api/login', {
+                const res = await fetch('/api/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ username, password })
                 });
 
-                const data = await response.json();
+                const data = await res.json();
                 
-                if (response.ok) {
-                    showMessage(`¡Bienvenido/a ${data.user.name}!`, 'success');
+                if (res.ok) {
+                    showMessage(`¡Bienvenido ${data.user.name}!`, 'success');
                     localStorage.setItem('current_user', JSON.stringify(data.user));
                     localStorage.setItem('auth_token', data.token);
                     
                     setTimeout(() => {
-                        window.location.href = 'clases.html';
+                        window.location.href = data.user.role === 'teacher' ? 'profesor.html' : 'estudiante.html';
                     }, 1500);
                 } else {
-                    showMessage(data.error || 'Error en la autenticación', 'error');
+                    showMessage(data.error || 'Error', 'error');
                 }
             } catch (error) {
-                console.error('Error:', error);
-                showMessage('Error de conexión con el servidor', 'error');
+                showMessage('Error de conexión', 'error');
             } finally {
-                btn.innerHTML = originalText;
+                btn.innerHTML = original;
                 btn.disabled = false;
             }
         });
 
-        // ============ REGISTRO ============
+        // Register
         registerForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
             const name = document.getElementById('registerName').value.trim();
             const username = document.getElementById('registerUsername').value.trim();
             const password = document.getElementById('registerPassword').value.trim();
-            const confirmPassword = document.getElementById('confirmPassword').value.trim();
+            const confirm = document.getElementById('confirmPassword').value.trim();
             const code = document.getElementById('registerCode').value.trim();
 
-            // Validaciones
-            if (!name || !username || !password || !confirmPassword || !code) {
-                showMessage('Por favor, completa todos los campos', 'error');
+            if (!name || !username || !password || !confirm || !code) {
+                showMessage('Completa todos los campos', 'error');
                 return;
             }
 
-            const usernameError = validateUsername(username);
-            if (usernameError) {
-                showMessage(usernameError, 'error');
+            if (username.length < 3) {
+                showMessage('Usuario debe tener al menos 3 caracteres', 'error');
                 return;
             }
 
-            const passwordError = validatePassword(password);
-            if (passwordError) {
-                showMessage(passwordError, 'error');
+            if (password.length < 6) {
+                showMessage('Contraseña debe tener al menos 6 caracteres', 'error');
                 return;
             }
 
-            if (password !== confirmPassword) {
+            if (password !== confirm) {
                 showMessage('Las contraseñas no coinciden', 'error');
                 return;
             }
 
             if (code !== STUDENT_CODE && code !== TEACHER_CODE) {
-                showMessage('Código de acceso incorrecto', 'error');
+                showMessage('Código incorrecto', 'error');
                 return;
             }
 
-            const btn = registerForm.querySelector('button[type="submit"]');
-            const originalText = btn.innerHTML;
+            const btn = registerForm.querySelector('button');
+            const original = btn.innerHTML;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> REGISTRANDO...';
             btn.disabled = true;
 
             try {
-                const response = await fetch('/api/register', {
+                const res = await fetch('/api/register', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ name, username, password, code })
                 });
 
-                const data = await response.json();
+                const data = await res.json();
                 
-                if (response.ok) {
-                    const roleMessage = code === TEACHER_CODE ? 'PROFESOR' : 'ESTUDIANTE';
-                    showMessage(`¡Registro exitoso como ${roleMessage}, ${name}!`, 'success');
+                if (res.ok) {
+                    const role = code === TEACHER_CODE ? 'PROFESOR' : 'ESTUDIANTE';
+                    showMessage(`¡Registro exitoso como ${role}!`, 'success');
                     
                     registerForm.reset();
                     
                     setTimeout(() => {
                         switchTab('login');
                         document.getElementById('loginUsername').value = username;
-                        document.getElementById('loginPassword').focus();
                     }, 2000);
                 } else {
-                    showMessage(data.error || 'Error en el registro', 'error');
+                    showMessage(data.error || 'Error', 'error');
                 }
             } catch (error) {
-                console.error('Error:', error);
-                showMessage('Error de conexión con el servidor', 'error');
+                showMessage('Error de conexión', 'error');
             } finally {
-                btn.innerHTML = originalText;
+                btn.innerHTML = original;
                 btn.disabled = false;
             }
         });
 
-        // ============ VALIDACIÓN EN TIEMPO REAL ============
-        document.getElementById('registerUsername').addEventListener('input', function() {
-            const error = validateUsername(this.value);
-            if (this.value.length > 0 && error) {
-                this.classList.add('error');
-            } else {
-                this.classList.remove('error');
-            }
-        });
-
+        // Validación en tiempo real
         document.getElementById('registerPassword').addEventListener('input', function() {
-            const error = validatePassword(this.value);
-            if (this.value.length > 0 && error) {
+            if (this.value.length > 0 && this.value.length < 6) {
                 this.classList.add('error');
             } else {
                 this.classList.remove('error');
@@ -816,58 +544,25 @@
         });
 
         document.getElementById('confirmPassword').addEventListener('input', function() {
-            const password = document.getElementById('registerPassword').value;
-            if (this.value.length > 0 && this.value !== password) {
+            const pass = document.getElementById('registerPassword').value;
+            if (this.value.length > 0 && this.value !== pass) {
                 this.classList.add('error');
             } else {
                 this.classList.remove('error');
             }
         });
 
-        document.getElementById('registerCode').addEventListener('input', function() {
-            const code = this.value.toUpperCase();
-            if (code.length === 8) {
-                if (code !== STUDENT_CODE && code !== TEACHER_CODE) {
-                    this.classList.add('error');
-                } else {
-                    this.classList.remove('error');
-                }
-            } else {
-                this.classList.remove('error');
+        // Verificar sesión activa
+        const user = localStorage.getItem('current_user');
+        const token = localStorage.getItem('auth_token');
+        if (user && token) {
+            try {
+                const userData = JSON.parse(user);
+                window.location.href = userData.role === 'teacher' ? 'profesor.html' : 'estudiante.html';
+            } catch (e) {
+                localStorage.clear();
             }
-        });
-
-        // ============ VERIFICAR SESIÓN ACTIVA ============
-        window.addEventListener('DOMContentLoaded', () => {
-            const user = localStorage.getItem('current_user');
-            const token = localStorage.getItem('auth_token');
-            
-            if (user && token) {
-                try {
-                    const userData = JSON.parse(user);
-                    showMessage(`Sesión activa. Redirigiendo...`, 'info');
-                    setTimeout(() => {
-                        window.location.href = 'clases.html';
-                    }, 1500);
-                } catch (e) {
-                    localStorage.clear();
-                }
-            } else {
-                // Enfocar primer campo
-                document.getElementById('loginUsername').focus();
-            }
-        });
-
-        // ============ PREVENIR DOBLE ENVÍO ============
-        const forms = document.querySelectorAll('form');
-        forms.forEach(form => {
-            form.addEventListener('submit', function() {
-                const btn = this.querySelector('button[type="submit"]');
-                if (btn.disabled) {
-                    e.preventDefault();
-                }
-            });
-        });
+        }
     </script>
 </body>
 </html>
