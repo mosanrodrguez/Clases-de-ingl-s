@@ -308,31 +308,32 @@
             color: var(--white);
         }
 
-        /* Lista de estudiantes */
+        /* ===== LISTA DE ESTUDIANTES MEJORADA ===== */
         .students-list {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 12px;
         }
 
-        .student-item {
+        .student-card {
             background: var(--white);
             border-radius: var(--radius);
             padding: 16px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .student-row {
             display: flex;
             align-items: center;
             gap: 12px;
-            box-shadow: var(--shadow);
-            transition: transform 0.2s ease;
-        }
-
-        .student-item:active {
-            transform: scale(0.99);
         }
 
         .student-avatar {
-            width: 48px;
-            height: 48px;
+            width: 50px;
+            height: 50px;
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             color: var(--white);
             border-radius: 50%;
@@ -340,15 +341,15 @@
             align-items: center;
             justify-content: center;
             font-weight: 700;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             flex-shrink: 0;
             border: 2px solid var(--white);
             box-shadow: var(--shadow);
         }
 
         .student-avatar-img {
-            width: 48px;
-            height: 48px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             object-fit: cover;
             border: 2px solid var(--white);
@@ -357,7 +358,6 @@
 
         .student-info {
             flex: 1;
-            min-width: 0;
         }
 
         .student-name {
@@ -365,13 +365,10 @@
             font-size: 1rem;
             color: var(--gray-800);
             margin-bottom: 4px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
         }
 
         .student-level-badge {
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             color: var(--primary);
             background: rgba(29,60,110,0.1);
             padding: 4px 12px;
@@ -382,33 +379,34 @@
         .student-actions {
             display: flex;
             gap: 8px;
-            flex-shrink: 0;
+            justify-content: flex-end;
         }
 
         .level-select {
-            padding: 8px 12px;
+            padding: 10px 12px;
             border: 1px solid var(--gray-200);
             border-radius: var(--radius-sm);
             font-family: 'Montserrat', sans-serif;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             background: var(--white);
             cursor: pointer;
-            min-width: 100px;
+            min-width: 110px;
         }
 
         .access-btn {
-            padding: 8px 16px;
+            padding: 10px 16px;
             background: var(--success);
             color: var(--white);
             border: none;
             border-radius: var(--radius-sm);
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             font-weight: 600;
             cursor: pointer;
             display: flex;
             align-items: center;
             gap: 6px;
             transition: all 0.2s ease;
+            white-space: nowrap;
         }
 
         .access-btn:active {
@@ -907,7 +905,7 @@
             }
         }
 
-        .card, .student-item {
+        .card, .student-card {
             animation: fadeIn 0.3s ease;
         }
     </style>
@@ -962,7 +960,7 @@
             </button>
         </div>
 
-        <!-- Estudiantes -->
+        <!-- Estudiantes (VERSIÓN MEJORADA) -->
         <div class="page" id="studentsPage">
             <div class="students-list" id="studentsList"></div>
             <div class="loading hidden" id="loadingStudents">
@@ -1739,7 +1737,7 @@
             }
         }
 
-        // ============ ESTUDIANTES ============
+        // ============ ESTUDIANTES (VERSIÓN MEJORADA) ============
         async function loadStudents() {
             const list = document.getElementById('studentsList');
             const loading = document.getElementById('loadingStudents');
@@ -1760,7 +1758,7 @@
                         list.innerHTML = '<div class="no-content"><i class="fas fa-users"></i><h3>No hay estudiantes</h3><p>Los estudiantes aparecerán cuando se registren</p></div>';
                     } else {
                         students.forEach(student => {
-                            list.appendChild(createStudentElement(student));
+                            list.appendChild(createStudentCard(student));
                         });
                     }
                 }
@@ -1772,23 +1770,25 @@
             }
         }
 
-        function createStudentElement(student) {
-            const div = document.createElement('div');
-            div.className = 'student-item';
+        function createStudentCard(student) {
+            const card = document.createElement('div');
+            card.className = 'student-card';
 
             const avatarUrl = getAvatarUrl(student);
             const initials = student.name.split(' ').map(n => n[0]).join('').toUpperCase();
 
-            div.innerHTML = `
-                <div class="student-avatar">
-                    ${avatarUrl ? 
-                        `<img src="${avatarUrl}?v=${student.avatar_version}" class="student-avatar-img" loading="lazy">` :
-                        initials.substring(0, 2)
-                    }
-                </div>
-                <div class="student-info">
-                    <div class="student-name">${student.name}</div>
-                    <span class="student-level-badge">${student.level || 'Sin nivel'}</span>
+            card.innerHTML = `
+                <div class="student-row">
+                    <div class="student-avatar">
+                        ${avatarUrl ? 
+                            `<img src="${avatarUrl}?v=${student.avatar_version}" class="student-avatar-img" loading="lazy">` :
+                            initials.substring(0, 2)
+                        }
+                    </div>
+                    <div class="student-info">
+                        <div class="student-name">${student.name}</div>
+                        <span class="student-level-badge">${student.level || 'Sin nivel'}</span>
+                    </div>
                 </div>
                 <div class="student-actions">
                     <select class="level-select" onchange="updateStudentLevel(${student.id}, this.value)">
@@ -1803,7 +1803,7 @@
                 </div>
             `;
 
-            return div;
+            return card;
         }
 
         window.updateStudentLevel = async function(studentId, level) {
