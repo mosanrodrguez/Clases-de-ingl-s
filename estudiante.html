@@ -25,6 +25,7 @@
             --gray-800: #334155;
             --white: #ffffff;
             --shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
         }
 
         body {
@@ -38,17 +39,18 @@
         .header {
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             color: var(--white);
-            padding: 16px;
+            padding: 12px 16px;
             position: sticky;
             top: 0;
             z-index: 10;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            box-shadow: var(--shadow);
         }
 
         .header h1 {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: 800;
         }
 
@@ -57,13 +59,20 @@
         }
 
         .header-btn {
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             background: rgba(255,255,255,0.1);
             border: none;
             border-radius: 50%;
             color: var(--white);
-            font-size: 1.2rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .header-btn:active {
+            background: rgba(255,255,255,0.2);
+            transform: scale(0.95);
         }
 
         /* Bottom Navigation */
@@ -75,7 +84,7 @@
             background: var(--white);
             display: flex;
             justify-content: space-around;
-            padding: 8px 4px;
+            padding: 6px 4px;
             box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
             z-index: 100;
         }
@@ -85,18 +94,19 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 8px;
+            padding: 6px;
             color: var(--gray-600);
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             font-weight: 600;
             text-decoration: none;
             border-radius: 8px;
             transition: all 0.3s ease;
+            cursor: pointer;
         }
 
         .nav-item i {
-            font-size: 1.3rem;
-            margin-bottom: 4px;
+            font-size: 1.2rem;
+            margin-bottom: 2px;
         }
 
         .nav-item.active {
@@ -107,18 +117,18 @@
         /* Pages */
         .page {
             display: none;
-            padding: 16px;
+            padding: 12px;
         }
 
         .page.active {
             display: block;
         }
 
-        /* Publications */
+        /* Publications Feed - Estilo Instagram */
         .publications-feed {
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 12px;
         }
 
         .publication-card {
@@ -129,67 +139,78 @@
         }
 
         .pub-header {
-            padding: 16px;
+            padding: 12px;
             display: flex;
             align-items: center;
-            gap: 12px;
-            border-bottom: 1px solid var(--gray-200);
+            gap: 10px;
         }
 
         .pub-avatar {
-            width: 40px;
-            height: 40px;
+            width: 32px;
+            height: 32px;
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             color: var(--white);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 800;
+            font-weight: 700;
+            font-size: 0.8rem;
+            flex-shrink: 0;
+        }
+
+        .pub-avatar-img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .pub-author {
+            flex: 1;
         }
 
         .pub-author h4 {
-            font-size: 0.95rem;
+            font-size: 0.85rem;
             font-weight: 700;
+            color: var(--gray-800);
             margin-bottom: 2px;
         }
 
         .pub-time {
-            font-size: 0.7rem;
+            font-size: 0.6rem;
             color: var(--gray-600);
         }
 
         .pub-content {
-            padding: 16px;
+            padding: 0 12px 12px;
         }
 
         .pub-title {
-            font-size: 1.1rem;
+            font-size: 0.95rem;
             font-weight: 700;
             color: var(--primary);
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         .pub-text {
-            font-size: 0.9rem;
-            line-height: 1.6;
+            font-size: 0.8rem;
+            line-height: 1.5;
             color: var(--gray-800);
         }
 
         .pub-media {
             width: 100%;
             max-height: 300px;
-            object-fit: cover;
+            object-fit: contain;
+            background: var(--gray-100);
             border-radius: 12px;
-            margin-top: 12px;
+            margin-top: 8px;
         }
 
         .pub-footer {
-            padding: 12px 16px;
+            padding: 8px 12px;
             border-top: 1px solid var(--gray-200);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
         }
 
         .like-btn {
@@ -199,10 +220,16 @@
             align-items: center;
             gap: 6px;
             color: var(--gray-600);
-            font-size: 0.9rem;
-            padding: 8px 12px;
+            font-size: 0.8rem;
+            padding: 6px 10px;
             border-radius: 20px;
-            transition: all 0.3s ease;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .like-btn i {
+            font-size: 1rem;
+            transition: transform 0.2s ease;
         }
 
         .like-btn.liked {
@@ -211,11 +238,17 @@
 
         .like-btn.liked i {
             font-weight: 900;
+            animation: heartPop 0.3s ease;
         }
 
-        .views-count {
-            color: var(--gray-600);
-            font-size: 0.8rem;
+        .like-btn:active i {
+            transform: scale(1.2);
+        }
+
+        @keyframes heartPop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+            100% { transform: scale(1); }
         }
 
         /* Classes */
@@ -235,114 +268,172 @@
         .class-header {
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             color: var(--white);
-            padding: 16px;
+            padding: 14px;
         }
 
         .class-level {
             background: rgba(255,255,255,0.2);
             padding: 4px 8px;
             border-radius: 12px;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             font-weight: 700;
             display: inline-block;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         .class-title {
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: 700;
             margin-bottom: 4px;
         }
 
         .class-meta {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             opacity: 0.9;
         }
 
         .class-body {
-            padding: 16px;
+            padding: 14px;
         }
 
         .class-desc {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: var(--gray-600);
-            margin-bottom: 16px;
+            margin-bottom: 14px;
             line-height: 1.5;
         }
 
         .download-btn {
             width: 100%;
-            padding: 14px;
+            padding: 12px;
             background: var(--success);
             color: var(--white);
             border: none;
             border-radius: 8px;
             font-weight: 700;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .download-btn:active {
+            transform: scale(0.98);
+            opacity: 0.9;
         }
 
         /* Profile */
         .profile-card {
             background: var(--white);
-            border-radius: 16px;
-            padding: 24px;
-            text-align: center;
-            box-shadow: var(--shadow);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .profile-avatar-container {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 16px;
         }
 
         .profile-avatar {
-            width: 80px;
-            height: 80px;
+            width: 100px;
+            height: 100px;
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             color: var(--white);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2rem;
+            font-size: 2.5rem;
             font-weight: 800;
-            margin: 0 auto 16px;
+            border: 3px solid var(--white);
+            box-shadow: var(--shadow);
+        }
+
+        .profile-avatar-img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--white);
+            box-shadow: var(--shadow);
+        }
+
+        .camera-btn {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 32px;
+            height: 32px;
+            background: var(--primary);
+            color: var(--white);
+            border: 2px solid var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .camera-btn:active {
+            transform: scale(0.9);
+            background: var(--primary-dark);
         }
 
         .profile-name {
             font-size: 1.3rem;
             font-weight: 800;
             color: var(--primary);
+            text-align: center;
             margin-bottom: 4px;
         }
 
         .profile-role {
             color: var(--gray-600);
-            font-size: 0.9rem;
-            margin-bottom: 16px;
+            font-size: 0.8rem;
+            text-align: center;
+            margin-bottom: 20px;
         }
 
         .profile-stats {
             background: var(--gray-100);
-            border-radius: 12px;
+            border-radius: 16px;
             padding: 16px;
-            text-align: left;
         }
 
         .stat-item {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 8px;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .stat-item:last-child {
+            border-bottom: none;
         }
 
         .stat-label {
             color: var(--gray-600);
+            font-size: 0.85rem;
+            font-weight: 500;
         }
 
         .stat-value {
             font-weight: 700;
             color: var(--primary);
+            font-size: 0.9rem;
         }
 
+        /* No level message */
         .no-level {
             text-align: center;
             padding: 40px 20px;
@@ -355,14 +446,26 @@
             margin-bottom: 16px;
         }
 
+        .no-level h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .no-level p {
+            font-size: 0.8rem;
+        }
+
+        /* Loading */
         .loading {
             text-align: center;
             padding: 40px;
         }
 
         .spinner {
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             border: 3px solid var(--gray-200);
             border-top-color: var(--primary);
             border-radius: 50%;
@@ -376,6 +479,11 @@
 
         .hidden {
             display: none !important;
+        }
+
+        /* File input hidden */
+        #avatarInput {
+            display: none;
         }
     </style>
 </head>
@@ -418,19 +526,21 @@
     </main>
 
     <nav class="bottom-nav">
-        <a href="#" class="nav-item active" data-page="home">
+        <a class="nav-item active" data-page="home">
             <i class="fas fa-home"></i>
             <span>Inicio</span>
         </a>
-        <a href="#" class="nav-item" data-page="classes">
+        <a class="nav-item" data-page="classes">
             <i class="fas fa-book"></i>
             <span>Clases</span>
         </a>
-        <a href="#" class="nav-item" data-page="profile">
+        <a class="nav-item" data-page="profile">
             <i class="fas fa-user"></i>
             <span>Perfil</span>
         </a>
     </nav>
+
+    <input type="file" id="avatarInput" accept="image/*">
 
     <script src="https://cdn.socket.io/4.5.0/socket.io.min.js"></script>
     <script>
@@ -443,6 +553,9 @@
             classes: document.getElementById('classesPage'),
             profile: document.getElementById('profilePage')
         };
+
+        // Cache para avatares
+        const avatarCache = new Map();
 
         // Inicialización
         document.addEventListener('DOMContentLoaded', () => {
@@ -475,14 +588,36 @@
         function connectSocket() {
             socket = io();
             
-            socket.on('new_publication', () => {
+            socket.on('connected', () => {
+                console.log('Conectado al servidor');
+            });
+
+            socket.on('new_publication', (publication) => {
+                if (currentPage === 'home') {
+                    loadPublications();
+                }
+            });
+
+            socket.on('publication_deleted', () => {
                 if (currentPage === 'home') {
                     loadPublications();
                 }
             });
 
             socket.on('like_updated', (data) => {
-                updateLikeCount(data.publication_id, data.likes_count, data.liked);
+                updateLikeInUI(data.publication_id, data.likes_count, data.liked);
+            });
+
+            socket.on('student_level_updated', (data) => {
+                if (data.student_id === currentUser.id) {
+                    currentUser.level = data.level;
+                    if (currentPage === 'classes') {
+                        checkStudentLevel();
+                    }
+                    if (currentPage === 'profile') {
+                        loadProfile();
+                    }
+                }
             });
         }
 
@@ -511,6 +646,67 @@
             });
         }
 
+        // ============ AVATAR ============
+        function getAvatarUrl(user) {
+            if (!user.avatar_url) return null;
+            
+            // Usar cache
+            const cacheKey = `avatar_${user.id}_${user.avatar_version || 1}`;
+            if (avatarCache.has(cacheKey)) {
+                return avatarCache.get(cacheKey);
+            }
+            
+            // Si no está en cache, guardar
+            avatarCache.set(cacheKey, user.avatar_url);
+            return user.avatar_url;
+        }
+
+        function setupAvatarUpload() {
+            const avatarInput = document.getElementById('avatarInput');
+            const cameraBtn = document.querySelector('.camera-btn');
+            
+            if (cameraBtn) {
+                cameraBtn.addEventListener('click', () => {
+                    avatarInput.click();
+                });
+            }
+
+            avatarInput.addEventListener('change', async (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                const formData = new FormData();
+                formData.append('avatar', file);
+
+                try {
+                    const token = localStorage.getItem('auth_token');
+                    const res = await fetch('/api/profile/avatar', {
+                        method: 'POST',
+                        headers: { 'Authorization': `Bearer ${token}` },
+                        body: formData
+                    });
+
+                    if (res.ok) {
+                        const data = await res.json();
+                        
+                        // Actualizar usuario en localStorage
+                        currentUser.avatar_url = data.avatar_url;
+                        currentUser.avatar_version = data.avatar_version;
+                        localStorage.setItem('current_user', JSON.stringify(currentUser));
+                        
+                        // Limpiar cache
+                        const cacheKey = `avatar_${currentUser.id}_${data.avatar_version - 1}`;
+                        avatarCache.delete(cacheKey);
+                        
+                        // Recargar perfil
+                        loadProfile();
+                    }
+                } catch (error) {
+                    console.error('Error al subir avatar:', error);
+                }
+            });
+        }
+
         // ============ PERFIL ============
         async function loadProfile() {
             const container = document.getElementById('profileContainer');
@@ -523,10 +719,19 @@
 
                 if (res.ok) {
                     const profile = await res.json();
+                    const avatarUrl = getAvatarUrl(profile);
                     const initials = profile.name.split(' ').map(n => n[0]).join('').toUpperCase();
                     
                     container.innerHTML = `
-                        <div class="profile-avatar">${initials.substring(0, 2)}</div>
+                        <div class="profile-avatar-container">
+                            ${avatarUrl ? 
+                                `<img src="${avatarUrl}?v=${profile.avatar_version}" class="profile-avatar-img" alt="Avatar">` :
+                                `<div class="profile-avatar">${initials.substring(0, 2)}</div>`
+                            }
+                            <div class="camera-btn">
+                                <i class="fas fa-camera"></i>
+                            </div>
+                        </div>
                         <h2 class="profile-name">${profile.name}</h2>
                         <p class="profile-role">ESTUDIANTE</p>
                         <div class="profile-stats">
@@ -544,6 +749,8 @@
                             </div>
                         </div>
                     `;
+                    
+                    setupAvatarUpload();
                 }
             } catch (error) {
                 console.error('Error:', error);
@@ -585,30 +792,36 @@
         function createPublicationCard(pub) {
             const card = document.createElement('div');
             card.className = 'publication-card';
+            card.dataset.id = pub.id;
 
             const date = new Date(pub.created_at).toLocaleDateString('es-ES', {
-                day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit'
+                day: 'numeric', 
+                month: 'short', 
+                hour: '2-digit', 
+                minute: '2-digit'
             });
+
+            const authorAvatar = pub.avatar_url ? 
+                `<img src="${pub.avatar_url}?v=${pub.avatar_version}" class="pub-avatar-img">` :
+                `<div class="pub-avatar">${pub.author_name?.charAt(0).toUpperCase() || 'P'}</div>`;
 
             let mediaHtml = '';
             if (pub.publication_type === 'photo' && pub.file_url) {
-                mediaHtml = `<img src="${pub.file_url}" class="pub-media">`;
+                mediaHtml = `<img src="${pub.file_url}" class="pub-media" loading="lazy">`;
             } else if (pub.publication_type === 'video' && pub.file_url) {
                 mediaHtml = `<video src="${pub.file_url}" class="pub-media" controls></video>`;
             } else if (pub.publication_type === 'document' && pub.file_url) {
                 mediaHtml = `
-                    <div style="background: var(--gray-100); padding: 20px; text-align: center; border-radius: 12px;">
+                    <div style="background: var(--gray-100); padding: 15px; text-align: center; border-radius: 12px; margin-top: 8px;">
                         <i class="fas fa-file-pdf" style="font-size: 2rem; color: var(--accent);"></i>
-                        <p style="font-size: 0.8rem; margin-top: 8px;">${pub.file_name}</p>
+                        <p style="font-size: 0.75rem; margin-top: 6px;">${pub.file_name}</p>
                     </div>
                 `;
             }
 
-            const authorInitials = pub.author_name?.split(' ').map(n => n[0]).join('').toUpperCase() || 'P';
-
             card.innerHTML = `
                 <div class="pub-header">
-                    <div class="pub-avatar">${authorInitials.substring(0, 2)}</div>
+                    ${authorAvatar}
                     <div class="pub-author">
                         <h4>${pub.author_name}</h4>
                         <span class="pub-time">${date}</span>
@@ -624,19 +837,31 @@
                         <i class="fas fa-heart"></i>
                         <span class="likes-count">${pub.likes_count || 0}</span>
                     </button>
-                    <span class="views-count">
-                        <i class="far fa-eye"></i> ${pub.views_count || 0}
-                    </span>
                 </div>
             `;
 
             const likeBtn = card.querySelector('.like-btn');
-            likeBtn.addEventListener('click', () => toggleLike(pub.id, likeBtn));
+            likeBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                toggleLike(pub.id, likeBtn);
+            });
 
             return card;
         }
 
         async function toggleLike(publicationId, btn) {
+            // Solo estudiantes pueden dar like
+            if (currentUser.role !== 'student') return;
+
+            // Animación instantánea para mejor UX
+            const wasLiked = btn.classList.contains('liked');
+            const countSpan = btn.querySelector('.likes-count');
+            const currentCount = parseInt(countSpan.textContent);
+
+            // Actualizar UI inmediatamente
+            btn.classList.toggle('liked');
+            countSpan.textContent = wasLiked ? currentCount - 1 : currentCount + 1;
+
             try {
                 const token = localStorage.getItem('auth_token');
                 const res = await fetch(`/api/publications/${publicationId}/like`, {
@@ -644,17 +869,20 @@
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
 
-                if (res.ok) {
-                    const data = await res.json();
-                    btn.classList.toggle('liked', data.liked);
-                    btn.querySelector('.likes-count').textContent = data.likes_count;
+                if (!res.ok) {
+                    // Revertir si hay error
+                    btn.classList.toggle('liked');
+                    countSpan.textContent = currentCount;
                 }
             } catch (error) {
+                // Revertir si hay error
+                btn.classList.toggle('liked');
+                countSpan.textContent = currentCount;
                 console.error('Error:', error);
             }
         }
 
-        function updateLikeCount(pubId, count, liked) {
+        function updateLikeInUI(pubId, count, liked) {
             const btn = document.querySelector(`.like-btn[data-id="${pubId}"]`);
             if (btn) {
                 btn.classList.toggle('liked', liked);
