@@ -6,7 +6,7 @@
     <title>Clases de Inglés</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
+
     <style>
         /* RESET Y BASE */
         * {
@@ -27,40 +27,39 @@
         /* CONTENEDOR PRINCIPAL (EL FLYER) */
         .flyer {
             width: 100%;
-            max-width: 500px; /* Tamaño típico de flyer digital */
-            background-color: #ffffff; /* FONDO COMPLETAMENTE BLANCO */
+            max-width: 500px;
+            background-color: #ffffff;
             position: relative;
             overflow: hidden;
             box-shadow: 0 10px 25px rgba(0,0,0,0.2);
             padding-bottom: 20px;
         }
 
-        /* BANDERA ESQUINA (Imagen de fondo decorativa) */
+        /* BANDERA ESQUINA */
         .flag-corner {
             position: absolute;
             top: -10px;
             left: -10px;
             width: 250px;
             height: 150px;
-            /* Aquí iría tu imagen de la bandera de USA ondulada */
             background-image: url('https://img.freepik.com/psd-gratis/ilustracion-decoracion-4-julio_23-2151996180.jpg?semt=ais_hybrid&w=740&q=80'); 
             background-size: cover;
             background-repeat: no-repeat;
-            border-bottom-right-radius: 100%; /* Efecto curvo simple */
+            border-bottom-right-radius: 100%;
             z-index: 1;
         }
 
         /* ENCABEZADO */
         .header {
             text-align: right;
-            padding: 40px 20px 10px 20px;
+            padding: 35px 20px 5px 20px;
             position: relative;
             z-index: 2;
         }
 
         .title-blue {
             color: #1d3c6e;
-            font-size: 2.8rem;
+            font-size: 2.5rem;
             font-weight: 900;
             line-height: 0.9;
             letter-spacing: -1px;
@@ -68,7 +67,7 @@
 
         .title-red {
             color: #c41e1e;
-            font-size: 2.8rem;
+            font-size: 2.5rem;
             font-weight: 900;
             line-height: 0.9;
             letter-spacing: -1px;
@@ -78,8 +77,8 @@
             text-align: right;
             color: #1d3c6e;
             font-weight: 700;
-            margin-top: 10px;
-            font-size: 0.95rem;
+            margin-top: 8px;
+            font-size: 0.85rem;
         }
 
         /* CUERPO PRINCIPAL */
@@ -100,7 +99,7 @@
         .phone-booth {
             width: 100%;
             height: auto;
-            /* Aquí iría tu imagen de la cabina roja */
+            max-width: 110px;
             content: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRnVIjuZ0utWPkyrDPxfu9nd2AicoEfWEy-yQ&s');
         }
 
@@ -111,15 +110,14 @@
             position: relative;
         }
 
-        /* MAPA DE FONDO (Reino Unido) */
+        /* MAPA DE FONDO */
         .map-bg {
             position: absolute;
             right: -20px;
             top: 80px;
-            width: 120px;
+            width: 100px;
             opacity: 0.8;
             z-index: 0;
-            /* Aquí iría tu imagen de silueta del mapa */
             content: url('https://media.istockphoto.com/id/925831478/es/vector/mapa-del-reino-unido-lleno-de-color-azul.jpg?s=612x612&w=0&k=20&c=tYFrT9vprSUWCAgV67XRLzQ-RUFjqBy5LmC-cjd2a1Q=');
         }
 
@@ -128,12 +126,12 @@
             border: 2px solid #1d3c6e;
             color: #c41e1e;
             border-radius: 20px;
-            padding: 5px 15px;
+            padding: 4px 12px;
             font-weight: 800;
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             display: inline-block;
-            margin-top: 15px;
-            margin-bottom: 10px;
+            margin-top: 10px;
+            margin-bottom: 8px;
             background: rgba(255,255,255,0.8);
             position: relative;
             z-index: 1;
@@ -149,19 +147,19 @@
         .level-list li {
             color: #1d3c6e;
             font-weight: 700;
-            font-size: 0.75rem;
-            margin-bottom: 4px;
+            font-size: 0.65rem;
+            margin-bottom: 3px;
         }
 
         .info-list li {
             color: #1d3c6e;
             font-weight: 700;
-            font-size: 0.7rem;
-            margin-bottom: 6px;
+            font-size: 0.6rem;
+            margin-bottom: 5px;
             display: flex;
             align-items: flex-start;
         }
-        
+
         .info-list li::before {
             content: "•";
             color: #1d3c6e;
@@ -171,77 +169,96 @@
             margin-left: -1em; 
         }
 
+        /* CONTENEDOR DE BOTONES DE ACCIÓN (AULA Y WHATSAPP) */
+        .action-buttons {
+            padding: 15px 20px 5px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        /* ESTILO BASE PARA LOS BOTONES DE ACCIÓN */
+        .action-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-decoration: none;
+            padding: 12px 18px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: transform 0.2s, box-shadow 0.2s;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .action-btn i {
+            font-size: 1.2rem;
+        }
+
+        .action-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.25);
+        }
+
+        /* BOTÓN ESPECÍFICO: AULA VIRTUAL (AZUL) */
+        .classroom-btn {
+            background-color: #1d3c6e; /* Azul primario */
+        }
+
+        /* BOTÓN ESPECÍFICO: WHATSAPP (VERDE) */
+        .whatsapp-btn {
+            background-color: #25D366;
+            animation: pulse 2s infinite; /* Solo el WhatsApp tiene pulse */
+        }
+
+        /* Animación pulse solo para WhatsApp */
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(37, 211, 102, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+        }
+
         /* FOOTER INFO */
         .footer-info {
-            padding: 20px 20px;
+            padding: 10px 20px 15px 20px;
             position: relative;
         }
 
         .contact-item {
             display: flex;
             align-items: center;
-            margin-bottom: 5px;
-            color: #c41e1e; /* Color rojizo para iconos */
+            margin-bottom: 4px;
+            color: #c41e1e;
             font-weight: 700;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
         }
 
         .contact-item i {
-            width: 20px;
+            width: 18px;
             text-align: center;
             margin-right: 5px;
-            color: #1d3c6e; /* Iconos azules */
+            color: #1d3c6e;
+            font-size: 0.8rem;
         }
-        
+
         .contact-text {
-            color: #c41e1e; /* Texto rojo/naranja */
-        }
-
-        /* BOTÓN DE WHATSAPP (El requerimiento especial) */
-        .whatsapp-btn-container {
-            margin-top: 15px;
-            display: flex;
-            justify-content: flex-start; /* Alineado a la izquierda bajo el texto */
-        }
-
-        .whatsapp-btn {
-            background-color: #25D366;
-            color: white;
-            text-decoration: none;
-            padding: 10px 20px;
-            border-radius: 50px;
-            font-weight: 700;
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-            transition: transform 0.2s, box-shadow 0.2s;
-            animation: pulse 2s infinite;
-        }
-
-        .whatsapp-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 8px rgba(0,0,0,0.3);
+            color: #c41e1e;
         }
 
         /* SELLO NEVER GIVE UP */
         .stamp {
             position: absolute;
-            bottom: 20px;
-            right: 20px;
-            width: 60px;
-            height: 60px;
-            /* Imagen del sello */
+            bottom: 15px;
+            right: 15px;
+            width: 50px;
+            height: 50px;
             content: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTizXjHJP7wjXygR-kyXSyekhBrbowtGrxwkA&s');
-            opacity: 0.8;
-        }
-
-        /* Animación del botón */
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); }
-            70% { box-shadow: 0 0 0 10px rgba(37, 211, 102, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+            opacity: 0.7;
+            z-index: 5;
         }
 
     </style>
@@ -274,11 +291,24 @@
 
                 <div class="badge">HORARIOS Y FECHAS</div>
                 <ul class="info-list" style="padding-left: 10px;">
-                    <li>HORA FLEXIBLE, AJUSTABLE A <br> SU DISPONIBILIDAD</li>
-                    <li>DE LUNES A JUEVES DISPONIBLE <br> EN HOLGUÍN CIUDAD</li>
-                    <li>DE SÁBADOS A DOMINGOS <br> DISPONIBLE EN SAN GERMÁN</li>
+                    <li>HORA FLEXIBLE, AJUSTABLE A SU DISPONIBILIDAD</li>
+                    <li>DE LUNES A JUEVES DISPONIBLE EN HOLGUÍN CIUDAD</li>
+                    <li>DE SÁBADOS A DOMINGOS DISPONIBLE EN SAN GERMÁN</li>
                 </ul>
             </div>
+        </div>
+
+        <!-- CONTENEDOR CON LOS DOS BOTONES DE ACCIÓN DESTACADOS -->
+        <div class="action-buttons">
+            <!-- BOTÓN AULA VIRTUAL (AZUL) -->
+            <a href="https://clasesingles.onrender.com/" class="action-btn classroom-btn" target="_blank" rel="noopener noreferrer">
+                <i class="fas fa-graduation-cap"></i> ACCEDER AL AULA VIRTUAL
+            </a>
+
+            <!-- BOTÓN WHATSAPP (VERDE) -->
+            <a href="https://wa.me/5350104103" class="action-btn whatsapp-btn" target="_blank" rel="noopener noreferrer">
+                <i class="fab fa-whatsapp"></i> CONTACTO POR WHATSAPP
+            </a>
         </div>
 
         <div class="footer-info">
@@ -292,13 +322,6 @@
             <div class="contact-item">
                 <i class="fas fa-map-marker-alt"></i>
                 <span class="contact-text">CIUDAD DE HOLGUÍN, SAN GERMÁN</span>
-            </div>
-
-            <div class="whatsapp-btn-container">
-                <a href="https://wa.me/5350104103" class="whatsapp-btn" target="_blank">
-                    <i class="fab fa-whatsapp" style="font-size: 1.2rem;"></i>
-                    WHATSAPP
-                </a>
             </div>
         </div>
     </div>
