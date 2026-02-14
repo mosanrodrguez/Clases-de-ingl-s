@@ -1,39 +1,60 @@
 #!/usr/bin/env python3
 """
-SERVIDOR DE CLASES DE INGLÉS - VERSIÓN 6.0
-Con todas las mejoras: fotos de perfil, likes en tiempo real, gestión de accesos
+SERVIDOR DE CLASES DE INGLÉS - VERSIÓN 7.0
+Con DeepSeek streaming, búsqueda en internet y procesamiento de archivos
+Solo PostgreSQL (sin SQLite)
 """
 
 import os
-import psycopg2
+import sys
 import json
 import hashlib
 import secrets
 import jwt
 import datetime
 import base64
-from psycopg2.extras import RealDictCursor
-from typing import Dict, Optional
+import io
+import time
+from typing import Dict, Optional, Generator
 from functools import wraps
+from urllib.parse import urlparse
 
-from flask import Flask, request, jsonify, send_file, send_from_directory
+from flask import Flask, request, jsonify, send_file, send_from_directory, Response, stream_with_context
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
 from flask_socketio import SocketIO, emit
+
+# PostgreSQL
+import psycopg2
+from psycopg2.extras import RealDictCursor
+
+# Cloudinary
 import cloudinary
 import cloudinary.uploader
 
-# ============ CONFIGURACIÓN ============
+# DeepSeek / OpenAI
+import openai
+
+# Procesamiento de archivos
+import PyPDF2
+from docx import Document
+from pptx import Presentation
+import openpyxl
+from PIL import Image
+import requests
+from io import BytesIO
+
+# ============ CONFIGURACIÓN DIRECTA ============
 app = Flask(__name__, static_folder='.', static_url_path='')
 CORS(app, resources={r"/*": {"origins": "*"}})
 
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', secrets.token_hex(32))
+app.config['SECRET_KEY'] = 'clases-ingles-secret-key-2024'
 app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024  # 50MB
 
-# Base de datos
-DATABASE_URL = "postgresql://englishcourse_y8kk_user:RSAFitszR0trQgLGVxkEBHgfFD6vq2Yj@dpg-d685lm8gjchc73bcps5g-a/englishcourse_y8kk"
+# ============ CONFIGURACIÓN POSTGRESQL ============
+DATABASE_URL = "postgresql://englishcourse_user:VI8pYTtX2bbv2YftidVHOUKXtK6J7ehd@dpg-d64mmungi27c73b53hr0-a/englishcourse"
 
-# Cloudinary
+# ============ CONFIGURACIÓN CLOUDINARY ============
 cloudinary.config(
     cloud_name="dj72b0ykc",
     api_key="215156196366932",
@@ -41,13 +62,22 @@ cloudinary.config(
     secure=True
 )
 
-# Códigos de acceso
+# ============ DEEPSEEK CONFIGURACIÓN ============
+DEEPSEEK_API_KEY = "sk-0c21275ee63f4b42ac0733835ac44d29"
+
+# Cliente de DeepSeek (compatible con OpenAI)
+deepseek_client = openai.OpenAI(
+    api_key=DEEPSEEK_API_KEY,
+    base_url="https://api.deepseek.com"
+)
+
+# ============ CÓDIGOS DE ACCESO ============
 STUDENT_CODE = "QwErTy89"
 TEACHER_CODE = "MOISÉS5M"
 
 # Extensiones permitidas
 ALLOWED_EXTENSIONS = {
-    'pdf', 'doc', 'docx', 'ppt', 'pptx', 
+    'pdf', 'doc', 'docx', 'ppt', 'pptx', 'xls', 'xlsx',
     'txt', 'jpg', 'jpeg', 'png', 'gif',
     'mp3', 'mp4', 'mov', 'avi', 'webm'
 }
@@ -64,6 +94,7 @@ def get_file_type(filename: str) -> str:
     file_types = {
         'pdf': 'PDF', 'doc': 'Word', 'docx': 'Word',
         'ppt': 'PowerPoint', 'pptx': 'PowerPoint',
+        'xls': 'Excel', 'xlsx': 'Excel',
         'txt': 'Texto', 'jpg': 'Imagen', 'jpeg': 'Imagen',
         'png': 'Imagen', 'gif': 'GIF', 'mp3': 'Audio',
         'mp4': 'Video', 'mov': 'Video', 'avi': 'Video',
@@ -71,16 +102,60 @@ def get_file_type(filename: str) -> str:
     }
     return file_types.get(ext, 'Archivo')
 
+def extract_text_from_file(file, filename: str) -> str:
+    """Extrae texto de diferentes tipos de archivos"""
+    ext = filename.rsplit('.', 1)[1].lower() if '.' in filename else ''
+    
+    try:
+        if ext == 'txt':
+            return file.read().decode('utf-8', errors='ignore')
+        
+        elif ext == 'pdf':
+            pdf_reader = PyPDF2.PdfReader(file)
+            text = ""
+            for page in pdf_reader.pages:
+                text += page.extract_text()
+            return text
+        
+        elif ext in ['docx']:
+            doc = Document(io.BytesIO(file.read()))
+            return "\n".join([paragraph.text for paragraph in doc.paragraphs])
+        
+        elif ext in ['pptx']:
+            prs = Presentation(io.BytesIO(file.read()))
+            text = ""
+            for slide in prs.slides:
+                for shape in slide.shapes:
+                    if hasattr(shape, "text"):
+                        text += shape.text + "\n"
+            return text
+        
+        elif ext in ['xlsx']:
+            wb = openpyxl.load_workbook(io.BytesIO(file.read()), data_only=True)
+            text = ""
+            for sheet in wb.sheetnames:
+                ws = wb[sheet]
+                for row in ws.iter_rows(values_only=True):
+                    text += " ".join([str(cell) for cell in row if cell]) + "\n"
+            return text
+        
+        else:
+            return f"[Archivo {ext} no procesable para texto]"
+            
+    except Exception as e:
+        return f"[Error extrayendo texto: {str(e)}]"
+
 def get_db_connection():
+    """Obtiene una conexión a PostgreSQL"""
     return psycopg2.connect(DATABASE_URL, cursor_factory=RealDictCursor)
 
 def init_db():
-    """Inicializar base de datos con todas las tablas"""
+    """Inicializar base de datos PostgreSQL"""
     conn = get_db_connection()
     cursor = conn.cursor()
     
     try:
-        # Tabla de usuarios (con avatar)
+        # Tabla de usuarios
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS users (
                 id SERIAL PRIMARY KEY,
@@ -176,9 +251,9 @@ def init_db():
         ''')
         
         conn.commit()
-        print("✅ Base de datos configurada")
+        print("✅ Base de datos PostgreSQL configurada")
         
-        # Crear profesor por defecto
+        # Crear profesor por defecto si no existe
         cursor.execute("SELECT id FROM users WHERE role = 'teacher' LIMIT 1")
         if not cursor.fetchone():
             password_hash = hash_password("admin123")
@@ -355,7 +430,6 @@ def login():
         cursor.execute('UPDATE users SET last_login = CURRENT_TIMESTAMP WHERE id = %s', (user['id'],))
         conn.commit()
         
-        # Eliminar hash antes de enviar
         del user['password_hash']
         
         token = generate_token(user['id'], user['username'], user['role'])
@@ -363,7 +437,6 @@ def login():
         cursor.close()
         conn.close()
         
-        # Redirigir según el rol
         redirect_url = 'profesor.html' if user['role'] == 'teacher' else 'estudiante.html'
         
         return jsonify({
@@ -381,7 +454,6 @@ def login():
 @app.route('/api/profile/avatar', methods=['POST'])
 @token_required
 def upload_avatar():
-    """Subir foto de perfil"""
     try:
         if 'avatar' not in request.files:
             return jsonify({'error': 'No se envió archivo'}), 400
@@ -394,7 +466,6 @@ def upload_avatar():
         if not allowed_file(file.filename):
             return jsonify({'error': 'Formato no permitido'}), 400
         
-        # Subir a Cloudinary
         upload_result = cloudinary.uploader.upload(
             file,
             folder="avatars",
@@ -409,7 +480,6 @@ def upload_avatar():
         conn = get_db_connection()
         cursor = conn.cursor()
         
-        # Incrementar versión para cache busting
         cursor.execute('''
             UPDATE users 
             SET avatar_url = %s, avatar_version = avatar_version + 1
@@ -466,7 +536,6 @@ def get_publications():
 @app.route('/api/publications/<int:publication_id>/like', methods=['POST'])
 @token_required
 def toggle_like(publication_id: int):
-    """Dar o quitar like a una publicación (solo estudiantes)"""
     try:
         if request.user_role != 'student':
             return jsonify({'error': 'Solo estudiantes pueden dar like'}), 403
@@ -474,7 +543,6 @@ def toggle_like(publication_id: int):
         conn = get_db_connection()
         cursor = conn.cursor()
         
-        # Verificar si ya dio like
         cursor.execute('''
             SELECT id FROM publication_likes 
             WHERE user_id = %s AND publication_id = %s
@@ -483,14 +551,12 @@ def toggle_like(publication_id: int):
         existing = cursor.fetchone()
         
         if existing:
-            # Quitar like
             cursor.execute('''
                 DELETE FROM publication_likes 
                 WHERE user_id = %s AND publication_id = %s
             ''', (request.user_id, publication_id))
             liked = False
         else:
-            # Dar like
             cursor.execute('''
                 INSERT INTO publication_likes (user_id, publication_id)
                 VALUES (%s, %s)
@@ -499,7 +565,6 @@ def toggle_like(publication_id: int):
         
         conn.commit()
         
-        # Obtener nuevo conteo
         cursor.execute('''
             SELECT COUNT(*) as count FROM publication_likes 
             WHERE publication_id = %s
@@ -509,7 +574,6 @@ def toggle_like(publication_id: int):
         cursor.close()
         conn.close()
         
-        # Emitir evento en tiempo real a TODOS
         socketio.emit('like_updated', {
             'publication_id': publication_id,
             'likes_count': count,
@@ -561,7 +625,6 @@ def create_publication():
             if not allowed_file(file.filename):
                 return jsonify({'error': 'Tipo no permitido'}), 400
             
-            # Configurar resource_type según el tipo
             resource_type = 'auto'
             if publication_type == 'video':
                 resource_type = 'video'
@@ -583,7 +646,6 @@ def create_publication():
         conn = get_db_connection()
         cursor = conn.cursor()
         
-        # Obtener información del profesor
         cursor.execute('SELECT name, avatar_url, avatar_version FROM users WHERE id = %s', (request.user_id,))
         teacher = cursor.fetchone()
         
@@ -607,7 +669,6 @@ def create_publication():
         cursor.close()
         conn.close()
         
-        # Emitir evento de nueva publicación
         socketio.emit('new_publication', {
             'id': new_publication['id'],
             'title': title,
@@ -659,7 +720,6 @@ def get_classes():
         cursor = conn.cursor()
         
         if request.user_role == 'teacher':
-            # Profesor: ve todas las clases
             if level:
                 cursor.execute('''
                     SELECT c.*, u.name as uploaded_by_name 
@@ -677,7 +737,6 @@ def get_classes():
                     ORDER BY c.created_at DESC
                 ''')
         else:
-            # Estudiante: solo ve clases de su nivel con acceso
             cursor.execute('''
                 SELECT c.*, u.name as uploaded_by_name, 
                        sa.has_access, sa.downloaded
@@ -705,7 +764,6 @@ def get_classes():
 @token_required
 @teacher_required
 def get_all_classes():
-    """Obtener todas las clases (solo profesor)"""
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
@@ -796,7 +854,6 @@ def upload_class():
         if level not in ['A1', 'A2', 'B1']:
             return jsonify({'error': 'Nivel no válido'}), 400
         
-        # Subir a Cloudinary
         upload_result = cloudinary.uploader.upload(
             file,
             folder="clases_ingles",
@@ -829,7 +886,6 @@ def upload_class():
         cursor.close()
         conn.close()
         
-        # Emitir evento de nueva clase
         socketio.emit('new_class', {
             'id': new_class['id'],
             'title': title,
@@ -984,7 +1040,7 @@ def download_class(class_id: int):
         print(f"❌ Error: {str(e)}")
         return jsonify({'error': 'Error'}), 500
 
-# ============ ESTUDIANTES (PROFESOR) ============
+# ============ ESTUDIANTES ============
 @app.route('/api/students', methods=['GET'])
 @token_required
 @teacher_required
@@ -1043,7 +1099,6 @@ def update_student_level(student_id: int):
         if not updated:
             return jsonify({'error': 'Estudiante no encontrado'}), 404
         
-        # Emitir evento en tiempo real
         socketio.emit('student_level_updated', {
             'student_id': student_id,
             'level': level
@@ -1062,12 +1117,10 @@ def update_student_level(student_id: int):
 @token_required
 @teacher_required
 def get_student_access(student_id: int):
-    """Obtener todas las clases con el estado de acceso del estudiante"""
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
         
-        # Obtener nivel del estudiante
         cursor.execute('SELECT level FROM users WHERE id = %s', (student_id,))
         student = cursor.fetchone()
         
@@ -1078,7 +1131,6 @@ def get_student_access(student_id: int):
         
         student_level = student['level']
         
-        # Obtener todas las clases del nivel del estudiante
         cursor.execute('''
             SELECT c.*, 
                    COALESCE(sa.has_access, FALSE) as has_access,
@@ -1106,7 +1158,6 @@ def get_student_access(student_id: int):
 @token_required
 @teacher_required
 def update_student_access(student_id: int):
-    """Actualizar acceso a una clase específica"""
     try:
         data = request.get_json()
         
@@ -1129,14 +1180,12 @@ def update_student_access(student_id: int):
         
         conn.commit()
         
-        # Obtener información de la clase para la respuesta
         cursor.execute('SELECT title FROM classes WHERE id = %s', (class_id,))
         class_info = cursor.fetchone()
         
         cursor.close()
         conn.close()
         
-        # Emitir evento en tiempo real
         socketio.emit('access_updated', {
             'student_id': student_id,
             'class_id': class_id,
@@ -1181,6 +1230,184 @@ def get_profile():
         print(f"❌ Error: {str(e)}")
         return jsonify({'error': 'Error'}), 500
 
+# ============ DEEPSEEK CHAT CON STREAMING ============
+@app.route('/api/chat/stream', methods=['POST'])
+@token_required
+def chat_stream():
+    """Chat con DeepSeek en tiempo real (streaming)"""
+    try:
+        data = request.get_json()
+        messages = data.get('messages', [])
+        temperature = data.get('temperature', 0.7)
+        enable_search = data.get('enable_search', False)  # Búsqueda en internet
+        
+        # Añadir instrucciones del sistema según el rol
+        system_message = {
+            'role': 'system',
+            'content': f"""Eres un asistente experto en enseñanza de inglés. 
+                        El usuario es un {currentUser.role} de la plataforma EnglishClasses.
+                        Responde de manera clara, educativa y amigable.
+                        Puedes ayudar con gramática, vocabulario, pronunciación, ejercicios, etc.
+                        {"Puedes buscar información actualizada en internet cuando sea necesario." if enable_search else ""}
+                        Si el usuario sube una imagen, extrae el texto y analízalo.
+                        Si sube documentos, léelos y responde sobre su contenido."""
+        }
+        
+        full_messages = [system_message] + messages
+        
+        # Parámetros para la API
+        params = {
+            'model': 'deepseek-chat',
+            'messages': full_messages,
+            'temperature': temperature,
+            'max_tokens': 4000,
+            'stream': True
+        }
+        
+        # Activar búsqueda en internet si se solicita
+        if enable_search:
+            params['tools'] = [{
+                'type': 'web_search',
+                'function': {
+                    'description': 'Buscar información actualizada en internet'
+                }
+            }]
+        
+        # Llamar a DeepSeek API en modo streaming
+        response = deepseek_client.chat.completions.create(**params)
+        
+        def generate():
+            for chunk in response:
+                if chunk.choices[0].delta.content:
+                    yield f"data: {json.dumps({'content': chunk.choices[0].delta.content})}\n\n"
+            yield "data: [DONE]\n\n"
+        
+        return Response(
+            stream_with_context(generate()),
+            mimetype='text/event-stream',
+            headers={
+                'Cache-Control': 'no-cache',
+                'X-Accel-Buffering': 'no'
+            }
+        )
+        
+    except Exception as e:
+        print(f"❌ Error en chat stream: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+# ============ DEEPSEEK CHAT CON ARCHIVOS ============
+@app.route('/api/chat-with-files', methods=['POST'])
+@token_required
+def chat_with_files():
+    """Chat con soporte para imágenes y documentos (streaming)"""
+    try:
+        messages_json = request.form.get('messages', '[]')
+        messages = json.loads(messages_json)
+        temperature = float(request.form.get('temperature', 0.7))
+        enable_search = request.form.get('enable_search', 'false') == 'true'
+        
+        # Procesar imágenes
+        images = request.files.getlist('images')
+        image_contents = []
+        
+        for img in images:
+            if img and img.filename:
+                img_data = img.read()
+                img_base64 = base64.b64encode(img_data).decode('utf-8')
+                mime_type = img.mimetype or 'image/jpeg'
+                
+                image_contents.append({
+                    "type": "image_url",
+                    "image_url": {
+                        "url": f"data:{mime_type};base64,{img_base64}"
+                    }
+                })
+        
+        # Procesar documentos
+        documents = request.files.getlist('documents')
+        document_texts = []
+        
+        for doc in documents:
+            if doc and doc.filename:
+                # Guardar posición actual
+                pos = doc.tell()
+                doc.seek(0)
+                
+                text = extract_text_from_file(doc, doc.filename)
+                document_texts.append(f"--- Documento: {doc.filename} ---\n{text}\n")
+                
+                # Restaurar posición
+                doc.seek(pos)
+        
+        # Construir mensaje del usuario
+        user_content = []
+        
+        if messages and messages[-1]['role'] == 'user':
+            last_message = messages[-1]['content']
+            if last_message:
+                user_content.append({"type": "text", "text": last_message})
+        
+        user_content.extend(image_contents)
+        
+        if document_texts:
+            doc_text = "\n\n".join(document_texts)
+            user_content.append({"type": "text", "text": f"Contenido de documentos adjuntos:\n{doc_text}"})
+        
+        # Preparar mensajes completos
+        system_message = {
+            'role': 'system',
+            'content': f"""Eres un asistente experto en enseñanza de inglés. 
+                        El usuario es un {currentUser.role} de la plataforma EnglishClasses.
+                        Responde de manera clara, educativa y amigable.
+                        {"Puedes buscar información actualizada en internet cuando sea necesario." if enable_search else ""}
+                        Si hay imágenes, extrae el texto y analízalo.
+                        Si hay documentos, úsalos para responder."""
+        }
+        
+        full_messages = [system_message] + messages[:-1] + [{
+            'role': 'user',
+            'content': user_content
+        }]
+        
+        # Parámetros para la API
+        params = {
+            'model': 'deepseek-chat',
+            'messages': full_messages,
+            'temperature': temperature,
+            'max_tokens': 4000,
+            'stream': True
+        }
+        
+        if enable_search:
+            params['tools'] = [{
+                'type': 'web_search',
+                'function': {
+                    'description': 'Buscar información actualizada en internet'
+                }
+            }]
+        
+        # Llamar a DeepSeek API
+        response = deepseek_client.chat.completions.create(**params)
+        
+        def generate():
+            for chunk in response:
+                if chunk.choices[0].delta.content:
+                    yield f"data: {json.dumps({'content': chunk.choices[0].delta.content})}\n\n"
+            yield "data: [DONE]\n\n"
+        
+        return Response(
+            stream_with_context(generate()),
+            mimetype='text/event-stream',
+            headers={
+                'Cache-Control': 'no-cache',
+                'X-Accel-Buffering': 'no'
+            }
+        )
+        
+    except Exception as e:
+        print(f"❌ Error en chat con archivos: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
 # ============ WEBSOCKET ============
 @socketio.on('connect')
 def handle_connect():
@@ -1197,9 +1424,10 @@ def serve_static(path):
 # ============ INICIALIZACIÓN ============
 if __name__ == '__main__':
     print("=" * 60)
-    print("🚀 SERVIDOR DE CLASES DE INGLÉS - V6.0")
+    print("🚀 SERVIDOR DE CLASES DE INGLÉS - V7.0")
     print("=" * 60)
     
+    # Inicializar base de datos
     init_db()
     
     print(f"🔑 Código estudiante: {STUDENT_CODE}")
