@@ -128,7 +128,7 @@
         .publications-feed {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 16px;
         }
 
         .publication-card {
@@ -136,6 +136,11 @@
             border-radius: 16px;
             overflow: hidden;
             box-shadow: var(--shadow);
+            transition: transform 0.2s ease;
+        }
+
+        .publication-card:active {
+            transform: scale(0.99);
         }
 
         .pub-header {
@@ -146,8 +151,8 @@
         }
 
         .pub-avatar {
-            width: 32px;
-            height: 32px;
+            width: 36px;
+            height: 36px;
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             color: var(--white);
             border-radius: 50%;
@@ -155,15 +160,19 @@
             align-items: center;
             justify-content: center;
             font-weight: 700;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             flex-shrink: 0;
+            border: 2px solid var(--white);
+            box-shadow: var(--shadow);
         }
 
         .pub-avatar-img {
-            width: 32px;
-            height: 32px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             object-fit: cover;
+            border: 2px solid var(--white);
+            box-shadow: var(--shadow);
         }
 
         .pub-author {
@@ -171,7 +180,7 @@
         }
 
         .pub-author h4 {
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             font-weight: 700;
             color: var(--gray-800);
             margin-bottom: 2px;
@@ -187,30 +196,34 @@
         }
 
         .pub-title {
-            font-size: 0.95rem;
+            font-size: 1rem;
             font-weight: 700;
             color: var(--primary);
             margin-bottom: 6px;
         }
 
         .pub-text {
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             line-height: 1.5;
             color: var(--gray-800);
         }
 
         .pub-media {
             width: 100%;
-            max-height: 300px;
+            max-height: 350px;
             object-fit: contain;
             background: var(--gray-100);
             border-radius: 12px;
             margin-top: 8px;
+            cursor: pointer;
         }
 
         .pub-footer {
-            padding: 8px 12px;
+            padding: 8px 12px 12px;
             border-top: 1px solid var(--gray-200);
+            display: flex;
+            align-items: center;
+            gap: 16px;
         }
 
         .like-btn {
@@ -218,17 +231,17 @@
             border: none;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             color: var(--gray-600);
-            font-size: 0.8rem;
-            padding: 6px 10px;
-            border-radius: 20px;
+            font-size: 0.9rem;
+            padding: 8px 12px;
+            border-radius: 30px;
             cursor: pointer;
             transition: all 0.2s ease;
         }
 
         .like-btn i {
-            font-size: 1rem;
+            font-size: 1.3rem;
             transition: transform 0.2s ease;
         }
 
@@ -238,20 +251,26 @@
 
         .like-btn.liked i {
             font-weight: 900;
-            animation: heartPop 0.3s ease;
+            animation: heartPop 0.4s ease;
         }
 
         .like-btn:active i {
             transform: scale(1.2);
         }
 
+        .likes-count {
+            font-weight: 600;
+            min-width: 20px;
+        }
+
         @keyframes heartPop {
             0% { transform: scale(1); }
-            50% { transform: scale(1.3); }
+            30% { transform: scale(1.4); }
+            60% { transform: scale(1.2); }
             100% { transform: scale(1); }
         }
 
-        /* Classes */
+        /* Clases */
         .classes-grid {
             display: flex;
             flex-direction: column;
@@ -263,6 +282,11 @@
             border-radius: 12px;
             overflow: hidden;
             box-shadow: var(--shadow);
+            transition: transform 0.2s ease;
+        }
+
+        .class-card:active {
+            transform: scale(0.99);
         }
 
         .class-header {
@@ -282,7 +306,7 @@
         }
 
         .class-title {
-            font-size: 0.95rem;
+            font-size: 1rem;
             font-weight: 700;
             margin-bottom: 4px;
         }
@@ -290,6 +314,8 @@
         .class-meta {
             font-size: 0.65rem;
             opacity: 0.9;
+            display: flex;
+            gap: 12px;
         }
 
         .class-body {
@@ -297,7 +323,7 @@
         }
 
         .class-desc {
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             color: var(--gray-600);
             margin-bottom: 14px;
             line-height: 1.5;
@@ -305,19 +331,19 @@
 
         .download-btn {
             width: 100%;
-            padding: 12px;
+            padding: 14px;
             background: var(--success);
             color: var(--white);
             border: none;
             border-radius: 8px;
             font-weight: 700;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
         }
 
         .download-btn:active {
@@ -329,7 +355,7 @@
         .profile-card {
             background: var(--white);
             border-radius: 20px;
-            padding: 20px;
+            padding: 24px;
             box-shadow: var(--shadow-lg);
         }
 
@@ -352,7 +378,7 @@
             font-size: 2.5rem;
             font-weight: 800;
             border: 3px solid var(--white);
-            box-shadow: var(--shadow);
+            box-shadow: var(--shadow-lg);
         }
 
         .profile-avatar-img {
@@ -361,7 +387,7 @@
             border-radius: 50%;
             object-fit: cover;
             border: 3px solid var(--white);
-            box-shadow: var(--shadow);
+            box-shadow: var(--shadow-lg);
         }
 
         .camera-btn {
@@ -380,7 +406,7 @@
             font-size: 0.9rem;
             cursor: pointer;
             box-shadow: var(--shadow);
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
         }
 
         .camera-btn:active {
@@ -398,7 +424,7 @@
 
         .profile-role {
             color: var(--gray-600);
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             text-align: center;
             margin-bottom: 20px;
         }
@@ -436,7 +462,7 @@
         /* No level message */
         .no-level {
             text-align: center;
-            padding: 40px 20px;
+            padding: 60px 20px;
             color: var(--gray-600);
         }
 
@@ -447,14 +473,64 @@
         }
 
         .no-level h3 {
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             font-weight: 700;
             color: var(--primary);
             margin-bottom: 8px;
         }
 
         .no-level p {
-            font-size: 0.8rem;
+            font-size: 0.85rem;
+        }
+
+        /* Mensajes flotantes */
+        .message {
+            position: fixed;
+            top: 70px;
+            left: 16px;
+            right: 16px;
+            background: var(--white);
+            border-radius: 12px;
+            padding: 14px 16px;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 1000;
+            transform: translateY(-100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .message.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .message.success {
+            border-left: 4px solid var(--success);
+        }
+
+        .message.error {
+            border-left: 4px solid var(--accent);
+        }
+
+        .message i {
+            font-size: 1.2rem;
+        }
+
+        .message.success i {
+            color: var(--success);
+        }
+
+        .message.error i {
+            color: var(--accent);
+        }
+
+        .message-text {
+            flex: 1;
+            font-size: 0.85rem;
+            font-weight: 600;
         }
 
         /* Loading */
@@ -485,6 +561,22 @@
         #avatarInput {
             display: none;
         }
+
+        /* Animaciones */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .publication-card {
+            animation: fadeIn 0.3s ease;
+        }
     </style>
 </head>
 <body>
@@ -494,6 +586,12 @@
             <i class="fas fa-sign-out-alt"></i>
         </button>
     </header>
+
+    <!-- Mensaje flotante -->
+    <div id="message" class="message">
+        <i class="fas fa-check-circle"></i>
+        <span class="message-text"></span>
+    </div>
 
     <main>
         <!-- Inicio (Publicaciones) -->
@@ -547,12 +645,18 @@
         let currentUser = null;
         let currentPage = 'home';
         let socket = null;
+        let likeTimeouts = new Map(); // Para debounce de likes
 
         const pages = {
             home: document.getElementById('homePage'),
             classes: document.getElementById('classesPage'),
             profile: document.getElementById('profilePage')
         };
+
+        // Elementos de mensajes
+        const messageEl = document.getElementById('message');
+        const messageIcon = messageEl.querySelector('i');
+        const messageText = messageEl.querySelector('.message-text');
 
         // Cache para avatares
         const avatarCache = new Map();
@@ -563,6 +667,16 @@
             setupNavigation();
             connectSocket();
         });
+
+        function showMessage(text, type = 'success') {
+            messageIcon.className = type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-circle';
+            messageText.textContent = text;
+            messageEl.className = `message ${type} show`;
+            
+            setTimeout(() => {
+                messageEl.classList.remove('show');
+            }, 3000);
+        }
 
         function checkAuth() {
             const user = localStorage.getItem('current_user');
@@ -596,6 +710,7 @@
                 if (currentPage === 'home') {
                     loadPublications();
                 }
+                showMessage('Nueva publicación disponible');
             });
 
             socket.on('publication_deleted', () => {
@@ -617,6 +732,7 @@
                     if (currentPage === 'profile') {
                         loadProfile();
                     }
+                    showMessage(`Tu nivel ha sido actualizado a ${data.level}`);
                 }
             });
         }
@@ -650,13 +766,11 @@
         function getAvatarUrl(user) {
             if (!user.avatar_url) return null;
             
-            // Usar cache
             const cacheKey = `avatar_${user.id}_${user.avatar_version || 1}`;
             if (avatarCache.has(cacheKey)) {
                 return avatarCache.get(cacheKey);
             }
             
-            // Si no está en cache, guardar
             avatarCache.set(cacheKey, user.avatar_url);
             return user.avatar_url;
         }
@@ -675,6 +789,18 @@
                 const file = e.target.files[0];
                 if (!file) return;
 
+                // Validar tipo de archivo
+                if (!file.type.startsWith('image/')) {
+                    showMessage('Solo se permiten imágenes', 'error');
+                    return;
+                }
+
+                // Validar tamaño (máximo 2MB)
+                if (file.size > 2 * 1024 * 1024) {
+                    showMessage('La imagen no puede superar los 2MB', 'error');
+                    return;
+                }
+
                 const formData = new FormData();
                 formData.append('avatar', file);
 
@@ -689,20 +815,22 @@
                     if (res.ok) {
                         const data = await res.json();
                         
-                        // Actualizar usuario en localStorage
                         currentUser.avatar_url = data.avatar_url;
                         currentUser.avatar_version = data.avatar_version;
                         localStorage.setItem('current_user', JSON.stringify(currentUser));
                         
-                        // Limpiar cache
                         const cacheKey = `avatar_${currentUser.id}_${data.avatar_version - 1}`;
                         avatarCache.delete(cacheKey);
                         
-                        // Recargar perfil
                         loadProfile();
+                        showMessage('Foto de perfil actualizada');
+                    } else {
+                        const error = await res.json();
+                        showMessage(error.error || 'Error al subir foto', 'error');
                     }
                 } catch (error) {
-                    console.error('Error al subir avatar:', error);
+                    console.error('Error:', error);
+                    showMessage('Error de conexión', 'error');
                 }
             });
         }
@@ -725,7 +853,7 @@
                     container.innerHTML = `
                         <div class="profile-avatar-container">
                             ${avatarUrl ? 
-                                `<img src="${avatarUrl}?v=${profile.avatar_version}" class="profile-avatar-img" alt="Avatar">` :
+                                `<img src="${avatarUrl}?v=${profile.avatar_version}" class="profile-avatar-img" alt="Avatar" loading="lazy">` :
                                 `<div class="profile-avatar">${initials.substring(0, 2)}</div>`
                             }
                             <div class="camera-btn">
@@ -754,10 +882,11 @@
                 }
             } catch (error) {
                 console.error('Error:', error);
+                showMessage('Error al cargar perfil', 'error');
             }
         }
 
-        // ============ PUBLICACIONES ============
+        // ============ PUBLICACIONES CON LIKES PERFECTOS ============
         async function loadPublications() {
             const feed = document.getElementById('publicationsFeed');
             const loading = document.getElementById('loadingPublications');
@@ -784,6 +913,7 @@
                 }
             } catch (error) {
                 console.error('Error:', error);
+                showMessage('Error al cargar publicaciones', 'error');
             } finally {
                 loading.classList.add('hidden');
             }
@@ -802,19 +932,19 @@
             });
 
             const authorAvatar = pub.avatar_url ? 
-                `<img src="${pub.avatar_url}?v=${pub.avatar_version}" class="pub-avatar-img">` :
+                `<img src="${pub.avatar_url}?v=${pub.avatar_version}" class="pub-avatar-img" loading="lazy">` :
                 `<div class="pub-avatar">${pub.author_name?.charAt(0).toUpperCase() || 'P'}</div>`;
 
             let mediaHtml = '';
             if (pub.publication_type === 'photo' && pub.file_url) {
-                mediaHtml = `<img src="${pub.file_url}" class="pub-media" loading="lazy">`;
+                mediaHtml = `<img src="${pub.file_url}" class="pub-media" loading="lazy" onclick="openImage('${pub.file_url}')">`;
             } else if (pub.publication_type === 'video' && pub.file_url) {
-                mediaHtml = `<video src="${pub.file_url}" class="pub-media" controls></video>`;
+                mediaHtml = `<video src="${pub.file_url}" class="pub-media" controls preload="metadata"></video>`;
             } else if (pub.publication_type === 'document' && pub.file_url) {
                 mediaHtml = `
-                    <div style="background: var(--gray-100); padding: 15px; text-align: center; border-radius: 12px; margin-top: 8px;">
-                        <i class="fas fa-file-pdf" style="font-size: 2rem; color: var(--accent);"></i>
-                        <p style="font-size: 0.75rem; margin-top: 6px;">${pub.file_name}</p>
+                    <div class="document-preview" style="background: var(--gray-100); padding: 20px; text-align: center; border-radius: 12px; margin-top: 8px; cursor: pointer;" onclick="window.open('${pub.file_url}', '_blank')">
+                        <i class="fas fa-file-pdf" style="font-size: 2.5rem; color: var(--accent);"></i>
+                        <p style="font-size: 0.8rem; margin-top: 8px; color: var(--primary);">${pub.file_name || 'Documento'}</p>
                     </div>
                 `;
             }
@@ -843,17 +973,19 @@
             const likeBtn = card.querySelector('.like-btn');
             likeBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
-                toggleLike(pub.id, likeBtn);
+                handleLikeClick(pub.id, likeBtn);
             });
 
             return card;
         }
 
-        async function toggleLike(publicationId, btn) {
-            // Solo estudiantes pueden dar like
-            if (currentUser.role !== 'student') return;
+        function handleLikeClick(publicationId, btn) {
+            // Prevenir múltiples clicks rápidos
+            if (likeTimeouts.has(publicationId)) {
+                return;
+            }
 
-            // Animación instantánea para mejor UX
+            // Animación instantánea
             const wasLiked = btn.classList.contains('liked');
             const countSpan = btn.querySelector('.likes-count');
             const currentCount = parseInt(countSpan.textContent);
@@ -862,6 +994,22 @@
             btn.classList.toggle('liked');
             countSpan.textContent = wasLiked ? currentCount - 1 : currentCount + 1;
 
+            // Agregar animación al corazón
+            const heart = btn.querySelector('i');
+            heart.style.animation = 'none';
+            heart.offsetHeight; // Forzar reflow
+            heart.style.animation = 'heartPop 0.4s ease';
+
+            // Set timeout para evitar doble click
+            likeTimeouts.set(publicationId, setTimeout(() => {
+                likeTimeouts.delete(publicationId);
+            }, 500));
+
+            // Enviar al servidor
+            toggleLike(publicationId, btn, wasLiked, currentCount);
+        }
+
+        async function toggleLike(publicationId, btn, wasLiked, previousCount) {
             try {
                 const token = localStorage.getItem('auth_token');
                 const res = await fetch(`/api/publications/${publicationId}/like`, {
@@ -870,25 +1018,43 @@
                 });
 
                 if (!res.ok) {
-                    // Revertir si hay error
+                    // Revertir cambios si hay error
                     btn.classList.toggle('liked');
-                    countSpan.textContent = currentCount;
+                    btn.querySelector('.likes-count').textContent = previousCount;
+                    
+                    const error = await res.json();
+                    showMessage(error.error || 'Error al dar like', 'error');
                 }
             } catch (error) {
-                // Revertir si hay error
+                // Revertir cambios si hay error
                 btn.classList.toggle('liked');
-                countSpan.textContent = currentCount;
+                btn.querySelector('.likes-count').textContent = previousCount;
                 console.error('Error:', error);
+                showMessage('Error de conexión', 'error');
             }
         }
 
         function updateLikeInUI(pubId, count, liked) {
             const btn = document.querySelector(`.like-btn[data-id="${pubId}"]`);
             if (btn) {
+                const wasLiked = btn.classList.contains('liked');
                 btn.classList.toggle('liked', liked);
                 btn.querySelector('.likes-count').textContent = count;
+                
+                // Si el estado cambió, mostrar animación
+                if (wasLiked !== liked) {
+                    const heart = btn.querySelector('i');
+                    heart.style.animation = 'none';
+                    heart.offsetHeight;
+                    heart.style.animation = 'heartPop 0.4s ease';
+                }
             }
         }
+
+        // Función para abrir imágenes en grande
+        window.openImage = function(url) {
+            window.open(url, '_blank');
+        };
 
         // ============ CLASES ============
         async function checkStudentLevel() {
@@ -912,6 +1078,7 @@
                 }
             } catch (error) {
                 console.error('Error:', error);
+                showMessage('Error al cargar perfil', 'error');
             }
         }
 
@@ -941,6 +1108,7 @@
                 }
             } catch (error) {
                 console.error('Error:', error);
+                showMessage('Error al cargar clases', 'error');
             } finally {
                 loading.classList.add('hidden');
             }
@@ -957,7 +1125,8 @@
                     <span class="class-level">${cls.level}</span>
                     <h3 class="class-title">${cls.title}</h3>
                     <div class="class-meta">
-                        <i class="far fa-calendar"></i> ${date}
+                        <span><i class="far fa-calendar"></i> ${date}</span>
+                        <span><i class="fas fa-file"></i> ${cls.file_type || 'Archivo'}</span>
                     </div>
                 </div>
                 <div class="class-body">
@@ -981,11 +1150,14 @@
                 if (res.ok) {
                     const data = await res.json();
                     window.open(data.download_url, '_blank');
+                    showMessage('Descargando...');
                 } else {
-                    alert('No tienes acceso a esta clase');
+                    const error = await res.json();
+                    showMessage(error.error || 'No tienes acceso a esta clase', 'error');
                 }
             } catch (error) {
                 console.error('Error:', error);
+                showMessage('Error al descargar', 'error');
             }
         };
     </script>
