@@ -143,11 +143,11 @@
         }
 
         .filter-chip {
-            padding: 6px 14px;
+            padding: 8px 16px;
             background: var(--white);
             border: 1px solid var(--gray-200);
-            border-radius: 20px;
-            font-size: 0.75rem;
+            border-radius: 30px;
+            font-size: 0.8rem;
             font-weight: 600;
             color: var(--gray-600);
             white-space: nowrap;
@@ -157,6 +157,7 @@
 
         .filter-chip:active {
             background: var(--gray-100);
+            transform: scale(0.95);
         }
 
         .filter-chip.active {
@@ -177,6 +178,11 @@
             border-radius: var(--radius);
             overflow: hidden;
             box-shadow: var(--shadow);
+            transition: transform 0.2s ease;
+        }
+
+        .card:active {
+            transform: scale(0.99);
         }
 
         .card-header {
@@ -191,23 +197,23 @@
 
         .card-badge {
             background: rgba(255,255,255,0.2);
-            padding: 3px 8px;
-            border-radius: 12px;
-            font-size: 0.6rem;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.65rem;
             font-weight: 700;
             display: inline-block;
             margin-bottom: 6px;
         }
 
         .card-title {
-            font-size: 0.95rem;
+            font-size: 1rem;
             font-weight: 700;
             margin-bottom: 4px;
             line-height: 1.3;
         }
 
         .card-meta {
-            font-size: 0.65rem;
+            font-size: 0.7rem;
             opacity: 0.9;
             display: flex;
             gap: 12px;
@@ -218,7 +224,7 @@
         }
 
         .card-desc {
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             color: var(--gray-600);
             margin-bottom: 14px;
             line-height: 1.5;
@@ -235,15 +241,15 @@
 
         .btn {
             flex: 1;
-            padding: 10px;
+            padding: 12px;
             border: none;
             border-radius: var(--radius-sm);
-            font-weight: 600;
-            font-size: 0.75rem;
+            font-weight: 700;
+            font-size: 0.85rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
+            gap: 8px;
             cursor: pointer;
             transition: all 0.2s ease;
         }
@@ -277,11 +283,16 @@
             align-items: center;
             gap: 12px;
             box-shadow: var(--shadow);
+            transition: transform 0.2s ease;
+        }
+
+        .student-item:active {
+            transform: scale(0.99);
         }
 
         .student-avatar {
-            width: 40px;
-            height: 40px;
+            width: 44px;
+            height: 44px;
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             color: var(--white);
             border-radius: 50%;
@@ -289,15 +300,19 @@
             align-items: center;
             justify-content: center;
             font-weight: 700;
-            font-size: 0.9rem;
+            font-size: 1rem;
             flex-shrink: 0;
+            border: 2px solid var(--white);
+            box-shadow: var(--shadow);
         }
 
         .student-avatar-img {
-            width: 40px;
-            height: 40px;
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
             object-fit: cover;
+            border: 2px solid var(--white);
+            box-shadow: var(--shadow);
         }
 
         .student-info {
@@ -307,55 +322,62 @@
 
         .student-name {
             font-weight: 700;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             color: var(--gray-800);
-            margin-bottom: 2px;
+            margin-bottom: 4px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
 
         .student-level-badge {
-            font-size: 0.6rem;
+            font-size: 0.65rem;
             color: var(--primary);
             background: rgba(29,60,110,0.1);
-            padding: 2px 8px;
-            border-radius: 10px;
+            padding: 3px 10px;
+            border-radius: 20px;
             display: inline-block;
         }
 
         .student-actions {
             display: flex;
-            gap: 6px;
+            gap: 8px;
             flex-shrink: 0;
         }
 
         .level-select {
-            padding: 6px 8px;
+            padding: 8px 10px;
             border: 1px solid var(--gray-200);
             border-radius: var(--radius-sm);
             font-family: 'Montserrat', sans-serif;
-            font-size: 0.7rem;
+            font-size: 0.8rem;
             background: var(--white);
             cursor: pointer;
+            min-width: 90px;
         }
 
         .access-btn {
-            padding: 6px 10px;
+            padding: 8px 14px;
             background: var(--success);
             color: var(--white);
             border: none;
             border-radius: var(--radius-sm);
-            font-size: 0.7rem;
+            font-size: 0.8rem;
             font-weight: 600;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .access-btn:active {
+            transform: scale(0.95);
+            opacity: 0.9;
         }
 
         .access-btn i {
-            font-size: 0.8rem;
+            font-size: 0.9rem;
         }
 
         /* Modal */
@@ -394,7 +416,7 @@
         }
 
         .modal-header {
-            padding: 16px;
+            padding: 18px;
             border-bottom: 1px solid var(--gray-200);
             display: flex;
             justify-content: space-between;
@@ -406,7 +428,7 @@
         }
 
         .modal-header h3 {
-            font-size: 1rem;
+            font-size: 1.1rem;
             font-weight: 800;
             color: var(--primary);
         }
@@ -414,15 +436,16 @@
         .close-modal {
             background: none;
             border: none;
-            font-size: 1.3rem;
+            font-size: 1.4rem;
             cursor: pointer;
             color: var(--gray-600);
-            width: 32px;
-            height: 32px;
+            width: 36px;
+            height: 36px;
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 50%;
+            transition: all 0.2s ease;
         }
 
         .close-modal:active {
@@ -430,16 +453,16 @@
         }
 
         .modal-body {
-            padding: 16px;
+            padding: 18px;
         }
 
         .form-group {
-            margin-bottom: 16px;
+            margin-bottom: 18px;
         }
 
         .form-group label {
             display: block;
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             font-weight: 700;
             color: var(--primary);
             margin-bottom: 6px;
@@ -449,12 +472,13 @@
         .form-group textarea,
         .form-group select {
             width: 100%;
-            padding: 10px 12px;
+            padding: 12px 14px;
             border: 1px solid var(--gray-200);
             border-radius: var(--radius-sm);
             font-family: 'Montserrat', sans-serif;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             transition: all 0.2s ease;
+            background: var(--white);
         }
 
         .form-group input:focus,
@@ -462,13 +486,13 @@
         .form-group select:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 2px rgba(29,60,110,0.1);
+            box-shadow: 0 0 0 3px rgba(29,60,110,0.1);
         }
 
         .modal-actions {
             display: flex;
-            gap: 10px;
-            padding: 0 16px 16px;
+            gap: 12px;
+            padding: 0 18px 18px;
             position: sticky;
             bottom: 0;
             background: var(--white);
@@ -476,13 +500,17 @@
 
         .modal-btn {
             flex: 1;
-            padding: 12px;
+            padding: 14px;
             border: none;
             border-radius: var(--radius-sm);
             font-weight: 700;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             cursor: pointer;
             transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
         .modal-btn:active {
@@ -503,32 +531,35 @@
         .access-list {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 10px;
             margin: 12px 0;
             max-height: 50vh;
             overflow-y: auto;
+            padding-right: 4px;
         }
 
         .access-item {
             background: var(--gray-100);
             border-radius: var(--radius-sm);
-            padding: 12px;
-            border-left: 3px solid transparent;
+            padding: 14px;
+            border-left: 4px solid transparent;
+            transition: all 0.2s ease;
         }
 
         .access-item.has-access {
             border-left-color: var(--success);
+            background: rgba(37,211,102,0.05);
         }
 
         .access-item-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
         }
 
         .access-item-header h4 {
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             font-weight: 700;
             color: var(--primary);
             flex: 1;
@@ -536,11 +567,11 @@
         }
 
         .access-toggle {
-            width: 44px;
-            height: 24px;
+            width: 48px;
+            height: 26px;
             background: var(--gray-300);
             border: none;
-            border-radius: 12px;
+            border-radius: 13px;
             position: relative;
             cursor: pointer;
             transition: all 0.2s ease;
@@ -553,8 +584,8 @@
 
         .access-toggle::after {
             content: '';
-            width: 20px;
-            height: 20px;
+            width: 22px;
+            height: 22px;
             background: var(--white);
             border-radius: 50%;
             position: absolute;
@@ -565,23 +596,27 @@
         }
 
         .access-toggle.active::after {
-            left: 22px;
+            left: 24px;
         }
 
         .access-item-desc {
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             color: var(--gray-600);
-            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .downloaded-badge {
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
             background: var(--success);
             color: var(--white);
-            padding: 2px 6px;
-            border-radius: 10px;
-            font-size: 0.6rem;
-            margin-left: 6px;
+            padding: 3px 8px;
+            border-radius: 20px;
+            font-size: 0.65rem;
+            font-weight: 600;
         }
 
         /* FAB */
@@ -589,17 +624,20 @@
             position: fixed;
             bottom: 90px;
             right: 20px;
-            width: 52px;
-            height: 52px;
+            width: 56px;
+            height: 56px;
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             color: var(--white);
             border: none;
             border-radius: 50%;
-            font-size: 1.3rem;
+            font-size: 1.4rem;
             box-shadow: var(--shadow-lg);
             cursor: pointer;
             z-index: 90;
             transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .fab:active {
@@ -613,8 +651,8 @@
         }
 
         .spinner {
-            width: 32px;
-            height: 32px;
+            width: 36px;
+            height: 36px;
             border: 3px solid var(--gray-200);
             border-top-color: var(--primary);
             border-radius: 50%;
@@ -639,47 +677,47 @@
         .profile-card {
             background: var(--white);
             border-radius: 20px;
-            padding: 20px;
+            padding: 24px;
             box-shadow: var(--shadow-lg);
         }
 
         .profile-avatar-container {
             position: relative;
-            width: 90px;
-            height: 90px;
+            width: 100px;
+            height: 100px;
             margin: 0 auto 16px;
         }
 
         .profile-avatar {
-            width: 90px;
-            height: 90px;
+            width: 100px;
+            height: 100px;
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             color: var(--white);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2.2rem;
+            font-size: 2.5rem;
             font-weight: 800;
             border: 3px solid var(--white);
-            box-shadow: var(--shadow);
+            box-shadow: var(--shadow-lg);
         }
 
         .profile-avatar-img {
-            width: 90px;
-            height: 90px;
+            width: 100px;
+            height: 100px;
             border-radius: 50%;
             object-fit: cover;
             border: 3px solid var(--white);
-            box-shadow: var(--shadow);
+            box-shadow: var(--shadow-lg);
         }
 
         .camera-btn {
             position: absolute;
             bottom: 0;
             right: 0;
-            width: 28px;
-            height: 28px;
+            width: 32px;
+            height: 32px;
             background: var(--primary);
             color: var(--white);
             border: 2px solid var(--white);
@@ -687,18 +725,19 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.8rem;
+            font-size: 0.9rem;
             cursor: pointer;
             box-shadow: var(--shadow);
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
         }
 
         .camera-btn:active {
             transform: scale(0.9);
+            background: var(--primary-dark);
         }
 
         .profile-name {
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             font-weight: 800;
             color: var(--primary);
             text-align: center;
@@ -707,7 +746,7 @@
 
         .profile-role {
             color: var(--gray-600);
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             text-align: center;
             margin-bottom: 20px;
         }
@@ -722,7 +761,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 8px 0;
+            padding: 10px 0;
             border-bottom: 1px solid var(--gray-200);
         }
 
@@ -732,24 +771,25 @@
 
         .stat-label {
             color: var(--gray-600);
-            font-size: 0.8rem;
+            font-size: 0.85rem;
+            font-weight: 500;
         }
 
         .stat-value {
             font-weight: 700;
             color: var(--primary);
-            font-size: 0.85rem;
+            font-size: 0.9rem;
         }
 
-        /* Mensajes */
+        /* Mensajes flotantes */
         .message {
             position: fixed;
             top: 70px;
             left: 16px;
             right: 16px;
             background: var(--white);
-            border-radius: var(--radius);
-            padding: 12px 16px;
+            border-radius: 12px;
+            padding: 14px 16px;
             box-shadow: var(--shadow-lg);
             display: flex;
             align-items: center;
@@ -789,6 +829,46 @@
             flex: 1;
             font-size: 0.85rem;
             font-weight: 600;
+        }
+
+        /* No content */
+        .no-content {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--gray-600);
+        }
+
+        .no-content i {
+            font-size: 3rem;
+            color: var(--gray-200);
+            margin-bottom: 16px;
+        }
+
+        .no-content h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .no-content p {
+            font-size: 0.85rem;
+        }
+
+        /* Animaciones */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card, .student-item {
+            animation: fadeIn 0.3s ease;
         }
     </style>
 </head>
@@ -887,12 +967,12 @@
             <form id="publicationForm">
                 <div class="modal-body">
                     <div class="form-group">
-                        <label>Tipo</label>
+                        <label>Tipo de publicación</label>
                         <select id="pubType" required>
-                            <option value="text">Texto</option>
-                            <option value="photo">Foto</option>
-                            <option value="video">Video</option>
-                            <option value="document">Documento</option>
+                            <option value="text">📝 Texto</option>
+                            <option value="photo">📷 Foto</option>
+                            <option value="video">🎥 Video</option>
+                            <option value="document">📄 Documento</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -901,7 +981,7 @@
                     </div>
                     <div class="form-group" id="contentGroup">
                         <label>Contenido</label>
-                        <textarea id="pubContent" rows="3" placeholder="Escribe tu mensaje..."></textarea>
+                        <textarea id="pubContent" rows="4" placeholder="Escribe tu mensaje aquí..."></textarea>
                     </div>
                     <div class="form-group hidden" id="fileGroup">
                         <label>Archivo</label>
@@ -909,8 +989,12 @@
                     </div>
                 </div>
                 <div class="modal-actions">
-                    <button type="submit" class="modal-btn btn-submit">Publicar</button>
-                    <button type="button" class="modal-btn btn-cancel close-modal">Cancelar</button>
+                    <button type="submit" class="modal-btn btn-submit">
+                        <i class="fas fa-paper-plane"></i> Publicar
+                    </button>
+                    <button type="button" class="modal-btn btn-cancel close-modal">
+                        <i class="fas fa-times"></i> Cancelar
+                    </button>
                 </div>
             </form>
         </div>
@@ -927,33 +1011,37 @@
                 <div class="modal-body">
                     <input type="hidden" id="classId">
                     <div class="form-group">
-                        <label>Título</label>
+                        <label>Título de la clase</label>
                         <input type="text" id="classTitle" placeholder="Ej: Present Simple" required>
                     </div>
                     <div class="form-group">
                         <label>Descripción</label>
-                        <textarea id="classDescription" rows="3" placeholder="Describe el contenido de la clase..." required></textarea>
+                        <textarea id="classDescription" rows="4" placeholder="Describe el contenido de la clase..." required></textarea>
                     </div>
                     <div class="form-group">
                         <label>Nivel</label>
                         <select id="classLevel" required>
                             <option value="">Seleccionar nivel</option>
-                            <option value="A1">A1 - Básico</option>
-                            <option value="A2">A2 - Funcional</option>
-                            <option value="B1">B1 - Intermedio</option>
+                            <option value="A1">🔵 A1 - Básico</option>
+                            <option value="A2">🟢 A2 - Funcional</option>
+                            <option value="B1">🟠 B1 - Intermedio</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label>Archivo</label>
                         <input type="file" id="classFile" accept=".pdf,.doc,.docx,.ppt,.pptx,.txt,.jpg,.jpeg,.png,.mp3,.mp4">
-                        <div id="currentFileInfo" class="hidden" style="margin-top: 6px; font-size: 0.7rem; color: var(--gray-600);">
-                            Archivo actual: <span id="currentFileName"></span>
+                        <div id="currentFileInfo" class="hidden" style="margin-top: 8px; padding: 8px; background: var(--gray-100); border-radius: var(--radius-sm); font-size: 0.8rem;">
+                            <i class="fas fa-file"></i> Archivo actual: <span id="currentFileName"></span>
                         </div>
                     </div>
                 </div>
                 <div class="modal-actions">
-                    <button type="submit" class="modal-btn btn-submit" id="submitClassBtn">Guardar</button>
-                    <button type="button" class="modal-btn btn-cancel close-modal">Cancelar</button>
+                    <button type="submit" class="modal-btn btn-submit" id="submitClassBtn">
+                        <i class="fas fa-save"></i> Guardar
+                    </button>
+                    <button type="button" class="modal-btn btn-cancel close-modal">
+                        <i class="fas fa-times"></i> Cancelar
+                    </button>
                 </div>
             </form>
         </div>
@@ -1067,6 +1155,7 @@
                 if (currentPage === 'publications') {
                     loadPublications();
                 }
+                showMessage('Nueva publicación creada');
             });
         }
 
@@ -1189,6 +1278,16 @@
                 const file = e.target.files[0];
                 if (!file) return;
 
+                if (!file.type.startsWith('image/')) {
+                    showMessage('Solo se permiten imágenes', 'error');
+                    return;
+                }
+
+                if (file.size > 2 * 1024 * 1024) {
+                    showMessage('La imagen no puede superar los 2MB', 'error');
+                    return;
+                }
+
                 const formData = new FormData();
                 formData.append('avatar', file);
 
@@ -1212,10 +1311,13 @@
                         
                         loadProfile();
                         showMessage('Foto de perfil actualizada');
+                    } else {
+                        const error = await res.json();
+                        showMessage(error.error || 'Error al subir foto', 'error');
                     }
                 } catch (error) {
                     console.error('Error:', error);
-                    showMessage('Error al subir foto', 'error');
+                    showMessage('Error de conexión', 'error');
                 }
             });
         }
@@ -1238,7 +1340,7 @@
                     container.innerHTML = `
                         <div class="profile-avatar-container">
                             ${avatarUrl ? 
-                                `<img src="${avatarUrl}?v=${profile.avatar_version}" class="profile-avatar-img" alt="Avatar">` :
+                                `<img src="${avatarUrl}?v=${profile.avatar_version}" class="profile-avatar-img" alt="Avatar" loading="lazy">` :
                                 `<div class="profile-avatar">${initials.substring(0, 2)}</div>`
                             }
                             <div class="camera-btn">
@@ -1263,6 +1365,7 @@
                 }
             } catch (error) {
                 console.error('Error:', error);
+                showMessage('Error al cargar perfil', 'error');
             }
         }
 
@@ -1301,7 +1404,7 @@
             }
 
             if (filtered.length === 0) {
-                grid.innerHTML = '<div class="no-content" style="text-align: center; padding: 40px; color: var(--gray-600);">No hay publicaciones</div>';
+                grid.innerHTML = '<div class="no-content"><i class="fas fa-newspaper"></i><h3>No hay publicaciones</h3><p>Crea una nueva publicación usando el botón +</p></div>';
             } else {
                 grid.innerHTML = filtered.map(pub => createPublicationCard(pub)).join('');
             }
@@ -1318,7 +1421,7 @@
             return `
                 <div class="card">
                     <div class="card-header small">
-                        <span class="card-badge">${pub.publication_type.toUpperCase()}</span>
+                        <span class="card-badge">${pub.publication_type === 'text' ? '📝' : pub.publication_type === 'photo' ? '📷' : pub.publication_type === 'video' ? '🎥' : '📄'} ${pub.publication_type.toUpperCase()}</span>
                         <h3 class="card-title">${pub.title}</h3>
                         <div class="card-meta">
                             <span><i class="far fa-clock"></i> ${date}</span>
@@ -1368,7 +1471,7 @@
 
             const btn = e.target.querySelector('button[type="submit"]');
             const original = btn.innerHTML;
-            btn.innerHTML = 'Publicando...';
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Publicando...';
             btn.disabled = true;
 
             try {
@@ -1435,7 +1538,7 @@
                     const classes = await res.json();
                     
                     if (classes.length === 0) {
-                        grid.innerHTML = '<div class="no-content" style="text-align: center; padding: 40px; color: var(--gray-600);">No hay clases</div>';
+                        grid.innerHTML = '<div class="no-content"><i class="fas fa-folder-open"></i><h3>No hay clases</h3><p>Crea una nueva clase usando el botón +</p></div>';
                     } else {
                         grid.innerHTML = classes.map(cls => createClassCard(cls)).join('');
                     }
@@ -1549,7 +1652,7 @@
 
             const btn = e.target.querySelector('button[type="submit"]');
             const original = btn.innerHTML;
-            btn.innerHTML = 'Guardando...';
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
             btn.disabled = true;
 
             try {
@@ -1598,7 +1701,7 @@
                     const students = await res.json();
                     
                     if (students.length === 0) {
-                        list.innerHTML = '<div class="no-content" style="text-align: center; padding: 40px; color: var(--gray-600);">No hay estudiantes registrados</div>';
+                        list.innerHTML = '<div class="no-content"><i class="fas fa-users"></i><h3>No hay estudiantes</h3><p>Los estudiantes aparecerán cuando se registren</p></div>';
                     } else {
                         students.forEach(student => {
                             list.appendChild(createStudentElement(student));
@@ -1623,7 +1726,7 @@
             div.innerHTML = `
                 <div class="student-avatar">
                     ${avatarUrl ? 
-                        `<img src="${avatarUrl}?v=${student.avatar_version}" class="student-avatar-img">` :
+                        `<img src="${avatarUrl}?v=${student.avatar_version}" class="student-avatar-img" loading="lazy">` :
                         initials.substring(0, 2)
                     }
                 </div>
@@ -1693,7 +1796,7 @@
                     const classes = await res.json();
                     
                     modalBody.innerHTML = `
-                        <h4 style="margin-bottom: 16px; color: var(--primary);">${studentName}</h4>
+                        <h4 style="margin-bottom: 16px; color: var(--primary); font-size: 1rem;">${studentName}</h4>
                         <div class="access-list">
                             ${classes.map(cls => `
                                 <div class="access-item ${cls.has_access ? 'has-access' : ''}">
@@ -1717,7 +1820,7 @@
                 }
             } catch (error) {
                 console.error('Error:', error);
-                modalBody.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--accent);">Error al cargar accesos</div>';
+                modalBody.innerHTML = '<div style="text-align: center; padding: 30px; color: var(--accent);">Error al cargar accesos</div>';
             }
         }
 
