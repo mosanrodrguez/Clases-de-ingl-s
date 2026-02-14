@@ -52,7 +52,7 @@ app.config['SECRET_KEY'] = 'clases-ingles-secret-key-2024'
 app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024  # 50MB
 
 # ============ CONFIGURACIÓN POSTGRESQL ============
-DATABASE_URL = "postgresql://englishcourse_user:VI8pYTtX2bbv2YftidVHOUKXtK6J7ehd@dpg-d64mmungi27c73b53hr0-a/englishcourse"
+DATABASE_URL = "postgresql://englishcourse_y8kk_user:RSAFitszR0trQgLGVxkEBHgfFD6vq2Yj@dpg-d685lm8gjchc73bcps5g-a/englishcourse_y8kk"
 
 # ============ CONFIGURACIÓN CLOUDINARY ============
 cloudinary.config(
