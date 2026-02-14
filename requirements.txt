@@ -8,3 +8,10 @@ psycopg2-binary
 cloudinary
 gunicorn
 python-dotenv
+openai
+requests
+Pillow
+PyPDF2
+python-docx
+python-pptx
+openpyxl
