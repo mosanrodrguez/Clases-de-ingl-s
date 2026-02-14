@@ -31,7 +31,7 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', secrets.token_hex(32))
 app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024  # 50MB
 
 # Base de datos
-DATABASE_URL = "postgresql://englishcourse_zoos_user:y0QVboxyTPWMrUorJraVQ7lC7F6ArzJ1@dpg-d6838ljh46gs73f6aq70-a/englishcourse_zoos"
+DATABASE_URL = "postgresql://englishcourse_y8kk_user:RSAFitszR0trQgLGVxkEBHgfFD6vq2Yj@dpg-d685lm8gjchc73bcps5g-a/englishcourse_y8kk"
 
 # Cloudinary
 cloudinary.config(
